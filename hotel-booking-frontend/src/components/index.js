@@ -1,0 +1,33 @@
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import ErrorPage from "./ErrorPage";
+import Register from "./Register";
+import Login from "./Login";
+import CompletedBookings from "./CompletedBookings";
+import PendingBookings from "./PendingBookings";
+import CancelledBookings from "./CancelledBookings";
+import BookingRequests from "./BookingRequests";
+import ManageListings from "./ManageListings";
+import Hotels from "./Hotels";
+import Filters from "./Hotel-filters";
+import Search from "./Search";
+import Card from "./Card";
+import Loading from "./Loading";
+
+export {
+  Navbar,
+  Footer,
+  ErrorPage,
+  Login,
+  Register,
+  CompletedBookings,
+  PendingBookings,
+  CancelledBookings,
+  BookingRequests,
+  ManageListings,
+  Hotels,
+  Filters,
+  Search,
+  Card,
+  Loading,
+};

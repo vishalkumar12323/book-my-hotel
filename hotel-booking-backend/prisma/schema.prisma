@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  name     String    @map("user_name")
+  email    String    @unique @map("user_email")
+  password String    @map("user_password")
+  role     Role      @map("user_role")
+  Listing  Listing[]
+  Booking  Booking[]
+  Review   Review[]
+
+  @@map("users")
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+model Listing {
+  id          Int         @id @default(autoincrement())
+  vendorId    Int
+  type        ListingType
+  name        String
+  address     String
+  description String
+  facilities  String[]
+  price       Float
+  images      String[]
+  units       Unit[]
+  vendor      User        @relation(fields: [vendorId], references: [id])
+
+  Booking Booking[]
+
+  @@map("listings")
+}
+
+enum ListingType {
+  HOTEL
+  RESTAURANT
+}
+
+model Unit {
+  id        Int     @id @default(autoincrement())
+  listingId Int
+  type      String
+  capacity  Int
+  price     Float
+  available Boolean
+  listing   Listing @relation(fields: [listingId], references: [id])
+
+  Booking Booking[]
+
+  @@map("units")
+}
+
+model Booking {
+  id         Int           @id @default(autoincrement())
+  customerId Int
+  listingId  Int
+  unitId     Int
+  startDate  DateTime
+  endDate    DateTime
+  status     BookingStatus
+  customer   User          @relation(fields: [customerId], references: [id])
+  listing    Listing       @relation(fields: [listingId], references: [id])
+  unit       Unit          @relation(fields: [unitId], references: [id])
+
+  Review Review[]
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  bookingId  Int
+  customerId Int
+  rating     Int
+  comments   String
+  createdAt  DateTime @default(now())
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  customer   User     @relation(fields: [customerId], references: [id])
+
+  @@map("reviews")
+}

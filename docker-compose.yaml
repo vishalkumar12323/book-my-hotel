@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: hotel-management-db
+    restart: always
+
+    environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: secret
+        POSTGRES_DB: hotel_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgDatabase:var/lib/db
+
+  volumes:
+    pgDatabase
