@@ -4,14 +4,17 @@ import { useEffect, useState } from "react";
 
 export const HomePage = () => {
   const [query, setQuery] = useState({});
-  const { data } = useGetAvailableListingsQuery(query);
+  const { data, isLoading } = useGetAvailableListingsQuery(query);
 
+  useEffect(() => {
+    console.log(query);
+  }, [query]);
   return (
-    <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-2 max-w-screen-xl w-full items-start">
+    <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
       <Search />
-      <div className="flex w-full justify-center gap-4">
+      <div className="flex flex-col md:flex-row w-full justify-center gap-4">
         <Filters setQuery={setQuery} query={query} />
-        <Hotels data={data} />
+        <Hotels data={data} isLoading={isLoading} />
       </div>
     </div>
   );

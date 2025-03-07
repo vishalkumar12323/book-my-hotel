@@ -3,18 +3,21 @@ import { prisma } from "../config/database.js";
 export const getListings = async (req, res) => {
   try {
     console.log(req.query);
-    const { location, price, rating, type } = req.query;
+    const { location, price, rating, type, popularFilter } = req.query;
     const listings = await prisma.listing.findMany({
       where: {
         address: location ? { contains: location } : undefined,
         price: price ? { lte: parseFloat(price) } : undefined,
         type: type ? type : undefined,
+        facilities: popularFilter ? { has: popularFilter } : undefined,
         rating: rating ? { gte: parseFloat(rating) } : undefined,
       },
       include: { units: true, Booking: true, _count: true },
     });
 
-    res.status(200).json(listings);
+    setTimeout(() => {
+      res.status(200).json(listings);
+    }, 3000);
   } catch (error) {
     console.error("Error fetching listings:", error);
     res.status(500).json({ message: "Internal Server Error" });
