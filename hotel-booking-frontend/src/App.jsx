@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { Footer, Loading, Navbar } from "./components";
+import { Footer, Navbar } from "./components";
 import { useGetUserInfoQuery } from "./app/services/authServices.js";
 import { useDispatch, useSelector } from "react-redux";
 import { session, setUserDetails } from "./app/store/slices/authSlice.js";
@@ -9,7 +9,7 @@ export default function App() {
   const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data, isLoading } = useGetUserInfoQuery();
+  const { data } = useGetUserInfoQuery();
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -21,7 +21,7 @@ export default function App() {
   return (
     <>
       <Navbar />
-      {isLoading ? <Loading /> : <Outlet />}
+      <Outlet />
       <Footer />
     </>
   );

@@ -13,6 +13,7 @@ import Filters from "./Hotel-filters";
 import Search from "./Search";
 import Card from "./Card";
 import Loading from "./Loading";
+import CardSkeleton from "./skeletons/CardSkeleton";
 
 export {
   Navbar,
@@ -30,4 +31,5 @@ export {
   Search,
   Card,
   Loading,
+  CardSkeleton,
 };

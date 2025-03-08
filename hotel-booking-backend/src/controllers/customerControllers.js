@@ -15,9 +15,7 @@ export const getListings = async (req, res) => {
       include: { units: true, Booking: true, _count: true },
     });
 
-    setTimeout(() => {
-      res.status(200).json(listings);
-    }, 3000);
+    res.status(200).json(listings);
   } catch (error) {
     console.error("Error fetching listings:", error);
     res.status(500).json({ message: "Internal Server Error" });
