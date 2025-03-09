@@ -32,7 +32,7 @@ const filterOptions = [
 import { MdPlayArrow } from "react-icons/md";
 import { FaCheckSquare, FaRegSquare } from "react-icons/fa";
 
-const Filters = ({ query, setQuery }) => {
+const Filters = ({ query, setQuery, error }) => {
   const [openFilters, setOpenFilters] = useState({ popular: true });
   const [checkedFilters, setCheckedFilters] = useState({});
 
@@ -40,6 +40,9 @@ const Filters = ({ query, setQuery }) => {
     setOpenFilters((prev) => ({ ...prev, [listId]: !prev[listId] }));
 
   const handleFilterUpdate = (option, type) => {
+    if (error) return;
+
+    console.log("error");
     const key = type === "popular-filters" ? "popularFilter" : type;
     const isActive = query[key]?.includes(option);
 

@@ -4,13 +4,13 @@ import { useState } from "react";
 
 export const HomePage = () => {
   const [query, setQuery] = useState({});
-  const { data, isLoading } = useGetAvailableListingsQuery(query);
+  const { data, isLoading, isError } = useGetAvailableListingsQuery(query);
 
   return (
     <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
       <Search />
       <div className="flex flex-col md:flex-row w-full justify-center gap-4">
-        <Filters setQuery={setQuery} query={query} />
+        <Filters setQuery={setQuery} query={query} error={isError} />
 
         {isLoading ? (
           <div className="flex flex-col w-full md:w-3/4 py-6 gap-4">
@@ -19,7 +19,7 @@ export const HomePage = () => {
             ))}
           </div>
         ) : (
-          <Hotels data={data} isLoading={isLoading} />
+          <Hotels data={data} error={isError} />
         )}
       </div>
     </div>
