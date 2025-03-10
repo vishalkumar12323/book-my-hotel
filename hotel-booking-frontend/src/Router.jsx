@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/bookings",
+        path: "/bookings/my-bookings",
         element: (
           <AuthLayout isAuthenticated>
             <CustomerDashboard />

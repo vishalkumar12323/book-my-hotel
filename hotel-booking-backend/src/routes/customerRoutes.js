@@ -34,7 +34,7 @@ router.post(
 );
 
 router.get(
-  "/bookings/history",
+  "/bookings/history/:status",
   isAuthenticated,
   authorizeRoles("CUSTOMER", "VENDOR"),
   getBookingHistory

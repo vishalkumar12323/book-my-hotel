@@ -1,7 +1,7 @@
-const PendingBookings = ({ bookings, isLoading, error }) => {
+const ConfirmedBookings = ({ bookings, isLoading, error }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow">
-      <h1 className="text-2xl font-semibold">Pending Bookings</h1>
+      <h1 className="text-2xl font-semibold">Completed Bookings</h1>
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error?.error?.message}</p>}
       {bookings && (
@@ -26,4 +26,4 @@ const PendingBookings = ({ bookings, isLoading, error }) => {
   );
 };
 
-export default PendingBookings;
+export default ConfirmedBookings;

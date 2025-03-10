@@ -18,7 +18,7 @@ const Navbar = () => {
     {
       name: "manage booking",
       active: isLoggedIn,
-      url: `/bookings`,
+      url: `/bookings/my-bookings`,
     },
     { name: "login", active: !isLoggedIn, url: "/login" },
     { name: "signup", active: !isLoggedIn, url: "/signup" },

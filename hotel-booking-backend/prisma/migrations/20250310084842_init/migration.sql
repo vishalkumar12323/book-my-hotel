@@ -1,48 +1,11 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('CUSTOMER', 'VENDOR', 'ADMIN');
 
-  - You are about to drop the `Booking` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Listing` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Review` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Unit` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
+-- CreateEnum
+CREATE TYPE "ListingType" AS ENUM ('HOTEL', 'RESTAURANT');
 
-*/
--- DropForeignKey
-ALTER TABLE "Booking" DROP CONSTRAINT "Booking_customerId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Booking" DROP CONSTRAINT "Booking_listingId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Booking" DROP CONSTRAINT "Booking_unitId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Listing" DROP CONSTRAINT "Listing_vendorId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Review" DROP CONSTRAINT "Review_bookingId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Review" DROP CONSTRAINT "Review_customerId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Unit" DROP CONSTRAINT "Unit_listingId_fkey";
-
--- DropTable
-DROP TABLE "Booking";
-
--- DropTable
-DROP TABLE "Listing";
-
--- DropTable
-DROP TABLE "Review";
-
--- DropTable
-DROP TABLE "Unit";
-
--- DropTable
-DROP TABLE "User";
+-- CreateEnum
+CREATE TYPE "BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'CANCELLED');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -63,8 +26,9 @@ CREATE TABLE "listings" (
     "name" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "facilities" TEXT NOT NULL,
+    "facilities" TEXT[],
     "price" DOUBLE PRECISION NOT NULL,
+    "rating" DOUBLE PRECISION NOT NULL,
     "images" TEXT[],
 
     CONSTRAINT "listings_pkey" PRIMARY KEY ("id")

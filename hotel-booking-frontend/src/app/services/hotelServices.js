@@ -21,7 +21,16 @@ export const hotelApi = createApi({
         };
       },
     }),
+    getUserBookings: builder.query({
+      query: (status) => {
+        return {
+          url: `/bookings/history/${status}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetAvailableListingsQuery } = hotelApi;
+export const { useGetAvailableListingsQuery, useGetUserBookingsQuery } =
+  hotelApi;

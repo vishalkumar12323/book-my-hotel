@@ -1,17 +1,15 @@
 import { useState } from "react";
 import {
   PendingBookings,
-  CompletedBookings,
+  ConfirmedBookings,
   CancelledBookings,
 } from "../components";
-import { session } from "../app/store/slices/authSlice";
-import { useSelector } from "react-redux";
+import { useGetUserBookingsQuery } from "../app/services/hotelServices.js";
 
 export const CustomerDashboard = () => {
-  const { user } = useSelector(session);
-  const [activeTab, setActiveTab] = useState("pending");
+  const [bookingStatus, setBookingStatus] = useState("pending");
+  const { data, isLoading, isError } = useGetUserBookingsQuery(bookingStatus);
 
-  console.log("user", user?.Booking);
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto">
@@ -19,22 +17,22 @@ export const CustomerDashboard = () => {
 
         <div className="flex space-x-4 mb-8">
           <StatusButton
-            setTab={setActiveTab}
-            activeTab={activeTab}
+            setTab={setBookingStatus}
+            bookingStatus={bookingStatus}
             tab="pending"
           >
             Pending
           </StatusButton>
           <StatusButton
-            setTab={setActiveTab}
-            activeTab={activeTab}
-            tab="completed"
+            setTab={setBookingStatus}
+            bookingStatus={bookingStatus}
+            tab="confirmed"
           >
-            completed
+            confirmed
           </StatusButton>
           <StatusButton
-            setTab={setActiveTab}
-            activeTab={activeTab}
+            setTab={setBookingStatus}
+            bookingStatus={bookingStatus}
             tab="cancelled"
           >
             cancelled
@@ -42,12 +40,26 @@ export const CustomerDashboard = () => {
         </div>
 
         <div>
-          {activeTab === "pending" ? (
-            <PendingBookings />
-          ) : activeTab === "completed" ? (
-            <CompletedBookings />
-          ) : (
-            <CancelledBookings />
+          {bookingStatus === "pending" && (
+            <PendingBookings
+              bookings={data}
+              isLoading={isLoading}
+              isError={isError}
+            />
+          )}
+          {bookingStatus === "confirmed" && (
+            <ConfirmedBookings
+              bookings={data}
+              isLoading={isLoading}
+              isError={isError}
+            />
+          )}
+          {bookingStatus === "cancelled" && (
+            <CancelledBookings
+              bookings={data}
+              isLoading={isLoading}
+              isError={isError}
+            />
           )}
         </div>
       </div>
@@ -55,13 +67,13 @@ export const CustomerDashboard = () => {
   );
 };
 
-const StatusButton = ({ setTab, activeTab, tab, children }) => {
+const StatusButton = ({ setTab, bookingStatus, tab, children }) => {
   return (
     <>
       <button
         onClick={() => setTab(tab)}
         className={`px-4 py-2 rounded-lg ${
-          activeTab === tab
+          bookingStatus === tab
             ? "bg-blue-600 text-white"
             : "bg-white text-gray-800"
         }`}

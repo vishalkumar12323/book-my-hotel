@@ -76,10 +76,20 @@ export const createBooking = async (req, res) => {
 
 // Get Booking History
 export const getBookingHistory = async (req, res) => {
+  const { status } = req.params;
   try {
     const bookings = await prisma.booking.findMany({
-      where: { customerId: req.user.id },
-      include: { listing: true, unit: true },
+      where: {
+        customerId: req.user?.id,
+        status: status.toUpperCase(),
+      },
+      include: {
+        listing: true,
+        unit: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     res.status(200).json(bookings);

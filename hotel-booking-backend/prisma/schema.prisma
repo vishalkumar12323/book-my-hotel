@@ -40,7 +40,8 @@ model Listing {
   units       Unit[]
   vendor      User        @relation(fields: [vendorId], references: [id])
 
-  Booking Booking[]
+  Booking   Booking[]
+  createdAt DateTime  @default(now())
 
   @@map("listings")
 }
@@ -60,6 +61,7 @@ model Unit {
   listing   Listing @relation(fields: [listingId], references: [id])
 
   Booking Booking[]
+  createdAt DateTime @default(now())
 
   @@map("units")
 }
@@ -76,7 +78,8 @@ model Booking {
   listing    Listing       @relation(fields: [listingId], references: [id])
   unit       Unit          @relation(fields: [unitId], references: [id])
 
-  Review Review[]
+  Review    Review[]
+  createdAt DateTime @default(now())
 
   @@map("bookings")
 }

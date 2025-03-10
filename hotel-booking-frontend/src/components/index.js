@@ -3,7 +3,7 @@ import Footer from "./Footer";
 import ErrorPage from "./ErrorPage";
 import Register from "./Register";
 import Login from "./Login";
-import CompletedBookings from "./CompletedBookings";
+import ConfirmedBookings from "./ConfirmedBookings";
 import PendingBookings from "./PendingBookings";
 import CancelledBookings from "./CancelledBookings";
 import BookingRequests from "./BookingRequests";
@@ -21,7 +21,7 @@ export {
   ErrorPage,
   Login,
   Register,
-  CompletedBookings,
+  ConfirmedBookings,
   PendingBookings,
   CancelledBookings,
   BookingRequests,
