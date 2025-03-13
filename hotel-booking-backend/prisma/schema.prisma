@@ -12,10 +12,11 @@ model User {
   name     String    @map("user_name")
   email    String    @unique @map("user_email")
   password String    @map("user_password")
-  role     Role      @map("user_role")
+  roles    Role[]    @default([CUSTOMER]) @map("user_roles")
   Listing  Listing[]
   Booking  Booking[]
   Review   Review[]
+  Session  Session?
 
   @@map("users")
 }
@@ -60,8 +61,8 @@ model Unit {
   available Boolean
   listing   Listing @relation(fields: [listingId], references: [id])
 
-  Booking Booking[]
-  createdAt DateTime @default(now())
+  Booking   Booking[]
+  createdAt DateTime  @default(now())
 
   @@map("units")
 }
@@ -101,4 +102,14 @@ model Review {
   customer   User     @relation(fields: [customerId], references: [id])
 
   @@map("reviews")
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  refreshToken String   @map("refresh_token")
+  userId       Int      @unique @map("user_id")
+  expiresAt    DateTime
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
 }

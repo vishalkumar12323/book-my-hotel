@@ -10,7 +10,12 @@ export const HomePage = () => {
     <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
       <Search />
       <div className="flex flex-col md:flex-row w-full justify-center gap-4">
-        <Filters setQuery={setQuery} query={query} error={isError} />
+        <Filters
+          setQuery={setQuery}
+          query={query}
+          error={isError}
+          data={data}
+        />
 
         {isLoading ? (
           <div className="flex flex-col w-full md:w-3/4 py-6 gap-4">

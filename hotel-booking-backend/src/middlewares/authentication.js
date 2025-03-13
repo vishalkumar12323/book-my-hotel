@@ -1,4 +1,7 @@
-import { verifiyToken } from "../lib/tokenServices.js";
+import {
+  verifiyAccessToken,
+  verifiyRefreshToken,
+} from "../lib/tokenServices.js";
 
 export const isAuthenticated = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -6,7 +9,23 @@ export const isAuthenticated = (req, res, next) => {
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    const credentials = verifiyToken(token);
+    const credentials = verifiyAccessToken(token);
+    req.user = credentials;
+    next();
+  } catch (error) {
+    console.log("authentication error ", error);
+
+    res.status(403).json({ message: "Forbidden" });
+  }
+};
+
+export const isVerified = (req, res, next) => {
+  const refreshToken =
+    req.cookies?.refreshToken || req.headers.authorization?.split(" ")[1];
+
+  if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+  try {
+    const credentials = verifiyRefreshToken(refreshToken);
     req.user = credentials;
     next();
   } catch (error) {
