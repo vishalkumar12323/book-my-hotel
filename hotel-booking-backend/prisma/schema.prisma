@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       Int       @id @unique @default(autoincrement())
   name     String    @map("user_name")
   email    String    @unique @map("user_email")
   password String    @map("user_password")
@@ -105,8 +105,8 @@ model Review {
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
-  refreshToken String   @map("refresh_token")
+  id           Int      @id @unique @default(autoincrement())
+  refreshToken String   @unique @map("refresh_token")
   userId       Int      @unique @map("user_id")
   expiresAt    DateTime
   user         User     @relation(fields: [userId], references: [id])

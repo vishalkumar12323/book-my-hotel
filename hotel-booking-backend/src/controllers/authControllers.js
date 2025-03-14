@@ -41,6 +41,7 @@ export const login = async (req, res) => {
       where: { email },
       select: {
         id: true,
+        password: true,
       },
     });
 
@@ -51,13 +52,6 @@ export const login = async (req, res) => {
     const accessToken = createAccessToken({ id: user.id });
     const refreshToken = createRefreshToken({ id: user.id });
 
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        refreshToken,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
-      },
-    });
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 5,
       httpOnly: true,
@@ -79,7 +73,8 @@ export const getUserProfile = async (req, res) => {
         email: true,
         id: true,
         name: true,
-        role: true,
+        roles: true,
+        Session: true,
       },
     });
 
@@ -91,17 +86,27 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const reAuthenticate = async (req, res) => {
-  const { id } = req.user;
+  const refreshToken =
+    req.cookies?.refreshToken || req.headers.authorization?.split(" ")[1];
+
+  if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
+    const session = await prisma.session.findUnique({
+      where: { refreshToken },
+      include: {
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
-    const accessToken = createAccessToken({ id: user.id });
-    res.status(201).json({ accessToken });
+    if (!session) return res.status(403).json({ message: "Forbidden" });
+
+    const accessToken = createAccessToken({ id: session.userId });
+    res.status(200).json({ accessToken });
   } catch (error) {
     console.error("Error re-authenticating user:", error);
     res.status(500).json({ message: "Internal Server Error" });
