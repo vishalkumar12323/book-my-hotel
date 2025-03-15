@@ -26,3 +26,9 @@ export const verifiyAccessToken = (token) => {
 
   return credentials;
 };
+
+export const verifiyRefreshToken = (token) => {
+  const credentials = jwt.verify(token, REFRESH_TOKEN_SECRET);
+
+  return credentials;
+};

@@ -13,7 +13,7 @@ CREATE TABLE "users" (
     "user_name" TEXT NOT NULL,
     "user_email" TEXT NOT NULL,
     "user_password" TEXT NOT NULL,
-    "user_roles" "Role"[] DEFAULT ARRAY['CUSTOMER']::"Role"[],
+    "user_role" "Role" NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -30,7 +30,6 @@ CREATE TABLE "listings" (
     "price" DOUBLE PRECISION NOT NULL,
     "rating" DOUBLE PRECISION NOT NULL,
     "images" TEXT[],
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "listings_pkey" PRIMARY KEY ("id")
 );
@@ -43,7 +42,6 @@ CREATE TABLE "units" (
     "capacity" INTEGER NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "available" BOOLEAN NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "units_pkey" PRIMARY KEY ("id")
 );
@@ -57,7 +55,6 @@ CREATE TABLE "bookings" (
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "status" "BookingStatus" NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "bookings_pkey" PRIMARY KEY ("id")
 );
@@ -74,30 +71,8 @@ CREATE TABLE "reviews" (
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "sessions" (
-    "id" SERIAL NOT NULL,
-    "refresh_token" TEXT NOT NULL,
-    "user_id" INTEGER NOT NULL,
-    "expiresAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_id_key" ON "users"("id");
-
 -- CreateIndex
 CREATE UNIQUE INDEX "users_user_email_key" ON "users"("user_email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "sessions_id_key" ON "sessions"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "sessions_refresh_token_key" ON "sessions"("refresh_token");
-
--- CreateIndex
-CREATE UNIQUE INDEX "sessions_user_id_key" ON "sessions"("user_id");
 
 -- AddForeignKey
 ALTER TABLE "listings" ADD CONSTRAINT "listings_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -119,6 +94,3 @@ ALTER TABLE "reviews" ADD CONSTRAINT "reviews_bookingId_fkey" FOREIGN KEY ("book
 
 -- AddForeignKey
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
