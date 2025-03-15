@@ -1,20 +1,28 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { Footer, Navbar } from "./components";
 import { useGetUserInfoQuery } from "./app/services/authServices.js";
-import { setUserDetails, session } from "./app/store/slices/authSlice.js";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { session, setUserDetails } from "./app/store/slices/authSlice.js";
 import { useEffect } from "react";
 
 export default function App() {
-  const { isLoggedIn, accessToken } = useSelector(session);
-  const { data: userInfo } = useGetUserInfoQuery(undefined, {
-    skip: !isLoggedIn,
-  });
+  const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data } = useGetUserInfoQuery();
 
   useEffect(() => {
-    if (userInfo) {
-      dispatch(setUserDetails({ user: userInfo, accessToken }));
+    if (isLoggedIn) {
+      dispatch(setUserDetails(data));
+    } else {
+      navigate("/login");
     }
-  }, [isLoggedIn, userInfo, dispatch]);
-  return <Outlet />;
+  }, [isLoggedIn, dispatch, data]);
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </>
+  );
 }
