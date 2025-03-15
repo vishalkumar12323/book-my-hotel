@@ -1,15 +1,24 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../app/store/slices/authSlice.js";
 import { useDispatch } from "react-redux";
+import { useLoginMutation } from "../app/services/authServices.js";
+import { setUserDetails } from "../app/store/slices/authSlice.js";
 
 const Login = () => {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const submitForm = (data) => {
-    dispatch(login(data));
+  const [login, { isLoading }] = useLoginMutation();
+
+  const submitForm = async (data) => {
+    const response = await login(data).unwrap();
+    dispatch(
+      setUserDetails({
+        accessToken: response.accessToken,
+        user: { email: data.email },
+      })
+    );
     reset();
     navigate("/");
   };
@@ -37,6 +46,7 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
+              disabled={isLoading}
             >
               Login
             </button>

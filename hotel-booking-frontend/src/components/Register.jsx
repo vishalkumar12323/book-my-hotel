@@ -2,14 +2,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { register as registerUser } from "../app/store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { useRegisterMutation } from "../app/services/authServices.js";
+import { setUserDetails } from "../app/store/slices/authSlice.js";
 
 const Register = () => {
   const { handleSubmit, register, reset } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const submitForm = (data) => {
-    dispatch(registerUser(data));
+  const [signup, { isLoading }] = useRegisterMutation();
+  const submitForm = async (data) => {
+    const response = await signup(data).unwrap();
+    dispatch(
+      setUserDetails({
+        accessToken: response.accessToken,
+        user: { email: data.email },
+      })
+    );
     reset();
     navigate("/");
   };
@@ -57,6 +66,7 @@ const Register = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
+              disabled={isLoading}
             >
               Register
             </button>

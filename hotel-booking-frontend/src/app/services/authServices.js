@@ -6,12 +6,26 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem("session-token");
-      headers.set("authorization", `Bearer ${token}`);
       return headers;
     },
   }),
   endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (credential) => ({
+        url: "_auth/login",
+        method: "POST",
+        body: credential,
+      }),
+    }),
+
+    register: builder.mutation({
+      query: (credential) => ({
+        url: "_auth/register",
+        method: "POST",
+        body: credential,
+      }),
+    }),
+
     getUserInfo: builder.query({
       query: () => ({
         url: "_auth/user-profile",
@@ -21,4 +35,5 @@ export const authApi = createApi({
   }),
 });
 
-export const { useGetUserInfoQuery } = authApi;
+export const { useGetUserInfoQuery, useLoginMutation, useRegisterMutation } =
+  authApi;
