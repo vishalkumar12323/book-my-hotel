@@ -91,16 +91,18 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const reAuthenticate = async (req, res) => {
-  const { id } = req.user;
+  const refreshToken = req.headers.cookie.split("=")[1];
+
+  if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
+    const user = await prisma.session.findUnique({
+      where: { refreshToken },
       select: {
-        id: true,
+        userId: true,
       },
     });
 
-    const accessToken = createAccessToken({ id: user.id });
+    const accessToken = createAccessToken({ id: user.userId });
     res.status(201).json({ accessToken });
   } catch (error) {
     console.error("Error re-authenticating user:", error);
