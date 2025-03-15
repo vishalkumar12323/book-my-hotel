@@ -106,7 +106,7 @@ model Review {
 
 model Session {
   id           Int      @id @default(autoincrement())
-  refreshToken String   @map("refresh_token")
+  refreshToken String   @unique @map("refresh_token")
   userId       Int      @unique @map("user_id")
   expiresAt    DateTime
   user         User     @relation(fields: [userId], references: [id])
