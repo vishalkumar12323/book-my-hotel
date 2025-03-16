@@ -5,9 +5,11 @@ export const hotelApi = createApi({
   reducerPath: "hotelApi",
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("session-token");
-      headers.set("authorization", `Bearer ${token}`);
+    prepareHeaders: (headers, { getState }) => {
+      const accessToken = getState().auth.accessToken;
+      if (accessToken) {
+        headers.set("authorization", `Bearer ${accessToken}`);
+      }
       return headers;
     },
   }),

@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-import { ErrorPage } from "./components";
+import { ErrorPage, ProtectedRoutes, Navbar, Footer } from "./components";
 import { CustomerDashboard } from "./pages/CustomerDashboard";
 import { VendorDashboard } from "./pages/VendorDashboard";
 import { AboutPage } from "./pages/AboutPage.jsx";
@@ -16,7 +16,9 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <Provider store={store}>
+        <Navbar />
         <App />
+        <Footer />
       </Provider>
     ),
     errorElement: <ErrorPage />,
@@ -49,7 +51,9 @@ export const router = createBrowserRouter([
         path: "/bookings/my-bookings",
         element: (
           <AuthLayout isAuthenticated>
-            <CustomerDashboard />
+            <ProtectedRoutes routes={"/bookings/my-bookings"}>
+              <CustomerDashboard />
+            </ProtectedRoutes>
           </AuthLayout>
         ),
       },
@@ -58,7 +62,15 @@ export const router = createBrowserRouter([
         path: "/vendor-dashboard",
         element: (
           <AuthLayout isAuthenticated>
-            <VendorDashboard />
+            <ProtectedRoutes
+              routes={[
+                "/customer-dashboard",
+                "/bookings/my-bookings",
+                "/vendor-dashboard",
+              ]}
+            >
+              <VendorDashboard />
+            </ProtectedRoutes>
           </AuthLayout>
         ),
       },

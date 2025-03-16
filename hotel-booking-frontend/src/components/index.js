@@ -14,6 +14,7 @@ import Search from "./Search";
 import Card from "./Card";
 import Loading from "./Loading";
 import CardSkeleton from "./skeletons/CardSkeleton";
+import ProtectedRoutes from "./Protected-Routes";
 
 export {
   Navbar,
@@ -32,4 +33,5 @@ export {
   Card,
   Loading,
   CardSkeleton,
+  ProtectedRoutes,
 };

@@ -18,10 +18,11 @@ export const authSlice = createSlice({
 
     setUserDetails: (state, { payload }) => {
       state.isLoggedIn = true;
-      state.user = payload;
+      state.accessToken = payload.accessToken;
+      state.user = payload.user;
     },
     updateUserDetails: (state, { payload }) => {
-      state.user = { ...state.user, ...payload.user };
+      state.user = { ...state.user, ...payload };
     },
   },
 });

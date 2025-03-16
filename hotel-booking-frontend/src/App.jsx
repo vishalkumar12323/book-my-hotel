@@ -1,28 +1,23 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { Footer, Navbar } from "./components";
 import { useGetUserInfoQuery } from "./app/services/authServices.js";
 import { useDispatch, useSelector } from "react-redux";
-import { session, setUserDetails } from "./app/store/slices/authSlice.js";
+import { session, updateUserDetails } from "./app/store/slices/authSlice.js";
 import { useEffect } from "react";
 
 export default function App() {
   const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data } = useGetUserInfoQuery();
+  const { data } = useGetUserInfoQuery(undefined, {
+    skip: !isLoggedIn,
+  });
 
   useEffect(() => {
     if (isLoggedIn) {
-      dispatch(setUserDetails(data));
+      dispatch(updateUserDetails(data));
     } else {
       navigate("/login");
     }
   }, [isLoggedIn, dispatch, data]);
-  return (
-    <>
-      <Navbar />
-      <Outlet />
-      <Footer />
-    </>
-  );
+  return <Outlet />;
 }

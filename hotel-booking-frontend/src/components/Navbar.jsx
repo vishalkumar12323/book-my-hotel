@@ -21,7 +21,7 @@ const Navbar = () => {
       url: `/bookings/my-bookings`,
     },
     { name: "login", active: !isLoggedIn, url: "/login" },
-    { name: "signup", active: !isLoggedIn, url: "/signup" },
+    { name: "signup", active: !isLoggedIn, url: "/register" },
   ];
 
   return (

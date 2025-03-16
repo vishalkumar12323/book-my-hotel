@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { register as registerUser } from "../app/store/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useRegisterMutation } from "../app/services/authServices.js";
@@ -16,7 +15,7 @@ const Register = () => {
     dispatch(
       setUserDetails({
         accessToken: response.accessToken,
-        user: { email: data.email },
+        user: { email: data?.email },
       })
     );
     reset();

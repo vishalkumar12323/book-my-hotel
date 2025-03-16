@@ -7,8 +7,9 @@ export const register = async (req, res) => {
     const { name, email, password, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const roles = role?.split(" ");
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword, roles: role },
+      data: { name, email, password: hashedPassword, roles },
     });
 
     const accessToken = createAccessToken({ id: user.id });
@@ -41,6 +42,7 @@ export const login = async (req, res) => {
       where: { email },
       select: {
         id: true,
+        password: true,
       },
     });
 
@@ -50,14 +52,6 @@ export const login = async (req, res) => {
 
     const accessToken = createAccessToken({ id: user.id });
     const refreshToken = createRefreshToken({ id: user.id });
-
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        refreshToken,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
-      },
-    });
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 5,
       httpOnly: true,
@@ -79,7 +73,7 @@ export const getUserProfile = async (req, res) => {
         email: true,
         id: true,
         name: true,
-        role: true,
+        roles: true,
       },
     });
 

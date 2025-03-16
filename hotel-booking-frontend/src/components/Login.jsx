@@ -13,6 +13,7 @@ const Login = () => {
 
   const submitForm = async (data) => {
     const response = await login(data).unwrap();
+    console.log("api response ", response);
     dispatch(
       setUserDetails({
         accessToken: response.accessToken,
