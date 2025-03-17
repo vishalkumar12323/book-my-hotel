@@ -3,17 +3,14 @@ import { protectedRoutes } from "../app/services/permissions.js";
 import { session } from "../app/store/slices/authSlice.js";
 import { useSelector } from "react-redux";
 
-const ProtectedRoutes = ({ children, routes }) => {
+const ProtectedRoutes = ({ children }) => {
   const location = useLocation();
-  const {
-    user: { roles },
-  } = useSelector(session);
+  const { user } = useSelector(session);
 
-  const isAuthorized = roles.some((role) =>
-    protectedRoutes[role].includes(location.pathname)
+  const isAuthorized = user?.roles?.some((role) =>
+    protectedRoutes[role]?.includes(location.pathname)
   );
 
-  console.log(isAuthorized);
   return isAuthorized ? children : <Navigate to={"/"} replace />;
 };
 

@@ -4,16 +4,16 @@ import { createAccessToken, createRefreshToken } from "../lib/tokenServices.js";
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, roles } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const roles = role?.split(" ");
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword, roles },
+      data: { name, email, password: hashedPassword, roles: roles?.split(" ") },
+      select: { id: true, roles: true },
     });
 
-    const accessToken = createAccessToken({ id: user.id });
-    const refreshToken = createRefreshToken({ id: user.id });
+    const accessToken = createAccessToken({ id: user.id, roles: user.roles });
+    const refreshToken = createRefreshToken({ id: user.id, roles: user.roles });
 
     await prisma.session.create({
       data: {
@@ -26,7 +26,6 @@ export const register = async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24 * 5,
       httpOnly: true,
       secure: true,
-      sameSite: "none",
     });
     res.status(201).json({ accessToken });
   } catch (error) {
@@ -43,6 +42,7 @@ export const login = async (req, res) => {
       select: {
         id: true,
         password: true,
+        roles: true,
       },
     });
 
@@ -50,13 +50,17 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const accessToken = createAccessToken({ id: user.id });
-    const refreshToken = createRefreshToken({ id: user.id });
+    const accessToken = createAccessToken({ id: user.id, roles: user.roles });
+    const refreshToken = createRefreshToken({ id: user.id, roles: user.roles });
+
+    await prisma.session.update({
+      where: { userId: user.id },
+      data: { refreshToken: refreshToken },
+    });
     res.cookie("refreshToken", refreshToken, {
       maxAge: 1000 * 60 * 60 * 24 * 5,
       httpOnly: true,
       secure: true,
-      sameSite: "none",
     });
     res.status(201).json({ accessToken });
   } catch (error) {
@@ -85,7 +89,7 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const reAuthenticate = async (req, res) => {
-  const refreshToken = req.headers.cookie.split("=")[1];
+  const refreshToken = req.cookies?.refreshToken;
 
   if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
   try {
@@ -93,11 +97,18 @@ export const reAuthenticate = async (req, res) => {
       where: { refreshToken },
       select: {
         userId: true,
+        user: {
+          select: {
+            email: true,
+            name: true,
+            roles: true,
+          },
+        },
       },
     });
 
-    const accessToken = createAccessToken({ id: user.userId });
-    res.status(201).json({ accessToken });
+    const accessToken = createAccessToken({ id: user?.userId });
+    res.status(201).json({ accessToken, user });
   } catch (error) {
     console.error("Error re-authenticating user:", error);
     res.status(500).json({ message: "Internal Server Error" });

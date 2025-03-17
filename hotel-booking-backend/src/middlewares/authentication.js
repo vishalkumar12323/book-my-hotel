@@ -15,11 +15,12 @@ export const isAuthenticated = (req, res, next) => {
     res.status(403).json({ message: "Forbidden" });
   }
 };
-
-export const authorizeRoles = (...roles) => {
+export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Access Denied" });
+    console.log({ allowedRoles, roles: req.user.roles });
+    const hasRole = allowedRoles.some((role) => req.user.roles?.includes(role));
+    if (!hasRole) {
+      return res.status(403).json({ message: "Forbidden" });
     }
     next();
   };

@@ -13,6 +13,6 @@ router.post("/register", register);
 
 router.post("/login", login);
 router.get("/user-profile", isAuthenticated, getUserProfile);
-router.post("/refresh-token", reAuthenticate);
+router.post("/refresh-session", reAuthenticate);
 
 export default router;

@@ -2,7 +2,8 @@ import { prisma } from "../config/database.js";
 
 export const addListing = async (req, res) => {
   try {
-    const { name, address, description, facilities, price, type } = req.body;
+    const { name, address, description, facilities, price, type, rating } =
+      req.body;
     const imageUrls = req.files ? req.files.map((file) => file.path) : [];
 
     const newListing = await prisma.listing.create({
@@ -11,10 +12,13 @@ export const addListing = async (req, res) => {
         name,
         address,
         description,
-        facilities: facilities ? facilities.split(",") : [],
+        facilities: facilities
+          ? facilities.split(",").map((facilitie) => facilitie.trim())
+          : [],
         price: parseInt(price),
         type,
         images: imageUrls,
+        rating: parseFloat(rating),
       },
     });
 

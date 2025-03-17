@@ -48,10 +48,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/bookings/my-bookings",
+        path: "/my-bookings",
         element: (
           <AuthLayout isAuthenticated>
-            <ProtectedRoutes routes={"/bookings/my-bookings"}>
+            <ProtectedRoutes>
               <CustomerDashboard />
             </ProtectedRoutes>
           </AuthLayout>
@@ -62,13 +62,7 @@ export const router = createBrowserRouter([
         path: "/vendor-dashboard",
         element: (
           <AuthLayout isAuthenticated>
-            <ProtectedRoutes
-              routes={[
-                "/customer-dashboard",
-                "/bookings/my-bookings",
-                "/vendor-dashboard",
-              ]}
-            >
+            <ProtectedRoutes>
               <VendorDashboard />
             </ProtectedRoutes>
           </AuthLayout>

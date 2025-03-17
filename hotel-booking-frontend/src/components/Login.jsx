@@ -13,7 +13,6 @@ const Login = () => {
 
   const submitForm = async (data) => {
     const response = await login(data).unwrap();
-    console.log("api response ", response);
     dispatch(
       setUserDetails({
         accessToken: response.accessToken,
@@ -25,7 +24,7 @@ const Login = () => {
   };
   return (
     <div className="flex flex-col md:flex-row h-screen w-full p-4">
-      <div className="flex-1 flex items-center justify-center bg-white p-8">
+      <div className="flex-1 flex items-center justify-center bg-white p-8 border">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-semibold mb-8 text-center">
             Login and Continue

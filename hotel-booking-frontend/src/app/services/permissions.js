@@ -1,12 +1,7 @@
 const protectedRoutes = {
-  ADMIN: [
-    "/",
-    "/admin-dashboard",
-    "/vendor-dashboard",
-    "/bookings/my-bookings",
-  ],
-  VENDOR: ["/", "/vendor-dashboard", "/bookings/my-bookings"],
-  CUSTOMER: ["/", "/bookings/my-bookings"],
+  ADMIN: ["/", "/admin-dashboard", "/vendor-dashboard", "/my-bookings"],
+  VENDOR: ["/", "/vendor-dashboard", "/my-bookings"],
+  CUSTOMER: ["/", "/my-bookings"],
   GUEST: ["/", "/login", "/register"],
 };
 
