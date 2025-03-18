@@ -9,13 +9,14 @@ export const HomePage = () => {
   const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const [query, setQuery] = useState({});
-  const { data, isLoading, isError } = useGetAvailableListingsQuery(query);
+  const { data, isLoading, isError, error, refetch } =
+    useGetAvailableListingsQuery(query);
 
   useEffect(() => {
     if (data) {
       dispatch(setHotelsData({ hotels: data, tHotels: 0, tRestaurants: 0 }));
     }
-  }, [isLoggedIn, data]);
+  }, [isLoggedIn, data, dispatch]);
   return (
     <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
       <Search />
@@ -34,7 +35,7 @@ export const HomePage = () => {
             ))}
           </div>
         ) : (
-          <Hotels data={data} error={isError} />
+          <Hotels error={error} refetch={refetch} />
         )}
       </div>
     </div>

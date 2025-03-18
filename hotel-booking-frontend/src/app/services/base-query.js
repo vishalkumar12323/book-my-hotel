@@ -1,6 +1,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../../config/api";
-import { setUserDetails } from "../store/slices/authSlice.js";
+import { logout, setUserDetails } from "../store/slices/authSlice.js";
+import { updateHotelsData } from "../store/slices/hotelSlice.js";
 
 const bashQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
@@ -29,12 +30,18 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
       extraOptions
     );
 
-    if (sessions) {
+    if (sessions?.data) {
       const { accessToken, user } = sessions?.data;
-      api.dispatch(setUserDetails({ accessToken, user }));
+      api.dispatch(setUserDetails({ accessToken, user: user.user }));
 
       const mainRequest = await bashQuery(args, api, extraOptions);
-      console.log(mainRequest);
+      const { data } = mainRequest;
+      api.dispatch(
+        updateHotelsData({ hotels: data, tHotels: 0, tRestaurants: 0 })
+      );
+    }
+    if (sessions?.error) {
+      api.dispatch(logout());
     }
   }
   return apiResponse;

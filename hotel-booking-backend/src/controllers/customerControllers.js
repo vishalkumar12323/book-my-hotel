@@ -28,7 +28,7 @@ export const getListingDetails = async (req, res) => {
     const { id } = req.params;
     const listing = await prisma.listing.findUnique({
       where: { id: parseInt(id) },
-      include: { units: true, reviews: true },
+      include: { units: true },
     });
 
     if (!listing) return res.status(404).json({ message: "Listing not found" });

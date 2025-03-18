@@ -15,8 +15,6 @@ export default function App() {
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(updateUserDetails(data));
-    } else {
-      navigate("/login");
     }
   }, [isLoggedIn, dispatch, data]);
   return <Outlet />;

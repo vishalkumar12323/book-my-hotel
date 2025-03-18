@@ -10,6 +10,7 @@ import { AboutPage } from "./pages/AboutPage.jsx";
 import { AuthLayout } from "./components/AuthLayout";
 import { store } from "./app/store/store.js";
 import { Provider } from "react-redux";
+import { Hotel } from "./pages/Hotel.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -57,7 +58,6 @@ export const router = createBrowserRouter([
           </AuthLayout>
         ),
       },
-
       {
         path: "/vendor-dashboard",
         element: (
@@ -67,6 +67,10 @@ export const router = createBrowserRouter([
             </ProtectedRoutes>
           </AuthLayout>
         ),
+      },
+      {
+        path: "/hotels",
+        element: <Hotel />,
       },
     ],
   },

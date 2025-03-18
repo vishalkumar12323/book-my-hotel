@@ -14,14 +14,14 @@ const Search = () => {
           type="text"
           name="query"
           id="query"
-          className="w-full py-2 px-1 focus:ring-1 outline-none focus:ring-blue-600 transition rounded shadow border"
+          className="w-full py-2 px-1 text-[12px] md:text-[16px] focus:ring-1 outline-none focus:ring-blue-600 transition rounded shadow border"
           placeholder="search hotels or restaurants by name, location or property..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <button
           type="submit"
-          className="w-[140px] text-[14px] shadow rounded border bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          className="w-[140px] text-[12px] md:text-[16px] shadow rounded border bg-blue-500 text-white hover:bg-blue-600 transition-colors"
         >
           update search
         </button>

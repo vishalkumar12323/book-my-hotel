@@ -107,10 +107,31 @@ export const reAuthenticate = async (req, res) => {
       },
     });
 
-    const accessToken = createAccessToken({ id: user?.userId });
+    const accessToken = createAccessToken({
+      id: user?.userId,
+      roles: user.user.roles,
+    });
     res.status(201).json({ accessToken, user });
   } catch (error) {
     console.error("Error re-authenticating user:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const logout = async (req, res) => {
+  const userId = req?.user?.id;
+  try {
+    if (userId) {
+      res.cookie("refreshToken", null, {
+        maxAge: 0,
+        httpOnly: true,
+        secure: true,
+      });
+    }
+
+    res.status(200).json({ message: "logout successfully" });
+  } catch (error) {
+    console.log("logout error ", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

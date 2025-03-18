@@ -22,8 +22,19 @@ export const hotelApi = createApi({
         };
       },
     }),
+    getHotelById: builder.query({
+      query: (hotelId) => {
+        return {
+          url: `listing/${hotelId}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetAvailableListingsQuery, useGetUserBookingsQuery } =
-  hotelApi;
+export const {
+  useGetAvailableListingsQuery,
+  useGetUserBookingsQuery,
+  useGetHotelByIdQuery,
+} = hotelApi;

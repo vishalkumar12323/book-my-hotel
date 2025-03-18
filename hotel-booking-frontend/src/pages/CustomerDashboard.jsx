@@ -1,15 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PendingBookings,
   ConfirmedBookings,
   CancelledBookings,
 } from "../components";
 import { useGetUserBookingsQuery } from "../app/services/hotelServices.js";
+import {
+  setCancelledBookings,
+  setConfirmedBookings,
+  setPandingBookings,
+  bookings,
+} from "../app/store/slices/userBookingSlice.js";
+import { useDispatch, useSelector } from "react-redux";
 
 export const CustomerDashboard = () => {
+  const { pandingBookings, confirmedBookings, cancelledBookings } =
+    useSelector(bookings);
+  const dispatch = useDispatch();
   const [bookingStatus, setBookingStatus] = useState("pending");
   const { data, isLoading, isError } = useGetUserBookingsQuery(bookingStatus);
 
+  useEffect(() => {
+    if (data && bookingStatus === "pending") {
+      dispatch(setPandingBookings(data));
+    } else if (data && bookingStatus === "confirmed") {
+      dispatch(setConfirmedBookings(data));
+    } else if (data && bookingStatus === "cancelled") {
+      dispatch(setCancelledBookings());
+    }
+  }, [data, dispatch, bookingStatus]);
+
+  console.log("pending ", pandingBookings);
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto">
@@ -42,21 +63,21 @@ export const CustomerDashboard = () => {
         <div>
           {bookingStatus === "pending" && (
             <PendingBookings
-              bookings={data}
+              bookings={pandingBookings}
               isLoading={isLoading}
               isError={isError}
             />
           )}
           {bookingStatus === "confirmed" && (
             <ConfirmedBookings
-              bookings={data}
+              bookings={confirmedBookings}
               isLoading={isLoading}
               isError={isError}
             />
           )}
           {bookingStatus === "cancelled" && (
             <CancelledBookings
-              bookings={data}
+              bookings={cancelledBookings}
               isLoading={isLoading}
               isError={isError}
             />

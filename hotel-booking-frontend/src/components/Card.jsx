@@ -1,70 +1,77 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Card = ({ hotel }) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-[#ffffff] border-slate-50 border-2 hover:border-blue-500 transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
-      <div className="w-full sm:w-[40%] md:w-[30%] max-h-[28rem] flex flex-col gap-2 justify-between">
-        <div className="w-full max-h-full">
-          <img
-            src="./hotel1.webp"
-            alt="hotel"
-            className="w-full h-full object-cover rounded-md"
-          />
-        </div>
-
-        <ul className="max-h-[10rem] flex gap-2 overflow-x-auto">
-          {hotel?.images?.map((image, idx) => (
-            <li className="h-12 w-12" key={idx}>
-              <img
-                src={image}
-                alt={hotel.name}
-                className="w-full h-auto object-cover rounded-md"
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="flex flex-col justify-between gap-6 w-full sm:w-[60%] md:w-[70%] h-full">
-        <div className="flex px-3 gap-2 justify-between items-center">
-          <div className="flex gap-1 items-center">
-            <span>4</span> <span>⭐⭐⭐⭐ | {hotel?.type}</span>
+    <Link to={`/hotels/${hotel.id}/${hotel.name}`}>
+      <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-[#ffffff] hover:bg-blue-500 hover:text-white border-slate-50 border-2 hover:border-blue-500 transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
+        <div className="w-full sm:w-[35%] md:w-[26%] max-h-[28rem] flex flex-col gap-2 justify-between">
+          <div className="w-full max-h-full">
+            <img
+              src="./hotel1.webp"
+              alt="hotel"
+              className="w-full h-full object-cover rounded-md"
+            />
           </div>
 
-          <div className="flex gap-2 items-center">
-            <span>22 Rating</span>
-            <span className="bg-green-500 rounded p-1 text-[12px] tracking-widest text-white font-bold">
-              4.2/5
-            </span>
-          </div>
-        </div>
-
-        <div className="px-3 flex flex-col">
-          <a itemProp="name" href="#" className="text-[1.2rem] font-bold">
-            {hotel.name}
-          </a>
-          <div itemProp="address" className="text-[14px]">
-            {hotel.address}
-          </div>
-        </div>
-
-        <div className="px-3">
-          <ul className="flex flex-col text-[12px]">
-            <li>✅ Free Cancellation</li>
-            <li>✅ Book @ ₹0 available</li>
-            <li>✅ Breakfast available at extra charges</li>
+          <ul className="max-h-[10rem] flex gap-2 overflow-x-auto">
+            {hotel?.images?.map((image, idx) => (
+              <li className="h-12 w-12" key={idx}>
+                <img
+                  src={image}
+                  alt={hotel.name}
+                  className="w-full h-auto object-cover rounded-md"
+                />
+              </li>
+            ))}
           </ul>
         </div>
 
-        <div className="px-3">
-          <div className="flex gap-1 text-[13px] items-center">
-            <span className="line-through">₹12,000</span>
-            <strong className="text-[16px]">₹{hotel.price}</strong>+
-            <span>₹850 taxes & fees per night</span>
+        <div className="flex flex-col justify-between gap-6 w-full sm:w-[60%] md:w-[70%] h-full">
+          <div className="flex px-[6px] md:px-3 gap-2 justify-between items-center text-[13px] md:text-[15px]">
+            <div className="flex gap-1 items-center ">
+              <span>4</span> <span>⭐⭐⭐⭐ | {hotel?.type}</span>
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <span>22 Rating</span>
+              <span className="bg-green-500 rounded p-1 text-[12px] tracking-widest text-white font-bold">
+                4.2/5
+              </span>
+            </div>
+          </div>
+
+          <div className="px-[6px] md:px-3 flex flex-col">
+            <a
+              itemProp="name"
+              href="#"
+              className="text-[16px] md:text-[1.2rem] font-bold"
+            >
+              {hotel.name}
+            </a>
+            <div itemProp="address" className="text-[12px] md:text-[14px]">
+              {hotel.address}
+            </div>
+          </div>
+
+          <div className="px-[6px] md:px-3">
+            <ul className="flex flex-col text-[12px]">
+              <li>✅ Free Cancellation</li>
+              <li>✅ Book @ ₹0 available</li>
+              <li>✅ Breakfast available at extra charges</li>
+            </ul>
+          </div>
+
+          <div className="px-[6px] md:px-3">
+            <div className="flex gap-1 text-[12px] md:text-[13px] items-center">
+              <span className="line-through">₹12,000</span>
+              <strong className="text-[16px]">₹{hotel.price}</strong>+
+              <span>₹850 taxes & fees per night</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

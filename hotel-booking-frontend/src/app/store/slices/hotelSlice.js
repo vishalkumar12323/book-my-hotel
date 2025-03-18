@@ -15,9 +15,14 @@ export const hotelSlice = createSlice({
       state.totalHotels = payload.tHotels;
       state.totelRestaurants = payload.tRestaurants;
     },
-    updateHotelsData: (state, { payload }) => {},
+    updateHotelsData: (state, { payload }) => {
+      state.hotels = payload.hotels;
+      state.totalHotels = payload.tHotels;
+      state.totelRestaurants = payload.tRestaurants;
+    },
   },
 });
 
-export const { setHotelsData, updateHotelsData } = hotelSlice.actions;
-export const data = (state) => state.hotels;
+export const { setHotelsData, updateHotelsData, setUsersBookings } =
+  hotelSlice.actions;
+export const data = (state) => state.hotelData;
