@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { FaStar, FaMapMarkerAlt, FaSun, FaBed } from "react-icons/fa";
+import { useGetHotelByIdQuery } from "../app/services/hotelServices";
+import { useDispatch, useSelector } from "react-redux";
+import { setHotelInfo, hotelData } from "../app/store/slices/hotelInfoSlice.js";
 
 export const Hotel = () => {
+  const { hotel } = useSelector(hotelData);
+  const params = useParams();
+  const dispatch = useDispatch();
+
+  const { data } = useGetHotelByIdQuery(params.hotelId);
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setHotelInfo(data));
+    }
+  }, [data, dispatch]);
   return (
     <div className="flex flex-col md:flex-row mx-auto my-2 h-auto px-3 md:px-4 py-2 md:py-4 max-w-screen-xl w-full items-start rounded-lg shadow-lg border">
       <div className="w-3/4">
         <div className="flex flex-col md:flex-row justify-between">
           <div>
-            <h2 className="text-xl font-extrabold">
-              WelcomHeritage Traditional Haveli
-            </h2>
+            <h2 className="text-xl font-extrabold">{hotel?.name}</h2>
             <div className="flex items-center text-gray-600 text-sm space-x-2">
               <FaStar className="text-yellow-500" /> <span>3-Star Hotel</span>
               <FaMapMarkerAlt /> <span>Bani Park, Jaipur</span>

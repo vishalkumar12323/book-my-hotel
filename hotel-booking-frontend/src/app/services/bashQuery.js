@@ -1,5 +1,5 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_BASE_URL } from "../../config/api";
+import { API_BASE_URL } from "../../config/api.js";
 import { logout, setUserDetails } from "../store/slices/authSlice.js";
 import { updateHotelsData } from "../store/slices/hotelSlice.js";
 

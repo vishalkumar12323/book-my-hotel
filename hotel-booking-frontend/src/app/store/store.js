@@ -4,11 +4,13 @@ import { hotelSlice } from "./slices/hotelSlice.js";
 import { authApi } from "../services/authServices.js";
 import { hotelApi } from "../services/hotelServices.js";
 import { userBookingSlice } from "./slices/userBookingSlice.js";
+import { hotelInfoSlice } from "./slices/hotelInfoSlice.js";
 
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     hotelData: hotelSlice.reducer,
+    hotel: hotelInfoSlice.reducer,
     bookings: userBookingSlice.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [hotelApi.reducerPath]: hotelApi.reducer,

@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReauth } from "./base-query.js";
+import { baseQueryWithReauth } from "./bashQuery.js";
 
 export const hotelApi = createApi({
   reducerPath: "hotelApi",
