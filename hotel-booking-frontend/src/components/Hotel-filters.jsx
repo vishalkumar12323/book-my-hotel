@@ -39,8 +39,7 @@ const Filters = ({ query, setQuery, error, data }) => {
     setOpenFilters((prev) => ({ ...prev, [listId]: !prev[listId] }));
 
   const handleFilterUpdate = (option, type) => {
-    if (error) return;
-    if (data.length === 0) return;
+    // if (error || data?.length === 0) return;
 
     const key = type === "popular-filters" ? "popularFilter" : type;
     const isActive = query[key]?.includes(option);

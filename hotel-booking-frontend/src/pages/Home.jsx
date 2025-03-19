@@ -1,22 +1,25 @@
 import { Hotels, Filters, Search, CardSkeleton } from "../components";
 import { useGetAvailableListingsQuery } from "../app/services/hotelServices.js";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { session } from "../app/store/slices/authSlice.js";
+import { useDispatch } from "react-redux";
 import { setHotelsData } from "../app/store/slices/hotelSlice.js";
 
 export const HomePage = () => {
-  const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const [query, setQuery] = useState({});
-  const { data, isLoading, isError, error, refetch } =
+  const { data, isLoading, isError, error } =
     useGetAvailableListingsQuery(query);
 
   useEffect(() => {
     if (data) {
       dispatch(setHotelsData({ hotels: data, tHotels: 0, tRestaurants: 0 }));
     }
-  }, [isLoggedIn, data, dispatch]);
+  }, [data, dispatch]);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
     <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
       <Search />
@@ -35,7 +38,7 @@ export const HomePage = () => {
             ))}
           </div>
         ) : (
-          <Hotels error={error} refetch={refetch} />
+          <Hotels error={error} />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@ import Card from "./Card.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { data } from "../app/store/slices/hotelSlice.js";
 
-const Hotels = ({ error, refetch }) => {
+const Hotels = ({ error }) => {
   const { hotels } = useSelector(data);
   if (error && !hotels) {
     return (
@@ -12,10 +12,12 @@ const Hotels = ({ error, refetch }) => {
             <span>Failed to fetch hotels</span>
             <button
               className="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded shadow-md"
-              onClick={() => refetch()}
+              onClick={() => {
+                console.log("refetching...");
+              }}
             >
               <span className="text-[15px] capitalize text-white dark:text-text">
-                Retry
+                Try, again
               </span>
             </button>
           </div>
@@ -25,8 +27,8 @@ const Hotels = ({ error, refetch }) => {
   }
   return (
     <div className="py-6 w-full md:w-3/4">
-      {hotels ? (
-        hotels?.map((hotel) => <Card hotel={hotel} key={hotel.id} />)
+      {hotels && hotels?.length > 0 ? (
+        hotels.map((hotel) => <Card hotel={hotel} key={hotel.id} />)
       ) : (
         <div className="w-full h-[50vh] flex justify-center items-center text-2xl">
           <div className="text-[16px] text-center leading-tight">

@@ -2,12 +2,26 @@ import { prisma } from "../config/database.js";
 
 export const getListings = async (req, res) => {
   try {
-    console.log(req.query);
     const { location, price, rating, type, popularFilter } = req.query;
+    // console.log(req.query);
+
+    const locations = location ? location.split(",") : undefined;
+
+    let priceFilter = undefined;
+    if (price) {
+      const priceRange = price.match(/\d+/g);
+      if (priceRange && priceRange.length === 2) {
+        const [minPrice, maxPrice] = priceRange.map(Number);
+        priceFilter = { gte: minPrice, lte: maxPrice };
+      }
+    }
+
     const listings = await prisma.listing.findMany({
       where: {
-        address: location ? { contains: location } : undefined,
-        price: price ? { lte: parseFloat(price) } : undefined,
+        OR: locations?.map((loc) => ({
+          address: { contains: loc?.trim(), mode: "insensitive" },
+        })),
+        price: priceFilter,
         type: type ? type : undefined,
         facilities: popularFilter ? { has: popularFilter } : undefined,
         rating: rating ? { gte: parseFloat(rating) } : undefined,
