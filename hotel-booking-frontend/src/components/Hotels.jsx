@@ -1,9 +1,9 @@
 import Card from "./Card.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import { data } from "../app/store/slices/hotelSlice.js";
+import { useSelector } from "react-redux";
+import { hotelsData } from "../app/store/slices/hotelSlice.js";
 
 const Hotels = ({ error }) => {
-  const { hotels } = useSelector(data);
+  const { hotels } = useSelector(hotelsData);
   if (error && !hotels) {
     return (
       <>

@@ -25,4 +25,4 @@ export const hotelSlice = createSlice({
 
 export const { setHotelsData, updateHotelsData, setUsersBookings } =
   hotelSlice.actions;
-export const data = (state) => state.hotelData;
+export const hotelsData = (state) => state.hotelData;

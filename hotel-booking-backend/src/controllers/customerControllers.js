@@ -3,10 +3,28 @@ import { prisma } from "../config/database.js";
 export const getListings = async (req, res) => {
   try {
     const { location, price, rating, type, popularFilter } = req.query;
-    // console.log(req.query);
+    console.log(req.query);
 
+    // filters for popular or facilities-filter queries.
+    let facilitiesFilters = undefined;
+    if (popularFilter) {
+      const filterOpt = popularFilter
+        .split(",")
+        .map((f) => f.trim().toLowerCase());
+
+      const wordInUserQuery = new Set(
+        filterOpt.flatMap((opt) => opt.split(" "))
+      );
+
+      facilitiesFilters = {
+        hasSome: Array.from(wordInUserQuery),
+      };
+    }
+
+    // filters for location queries.
     const locations = location ? location.split(",") : undefined;
 
+    // filters for price queries.
     let priceFilter = undefined;
     if (price) {
       const priceRange = price.match(/\d+/g);
@@ -16,6 +34,19 @@ export const getListings = async (req, res) => {
       }
     }
 
+    // filters for rating queries.
+    let ratingFilters = undefined;
+    if (rating) {
+      const ratingNumber = parseFloat(rating);
+
+      if (ratingNumber === 5) {
+        ratingFilters = { gte: 4.5 };
+      } else if (ratingNumber === 4) {
+        ratingFilters = { gte: 4.0 };
+      } else if (ratingNumber === 3) {
+        ratingFilters = { gte: 3.0 };
+      }
+    }
     const listings = await prisma.listing.findMany({
       where: {
         OR: locations?.map((loc) => ({
@@ -23,8 +54,8 @@ export const getListings = async (req, res) => {
         })),
         price: priceFilter,
         type: type ? type : undefined,
-        facilities: popularFilter ? { has: popularFilter } : undefined,
-        rating: rating ? { gte: parseFloat(rating) } : undefined,
+        facilities: facilitiesFilters,
+        rating: ratingFilters,
       },
       include: { units: true, Booking: true, _count: true },
     });

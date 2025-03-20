@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { FaCheckSquare, FaRegSquare } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { hotelsData } from "../app/store/slices/hotelSlice.js";
 
 const filterOptions = [
   {
     id: "popular",
     type: "popular-filters",
-    options: ["free cancellation", "couple friendly", "free breakfast"],
+    options: [
+      "free cancellation",
+      "couple friendly",
+      "free breakfast",
+      "swimming-pool",
+    ],
   },
   {
     id: "location",
@@ -31,7 +38,8 @@ const filterOptions = [
   },
 ];
 
-const Filters = ({ query, setQuery, error, data }) => {
+const Filters = ({ query, setQuery, error }) => {
+  const { hotels } = useSelector(hotelsData);
   const [openFilters, setOpenFilters] = useState({ popular: true });
   const [checkedFilters, setCheckedFilters] = useState({});
 
@@ -39,7 +47,7 @@ const Filters = ({ query, setQuery, error, data }) => {
     setOpenFilters((prev) => ({ ...prev, [listId]: !prev[listId] }));
 
   const handleFilterUpdate = (option, type) => {
-    // if (error || data?.length === 0) return;
+    if (error && hotels.length <= 0) return;
 
     const key = type === "popular-filters" ? "popularFilter" : type;
     const isActive = query[key]?.includes(option);
@@ -69,17 +77,17 @@ const Filters = ({ query, setQuery, error, data }) => {
           <h2 className=" text-[16px] md:text-xl font-bold uppercase">
             Filters
           </h2>
-          <button
-            className="bg-blue-600/10 hover:bg-blue-600/20 px-[6px] md:px-2 py-[3px] md:py-1 rounded-xl shadow-md"
-            onClick={clearFilters}
-          >
-            <span className="text-[10px] md:text-[11px] uppercase">Clear</span>
+          <button onClick={clearFilters}>
+            <span className="text-[10px] md:text-[14px] text-gray-600 uppercase">
+              Clear
+            </span>
           </button>
         </div>
+        <div className="w-full h-[0.8px] bg-gray-300 hidden md:block"></div>
 
-        <div className="w-full grid grid-cols-2 md:grid-cols-none space-x-2">
+        <div className="w-full grid grid-cols-2 md:grid-cols-none mt-4">
           {filterOptions.map((filter) => (
-            <div key={filter.id} className="w-fit">
+            <div key={filter.id} className="w-full">
               <div
                 className="flex items-center gap-1 cursor-pointer"
                 onClick={() => toggleFilterList(filter.id)}
@@ -90,13 +98,13 @@ const Filters = ({ query, setQuery, error, data }) => {
                     openFilters[filter.id] ? "rotate-90" : "rotate-0"
                   } transition-transform z-0`}
                 />
-                <span className="text-[14px] md:text-[16px] font-bold">
+                <span className="text-[14px] md:text-[16px] font-bold capitalize">
                   {filter.type}
                 </span>
               </div>
 
               <ul
-                className={`p-2 space-y-1 text-[11px] md:text-[13px] ${
+                className={`p-2 space-y-2 text-[11px] md:text-[13px] ${
                   openFilters[filter.id] ? "block" : "hidden"
                 }`}
               >
@@ -112,14 +120,13 @@ const Filters = ({ query, setQuery, error, data }) => {
                       <FaRegSquare />
                     )}
                     <span>{option}</span>
-                    {filter.type === "rating" &&
-                      Array(parseInt(option))
-                        .fill(0)
-                        .map((_, idx) => <span key={idx}>⭐</span>)}
+                    {filter.type === "rating" && (
+                      <span className="capitalize text-[13px]">star</span>
+                    )}
                   </li>
                 ))}
               </ul>
-              <div className="my-2 w-full h-[0.8px] bg-gray-300 hidden md:block"></div>
+              <div className="my-3 w-full h-[0.8px] bg-gray-300 hidden md:block"></div>
             </div>
           ))}
         </div>

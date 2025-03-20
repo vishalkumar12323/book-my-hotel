@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Card = ({ hotel }) => {
+  // console.log(hotel);
   return (
     <Link to={`/hotels/${hotel.id}/${hotel.name}`}>
       <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-[#ffffff] hover:bg-blue-500 hover:text-white border-slate-50 border-2 hover:border-blue-500 transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
@@ -36,7 +37,7 @@ const Card = ({ hotel }) => {
             <div className="flex gap-2 items-center">
               <span>22 Rating</span>
               <span className="bg-green-500 rounded p-1 text-[12px] tracking-widest text-white font-bold">
-                4.2/5
+                {hotel.rating}/5
               </span>
             </div>
           </div>
@@ -56,9 +57,9 @@ const Card = ({ hotel }) => {
 
           <div className="px-[6px] md:px-3">
             <ul className="flex flex-col text-[12px]">
-              <li>✅ Free Cancellation</li>
-              <li>✅ Book @ ₹0 available</li>
-              <li>✅ Breakfast available at extra charges</li>
+              {hotel.facilities.map((faciliti) => (
+                <li key={faciliti}>✅ {faciliti}</li>
+              ))}
             </ul>
           </div>
 
