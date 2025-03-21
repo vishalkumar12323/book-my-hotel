@@ -1,6 +1,6 @@
 import React from "react";
 
-const CardSkeleton = () => {
+const HotelsCardSkeleton = () => {
   return (
     <div className="w-full flex">
       <div className="bg-white flex w-full h-[317px] rounded-md">
@@ -39,4 +39,4 @@ const CardSkeleton = () => {
   );
 };
 
-export default CardSkeleton;
+export default HotelsCardSkeleton;

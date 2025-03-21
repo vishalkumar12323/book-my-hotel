@@ -13,7 +13,8 @@ import Filters from "./Hotel-filters";
 import Search from "./Search";
 import Card from "./Card";
 import Loading from "./Loading";
-import CardSkeleton from "./skeletons/CardSkeleton";
+import HotelsCardSkeleton from "./skeletons/HotelsCardSkeleton";
+import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
 import ProtectedRoutes from "./Protected-Routes";
 
 export {
@@ -32,6 +33,7 @@ export {
   Search,
   Card,
   Loading,
-  CardSkeleton,
+  HotelsCardSkeleton,
+  HotelCardSkeleton,
   ProtectedRoutes,
 };

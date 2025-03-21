@@ -1,12 +1,10 @@
-import { Hotels, Filters, Search, CardSkeleton } from "../components";
+import { Hotels, Filters, Search, HotelsCardSkeleton } from "../components";
 import { useGetAvailableListingsQuery } from "../app/services/hotelServices.js";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setHotelsData } from "../app/store/slices/hotelSlice.js";
-import { session } from "../app/store/slices/authSlice.js";
 
 export const HomePage = () => {
-  const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const [query, setQuery] = useState({});
   const { data, isLoading, isError, error } =
@@ -27,7 +25,7 @@ export const HomePage = () => {
         {isLoading ? (
           <div className="flex flex-col w-full md:w-3/4 py-6 gap-4">
             {[...Array(2)].map((_, idx) => (
-              <CardSkeleton key={idx} />
+              <HotelsCardSkeleton key={idx} />
             ))}
           </div>
         ) : (
