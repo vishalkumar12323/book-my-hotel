@@ -1,10 +1,12 @@
 import { Hotels, Filters, Search, CardSkeleton } from "../components";
 import { useGetAvailableListingsQuery } from "../app/services/hotelServices.js";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setHotelsData } from "../app/store/slices/hotelSlice.js";
+import { session } from "../app/store/slices/authSlice.js";
 
 export const HomePage = () => {
+  const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const [query, setQuery] = useState({});
   const { data, isLoading, isError, error } =
@@ -18,7 +20,7 @@ export const HomePage = () => {
 
   return (
     <div className="flex flex-col mx-auto my-2 h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
-      <Search />
+      <Search setQuery={setQuery} />
       <div className="flex flex-col md:flex-row w-full justify-center gap-4">
         <Filters setQuery={setQuery} query={query} error={isError} />
 

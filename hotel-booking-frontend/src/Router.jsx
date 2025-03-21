@@ -70,11 +70,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/hotels/:hotelId/:hotelName",
-        element: (
-          <AuthLayout isAuthenticated>
-            <Hotel />
-          </AuthLayout>
-        ),
+        element: <Hotel />,
       },
     ],
   },

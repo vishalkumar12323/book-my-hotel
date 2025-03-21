@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { FaStar, FaMapMarkerAlt, FaSun, FaBed } from "react-icons/fa";
+import { FaStar, FaMapMarkerAlt, FaBed } from "react-icons/fa";
+import { PiArrowFatLinesDown } from "react-icons/pi";
 import { useGetHotelByIdQuery } from "../app/services/hotelServices";
 import { useDispatch, useSelector } from "react-redux";
 import { setHotelInfo, hotelData } from "../app/store/slices/hotelInfoSlice.js";
@@ -18,60 +19,92 @@ export const Hotel = () => {
     }
   }, [data, dispatch]);
   return (
-    <div className="flex flex-col md:flex-row mx-auto my-2 h-auto px-3 md:px-4 py-2 md:py-4 max-w-screen-xl w-full items-start rounded-lg shadow-lg border">
-      <div className="w-3/4">
-        <div className="flex flex-col md:flex-row justify-between">
-          <div>
-            <h2 className="text-xl font-extrabold">{hotel?.name}</h2>
-            <div className="flex items-center text-gray-600 text-sm space-x-2">
-              <FaStar className="text-yellow-500" /> <span>3-Star Hotel</span>
-              <FaMapMarkerAlt /> <span>Bani Park, Jaipur</span>
-              <FaSun /> <span>7 minutes walk to Collectorate Campus</span>
+    <section className="my-6 md:my-10 flex flex-col p-2 md:p-4 border shadow max-w-screen-xl mx-auto h-auto w-screen rounded">
+      <div className="flex flex-col gap-2 w-full h-full">
+        <div className="flex flex-col">
+          <h2 className="text-4xl font-bold mb-2 text-slate-900">
+            Hotel Villaruk
+          </h2>
+          <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-1">
+              <FaStar className="text-yellow-500" />
+              <span>4.5 Star Hotel</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <FaMapMarkerAlt className="text-blue-500" />{" "}
+              <span>Mumbai, India</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <FaBed size={16} /> <span>Duplex Bed</span>
             </div>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <img
-            src="/hotel13.webp"
-            alt="Hotel Main"
-            className="rounded-lg w-full h-64 object-cover md:col-span-2"
-          />
-          <div className="grid gap-2">
-            <div className="h-32 bg-black rounded-lg flex justify-center items-center text-white">
-              Videos (2)
+        <div className="flex flex-col gap-2 w-full h-full">
+          <div className="w-full h-full img-container">
+            <img
+              src="/hotel-alewaria.jpg"
+              alt="hotel"
+              className="w-full h-full md:h-[500px] object-cover"
+            />
+          </div>
+          <div className="grid grid-cols-4 gap-2 w-full h-full">
+            <div className="img-container">
+              <img
+                src="/hotel1.webp"
+                alt="hotel"
+                className="w-full md:h-[250px] object-cover"
+              />
             </div>
-            <div className="h-32 bg-gray-300 rounded-lg flex justify-center items-center">
-              Traveller Photos (282)
+            <div className="img-container h-full">
+              <img
+                src="/hotel1.webp"
+                alt="hotel"
+                className="w-full md:h-[250px] object-cover"
+              />
+            </div>
+            <div className="img-container h-full">
+              <img
+                src="/hotel1.webp"
+                alt="hotel"
+                className="w-full md:h-[250px] object-cover"
+              />
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center mt-4">
-          <div className="text-green-600 font-semibold text-lg">
-            4.5/5 - View Reviews
+        <div className="my-2 md:my-3 flex md:flex-row flex-col justify-between gap-2">
+          <div className="flex flex-col gap-2 w-full">
+            <h3 className="text-2xl font-semibold text-slate-900">
+              Facilities
+            </h3>
+            <div className="text-slate-700 text-[15px]">
+              <p>✅Swimming Pool</p>
+              <p>✅Free Wifi</p>
+              <p>✅Free Parking</p>
+              <p>✅Spa</p>
+              <p>✅Restaurant</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 w-full justify-end items-end">
+            <p className="text-[13px] md:text-[15px]">
+              <span className="line-through">₹12,000</span>,{" "}
+              <span>
+                {" "}
+                <strong>₹5,550</strong> + 440 taxes&fees per night
+              </span>
+            </p>
+
+            <button className="flex gap-1 items-center text-center justify-center bg-blue-500 w-[295px] uppercase font-semibold hover:bg-blue-600 transition-colors text-white py-2 px-4 rounded-md">
+              <span>view room option</span> <PiArrowFatLinesDown size={20} />
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="md:mt-11 pl-4 pr-2 py-4 flex justify-between flex-col space-y-5">
-        <h3 className="text-xl font-semibold">Deluxe Room</h3>
-        <div className="flex flex-col space-y-[6px] justify-start">
-          <p className="text-gray-600 flex items-center">
-            <FaBed className="mr-2" /> 2 Guests | 1 Room
-          </p>
-          <p className="text-green-600 text-sm">✅ Free Breakfast Included</p>
-          <p className="text-green-600 text-sm">
-            ✅ Free Cancellation Till 11-Apr-2025 12:59
-          </p>
-        </div>
-        <div>
-          <div className="text-2xl font-bold mt-2">₹3,329</div>
-          <p className="text-gray-500 text-sm">+461 taxes & fees per night</p>
-        </div>
-        <button className="bg-orange-500 text-white px-6 py-2 rounded-md mt-4 w-full">
-          VIEW 4 ROOM OPTIONS
-        </button>
-      </div>
-    </div>
+      <div className="h-[0.5px] my-4 w-full bg-slate-400"></div>
+
+      <div className=""></div>
+    </section>
   );
 };

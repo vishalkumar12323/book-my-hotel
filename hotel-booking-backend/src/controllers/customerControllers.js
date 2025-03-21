@@ -2,8 +2,7 @@ import { prisma } from "../config/database.js";
 
 export const getListings = async (req, res) => {
   try {
-    const { location, price, rating, type, popularFilter } = req.query;
-    console.log(req.query);
+    const { location, price, rating, popularFilter } = req.query;
 
     // filters for popular or facilities-filter queries.
     let facilitiesFilters = undefined;
@@ -53,7 +52,6 @@ export const getListings = async (req, res) => {
           address: { contains: loc?.trim(), mode: "insensitive" },
         })),
         price: priceFilter,
-        type: type ? type : undefined,
         facilities: facilitiesFilters,
         rating: ratingFilters,
       },

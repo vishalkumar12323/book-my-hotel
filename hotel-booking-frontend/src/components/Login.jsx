@@ -35,13 +35,13 @@ const Login = () => {
               placeholder="Username"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow"
               name="email"
-              {...register("email")}
+              {...register("email", { required: true })}
             />
             <input
               type="password"
               placeholder="Password"
               className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow"
-              {...register("password")}
+              {...register("password", { required: true })}
             />
             <button
               type="submit"

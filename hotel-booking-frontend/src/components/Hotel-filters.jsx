@@ -74,7 +74,7 @@ const Filters = ({ query, setQuery, error }) => {
     <aside className="py-6 w-full md:w-[25%] h-full flex justify-center items-start flex-col">
       <div className="w-full p-3 bg-white rounded-lg">
         <div className="mb-4 w-full flex justify-between items-center">
-          <h2 className=" text-[16px] md:text-xl font-bold uppercase">
+          <h2 className=" text-[16px] md:text-xl font-bold uppercase text-slate-900">
             Filters
           </h2>
           <button onClick={clearFilters}>
@@ -98,7 +98,7 @@ const Filters = ({ query, setQuery, error }) => {
                     openFilters[filter.id] ? "rotate-90" : "rotate-0"
                   } transition-transform z-0`}
                 />
-                <span className="text-[14px] md:text-[16px] font-bold capitalize">
+                <span className="text-[14px] md:text-[16px] font-bold capitalize text-slate-900">
                   {filter.type}
                 </span>
               </div>
@@ -112,12 +112,12 @@ const Filters = ({ query, setQuery, error }) => {
                   <li
                     key={option}
                     onClick={() => handleFilterUpdate(option, filter.type)}
-                    className="flex items-center gap-1 cursor-pointer"
+                    className="flex items-center gap-1 cursor-pointer filter-list"
                   >
                     {checkedFilters[option] ? (
-                      <FaCheckSquare color="blue" />
+                      <FaCheckSquare color="blue" className="checkbox" />
                     ) : (
-                      <FaRegSquare />
+                      <FaRegSquare className="checkbox" />
                     )}
                     <span>{option}</span>
                     {filter.type === "rating" && (

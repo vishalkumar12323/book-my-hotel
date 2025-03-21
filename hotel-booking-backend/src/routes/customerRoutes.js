@@ -12,19 +12,9 @@ import {
 
 const router = express.Router();
 
-router.get(
-  "/listings",
-  isAuthenticated,
-  authorizeRoles("CUSTOMER", "VENDOR"),
-  getListings
-);
+router.get("/listings", getListings);
 
-router.get(
-  "/listing/:id",
-  isAuthenticated,
-  authorizeRoles("CUSTOMER", "VENDOR"),
-  getListingDetails
-);
+router.get("/listing/:id", getListingDetails);
 
 router.post(
   "/bookings",
