@@ -4,7 +4,12 @@ export const addListing = async (req, res) => {
   try {
     const { name, address, description, facilities, price, type, rating } =
       req.body;
-    const imageUrls = req.files ? req.files.map((file) => file.path) : [];
+    const coverImageUrl = req.files["coverImage"]
+      ? req.files["coverImage"][0].path
+      : "";
+    const imageUrls = req.files["images"]
+      ? req.files["images"].map((image) => image.path)
+      : [];
 
     const newListing = await prisma.listing.create({
       data: {
@@ -17,8 +22,12 @@ export const addListing = async (req, res) => {
           : [],
         price: parseInt(price),
         type,
+        coverImage: coverImageUrl,
         images: imageUrls,
         rating: parseFloat(rating),
+      },
+      omit: {
+        coverImage: true,
       },
     });
 

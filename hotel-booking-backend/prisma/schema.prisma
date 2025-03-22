@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(uuid())
   name     String    @map("user_name")
   email    String    @unique @map("user_email")
   password String    @map("user_password")
@@ -28,8 +28,8 @@ enum Role {
 }
 
 model Listing {
-  id          Int         @id @default(autoincrement())
-  vendorId    Int
+  id          String      @id @default(uuid())
+  vendorId    String
   type        ListingType
   name        String
   address     String
@@ -37,12 +37,12 @@ model Listing {
   facilities  String[]
   price       Float
   rating      Float
+  coverImage  String?     @map("cover_image")
   images      String[]
   units       Unit[]
   vendor      User        @relation(fields: [vendorId], references: [id])
-
-  Booking   Booking[]
-  createdAt DateTime  @default(now())
+  Booking     Booking[]
+  createdAt   DateTime    @default(now())
 
   @@map("listings")
 }
@@ -52,26 +52,43 @@ enum ListingType {
   RESTAURANT
 }
 
-model Unit {
-  id        Int     @id @default(autoincrement())
-  listingId Int
-  type      String
-  capacity  Int
-  price     Float
-  available Boolean
-  listing   Listing @relation(fields: [listingId], references: [id])
+model RoomFacilities {
+  id            String  @id @default(uuid())
+  unitId        String  @unique @map("unit_id")
+  wifi          Boolean
+  ac            Boolean
+  tv            Boolean
+  waterPurifier Boolean
+  twineBed      Boolean
+  cityView      Boolean
+  bathroom      Boolean
+  kitchen       Boolean
+  unit          Unit    @relation(fields: [unitId], references: [id])
 
-  Booking   Booking[]
-  createdAt DateTime  @default(now())
+  @@map("room_facilities")
+}
+
+model Unit {
+  id            String          @id @default(uuid())
+  listingId     String
+  type          String
+  capacity      Int
+  originalPrice Float
+  discountPrice Float
+  available     Boolean
+  listing       Listing         @relation(fields: [listingId], references: [id])
+  roomFacility  RoomFacilities?
+  Booking       Booking[]
+  createdAt     DateTime        @default(now())
 
   @@map("units")
 }
 
 model Booking {
-  id         Int           @id @default(autoincrement())
-  customerId Int
-  listingId  Int
-  unitId     Int
+  id         String        @id @default(uuid())
+  customerId String
+  listingId  String
+  unitId     String
   startDate  DateTime
   endDate    DateTime
   status     BookingStatus
@@ -92,9 +109,9 @@ enum BookingStatus {
 }
 
 model Review {
-  id         Int      @id @default(autoincrement())
-  bookingId  Int
-  customerId Int
+  id         String   @id @default(uuid())
+  bookingId  String
+  customerId String
   rating     Int
   comments   String
   createdAt  DateTime @default(now())
@@ -105,9 +122,9 @@ model Review {
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   refreshToken String   @unique @map("refresh_token")
-  userId       Int      @unique @map("user_id")
+  userId       String   @unique @map("user_id")
   expiresAt    DateTime
   user         User     @relation(fields: [userId], references: [id])
 

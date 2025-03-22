@@ -17,7 +17,10 @@ router.post(
   "/listings",
   isAuthenticated,
   authorizeRoles("VENDOR"),
-  upload.array("images", 5),
+  upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "images", maxCount: 5 },
+  ]),
   addListing
 );
 
