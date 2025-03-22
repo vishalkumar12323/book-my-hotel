@@ -25,12 +25,18 @@ app.use(
   })
 );
 
-// app.get("/", (req, res) => {});
 // Api Routes
 app.use("/api", customerRoutes);
 app.use("/api", vendorRoutes);
 app.use("/api", adminRoutes);
 app.use("/api/_auth", authRoutes);
+
+// health check
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    message: "api is running",
+  });
+});
 
 const server = app.listen(port, () =>
   console.log(`api running on port ${port}`)
