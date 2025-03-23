@@ -5,7 +5,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { logout, session } from "../app/store/slices/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { protectedRoutes } from "../app/services/permissions.js";
-import { API_BASE_URL } from "../config/api.js";
+import { config } from "../config/api.js";
 
 const Navbar = () => {
   const { isLoggedIn, user, accessToken } = useSelector(session);
@@ -32,7 +32,7 @@ const Navbar = () => {
   ];
 
   const logoutUser = async () => {
-    const response = await fetch(`${API_BASE_URL}_auth/logout`, {
+    const response = await fetch(`${config.API_BASE_URL}_auth/logout`, {
       credentials: "include",
       headers: {
         authorization: `Bearer ${accessToken}`,
