@@ -16,6 +16,7 @@ import Loading from "./Loading";
 import HotelsCardSkeleton from "./skeletons/HotelsCardSkeleton";
 import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
 import ProtectedRoutes from "./Protected-Routes";
+import AddListing from "./add-listing";
 
 export {
   Navbar,
@@ -36,4 +37,5 @@ export {
   HotelsCardSkeleton,
   HotelCardSkeleton,
   ProtectedRoutes,
+  AddListing,
 };

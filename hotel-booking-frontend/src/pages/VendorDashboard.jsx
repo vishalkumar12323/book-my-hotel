@@ -7,7 +7,7 @@ export const VendorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto h-full">
         <h1 className="text-3xl font-bold mb-6">Vendor Dashboard</h1>
 
         <div className="flex space-x-4 mb-8">
@@ -32,10 +32,7 @@ export const VendorDashboard = () => {
             Booking Requests
           </button>
         </div>
-
-        <div>
-          {activeTab === "listings" ? <ManageListings /> : <BookingRequests />}
-        </div>
+        {activeTab === "listings" ? <ManageListings /> : <BookingRequests />}
       </div>
     </div>
   );

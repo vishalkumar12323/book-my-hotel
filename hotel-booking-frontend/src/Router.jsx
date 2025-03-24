@@ -3,7 +3,13 @@ import { createBrowserRouter } from "react-router-dom";
 import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-import { ErrorPage, ProtectedRoutes, Navbar, Footer } from "./components";
+import {
+  ErrorPage,
+  ProtectedRoutes,
+  Navbar,
+  Footer,
+  AddListing,
+} from "./components";
 import { CustomerDashboard } from "./pages/CustomerDashboard";
 import { VendorDashboard } from "./pages/VendorDashboard";
 import { AboutPage } from "./pages/AboutPage.jsx";
@@ -66,6 +72,16 @@ export const router = createBrowserRouter([
               <VendorDashboard />
             </ProtectedRoutes>
           </AuthLayout>
+        ),
+      },
+      {
+        path: "/add-new-listing",
+        element: (
+          // <AuthLayout isAuthenticated>
+          // <ProtectedRoutes>
+          <AddListing />
+          // </ProtectedRoutes>
+          // </AuthLayout>
         ),
       },
       {

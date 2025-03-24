@@ -11,6 +11,7 @@ const ProtectedRoutes = ({ children }) => {
     protectedRoutes[role]?.includes(location.pathname)
   );
 
+  console.log(user.roles, location.pathname, isAuthorized);
   return isAuthorized ? children : <Navigate to={"/"} replace />;
 };
 
