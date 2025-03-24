@@ -115,13 +115,15 @@ const Filters = ({ query, setQuery, error }) => {
                     className="flex items-center gap-1 cursor-pointer filter-list"
                   >
                     {checkedFilters[option] ? (
-                      <FaCheckSquare color="blue" className="checkbox" />
+                      <FaCheckSquare color="blue" />
                     ) : (
-                      <FaRegSquare className="checkbox" />
+                      <FaRegSquare />
                     )}
-                    <span>{option}</span>
+                    <span className="hover:font-medium">{option}</span>
                     {filter.type === "rating" && (
-                      <span className="capitalize text-[13px]">star</span>
+                      <span className="capitalize text-[13px] hover:font-medium">
+                        star
+                      </span>
                     )}
                   </li>
                 ))}

@@ -7,7 +7,7 @@
     "build": "echo 'No build required'",
     "start": "node src/index.js",
     "dev": "nodemon src/index",
-    "db-update": "npx prisma migrate dev --name init"
+    "db-push": "npx prisma migrate dev --name init"
   },
   "keywords": [],
   "author": "",

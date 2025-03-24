@@ -49,7 +49,11 @@ const Navbar = () => {
     <div className="bg-blue-500 flex justify-between items-center h-16 md:h-20 w-full px-4 text-white">
       <h1 className="w-full text-xl md:text-3xl font-bold">
         {" "}
-        <NavLink to={"/"}>LOGO</NavLink>{" "}
+        <NavLink to={"/"}>
+          <span className="text-xl md:text-2xl text-slate-900 font-[900]">
+            BookMyHotel
+          </span>
+        </NavLink>{" "}
       </h1>
 
       <ul className="hidden md:flex justify-end items-center w-full">
