@@ -1,114 +1,64 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import { useForm } from "react-hook-form";
 
 const AddListing = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    description: "",
-    facilities: "",
-    price: "",
-    type: "hotel",
-    coverImage: null,
-    images: [],
-  });
+  const coverImageRef = useRef(null);
+  const imagesRef = useRef(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData({ ...formData, images: files });
-  };
-
+  const coverImage = watch("coverImage");
+  const images = watch("images");
   const handleCoverImageChange = (e) => {
-    setFormData({ ...formData, coverImage: e.target.files[0] });
+    const files = e.target.file;
+
+    const [[_, file]] = Object.entries(files);
+
+    if (file) {
+      setValue("coverImage", file);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitting listing:", formData);
-    // Here you can send formData to your backend API
+  const handleImagesChange = (e) => {
+    const files = Object.values(e.target.files);
+    setValue("images", files);
   };
-
+  const submitForm = (data) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("address", data.address);
+    formData.append("description", data.description);
+    formData.append("facilities", data.facilities);
+    formData.append("price", data.price);
+    formData.append("type", data.type);
+    formData.append("coverImage", data.coverImage);
+    formData.append("images", data.images);
+  };
   return (
     <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow-lg rounded-lg my-6">
       <h2 className="text-2xl font-bold mb-4">Add New Listing</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex space-x-4 w-full">
-          <div
-            className="w-full h-40 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer  hover:ring-2 hover:ring-blue-500"
-            onDrag={(e) => console.log(e)}
-            onDragOver={(e) => {
-              console.log(e);
-            }}
-            onClick={(e) => {
-              console.log(e);
-            }}
-          >
-            <label className="block font-medium">Cover Image</label>
-            <input
-              type="file"
-              onChange={handleCoverImageChange}
-              className="w-full h-full border rounded  hidden"
-              accept="image/*"
-              required
-            />
-            <button
-              type="button"
-              className="bg-blue-400 hover:bg-blue-500 transition-colors px-4 py-2 rounded-lg"
-              onClick={() => {}}
-            >
-              choose image
-            </button>
-            <span>or drag & drop here</span>
-          </div>
-
-          <div
-            className="w-full h-40 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer hover:ring-2 hover:ring-blue-500 "
-            onDrag={(e) => {
-              console.log(e);
-            }}
-            onDragOver={(e) => {
-              console.log(e);
-            }}
-            onClick={(e) => {
-              console.log(e);
-            }}
-          >
-            <label className="block font-medium">
-              Additional Images (Max 5)
-            </label>
-            <input
-              type="file"
-              multiple
-              onChange={handleImageChange}
-              className="w-full h-full border rounded hidden"
-              accept="image/*"
-            />
-            <button
-              type="button"
-              className="bg-blue-400 hover:bg-blue-500 transition-colors px-4 py-2 rounded-lg"
-              onClick={() => {}}
-            >
-              choose images
-            </button>
-            <span>or drag & drop here</span>
-          </div>
-        </div>
-
-        <div className="flex space-x-4 w-full">
+      <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
+        <div className="flex space-x-4 w-full mb-4">
           <div className="w-full">
             <label className="block font-medium">Listing Name</label>
             <input
               type="text"
               name="name"
-              value={formData.name}
-              onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Hotel/Restaurant Name"
+              {...register("name", {
+                required: true,
+                maxLength: 50,
+                minLength: 5,
+              })}
               required
             />
           </div>
@@ -118,69 +68,174 @@ const AddListing = () => {
             <input
               type="text"
               name="address"
-              value={formData.address}
-              onChange={handleChange}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Street, City, State, Country"
               required
+              {...register("address", {
+                required: true,
+                maxLength: 100,
+                minLength: 10,
+              })}
             />
           </div>
         </div>
-        <div>
+        <div className="mb-4">
           <label className="block font-medium">Description</label>
           <textarea
             name="description"
-            value={formData.description}
-            onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
+            rows={4}
+            {...register("description", {
+              required: true,
+              maxLength: 500,
+              minLength: 20,
+            })}
           />
         </div>
 
-        <div>
+        <div className="mb-4">
           <label className="block font-medium">
             Facilities (comma separated)
           </label>
           <input
             type="text"
             name="facilities"
-            value={formData.facilities}
-            onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Wifi, Parking, Pool, etc."
+            placeholder="Free Wifi, Parking, Pool, etc."
             required
+            {...register("facilities", {
+              required: true,
+              maxLength: 100,
+              minLength: 10,
+            })}
           />
         </div>
 
-        <div>
+        <div className="mb-4">
           <label className="block font-medium">Price (per night/table)</label>
           <input
             type="number"
             name="price"
-            value={formData.price}
-            onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Price in INR"
             required
+            {...register("price", { required: true, min: 100, max: 100000 })}
           />
         </div>
 
-        <div>
+        <div className="mb-4">
           <label className="block font-medium">Type</label>
           <select
             name="type"
-            value={formData.type}
-            onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            {...register("type", { required: true })}
           >
             <option value="HOTEL">Hotel</option>
             <option value="RESTAURANT">Restaurant</option>
           </select>
         </div>
 
+        <div className="flex flex-col w-full mb-4">
+          <h3 className="mb-1">Upload Hotels Images</h3>
+          <div className="w-full flex space-x-4">
+            <div
+              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer  hover:ring-2 hover:ring-blue-500 relative"
+              onDrop={(e) => {
+                e.preventDefault();
+                const files = e.dataTransfer.files;
+                if (coverImageRef.current) {
+                  const dataTransfer = new DataTransfer();
+                  Array.from(files).forEach((file) => {
+                    dataTransfer.items.add(file);
+                  });
+                  coverImageRef.current.file = dataTransfer.files;
+                  const changeEvent = new Event("change", { bubbles: true });
+                  coverImageRef.current.dispatchEvent(changeEvent);
+                }
+              }}
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <IoCloudUploadOutline size={50} className="text-gray-500" />
+              <label className="block font-medium">Cover Image</label>
+              <input
+                ref={coverImageRef}
+                type="file"
+                name="coverImage"
+                onChange={handleCoverImageChange}
+                className="w-full h-full border rounded hidden absolute"
+                accept="image/*"
+              />
+              <button
+                type="button"
+                className="shadow-md border border-slate-300 hover:border-blue-500 transition-colors px-4 py-2 rounded-lg z-50"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (coverImageRef.current) {
+                    coverImageRef.current.click();
+                  }
+                }}
+              >
+                upload
+              </button>
+              <span>or drag & drop here</span>
+            </div>
+
+            <div
+              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer hover:ring-2 hover:ring-blue-500 relative"
+              onDrop={(e) => {
+                e.preventDefault();
+                const files = e.dataTransfer.files;
+                if (imagesRef.current) {
+                  const dataTransfer = new DataTransfer();
+                  Array.from(files).forEach((file) => {
+                    dataTransfer.items.add(file);
+                  });
+                  imagesRef.current.files = dataTransfer.files;
+
+                  const changeEvent = new Event("change", { bubbles: true });
+                  imagesRef.current.dispatchEvent(changeEvent);
+                }
+              }}
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <IoCloudUploadOutline size={50} className="text-gray-500" />
+              <label className="block font-medium">
+                Additional Images (Max 5)
+              </label>
+              <input
+                ref={imagesRef}
+                type="file"
+                multiple
+                name="images"
+                onChange={handleImagesChange}
+                className="w-full h-full border rounded hidden absolute"
+                accept="image/*"
+              />
+              <button
+                type="button"
+                className="shadow-md border border-slate-300 hover:border-blue-500 transition-colors px-4 py-2 rounded-lg"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  if (imagesRef.current) {
+                    imagesRef.current.click();
+                  }
+                }}
+              >
+                upload images
+              </button>
+              <span>or drag & drop here</span>
+            </div>
+          </div>
+        </div>
+
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-fit mt-4 transition-colors"
+          className="shadow-md border border-slate-300 hover:border-blue-500 px-4 py-2 rounded-lg w-fit mt-4 transition-colors"
         >
           Add Listing
         </button>
