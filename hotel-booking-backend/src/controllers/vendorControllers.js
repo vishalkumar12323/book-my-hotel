@@ -1,37 +1,40 @@
 import { prisma } from "../config/database.js";
 
 export const addListing = async (req, res) => {
+  console.log({ files: req.files?.images, file: req.file?.coverImage });
+  console.log(req.body);
   try {
-    const { name, address, description, facilities, price, type, rating } =
-      req.body;
-    const coverImageUrl = req.files["coverImage"]
-      ? req.files["coverImage"][0].path
-      : "";
-    const imageUrls = req.files["images"]
-      ? req.files["images"].map((image) => image.path)
-      : [];
+    // const { name, address, description, facilities, price, type, rating } =
+    //   req.body;
+    // const coverImageUrl = req.files["coverImage"]
+    //   ? req.files["coverImage"][0].path
+    //   : "";
+    // const imageUrls = req.files["images"]
+    //   ? req.files["images"].map((image) => image.path)
+    //   : [];
 
-    const newListing = await prisma.listing.create({
-      data: {
-        vendorId: req.user.id,
-        name,
-        address,
-        description,
-        facilities: facilities
-          ? facilities.split(",").map((facilitie) => facilitie.trim())
-          : [],
-        price: parseInt(price),
-        type,
-        coverImage: coverImageUrl,
-        images: imageUrls,
-        rating: parseFloat(rating),
-      },
-      omit: {
-        coverImage: true,
-      },
-    });
+    // const newListing = await prisma.listing.create({
+    //   data: {
+    //     vendorId: req.user.id,
+    //     name,
+    //     address,
+    //     description,
+    //     facilities: facilities
+    //       ? facilities.split(",").map((facilitie) => facilitie.trim())
+    //       : [],
+    //     price: parseInt(price),
+    //     type,
+    //     coverImage: coverImageUrl,
+    //     images: imageUrls,
+    //     rating: parseFloat(rating),
+    //   },
+    //   omit: {
+    //     coverImage: true,
+    //   },
+    // });
 
-    res.status(201).json(newListing);
+    // res.status(201).json(newListing);
+    res.status(200).json({ msg: "ok" });
   } catch (error) {
     console.error("Error adding listing:", error);
     res.status(500).json({ message: "Internal Server Error" });

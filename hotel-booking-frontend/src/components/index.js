@@ -17,6 +17,7 @@ import HotelsCardSkeleton from "./skeletons/HotelsCardSkeleton";
 import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
 import ProtectedRoutes from "./Protected-Routes";
 import AddListing from "./add-listing";
+import AppInfoToast from "./app-info";
 
 export {
   Navbar,
@@ -38,4 +39,5 @@ export {
   HotelCardSkeleton,
   ProtectedRoutes,
   AddListing,
+  AppInfoToast,
 };

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useForm } from "react-hook-form";
+import { useCreateListingMutation } from "../app/services/vendorServices.js";
 
 const AddListing = () => {
   const coverImageRef = useRef(null);
@@ -14,14 +15,12 @@ const AddListing = () => {
     formState: { errors },
   } = useForm();
 
-  const coverImage = watch("coverImage");
-  const images = watch("images");
+  const [createLIsting, { isLoading }] = useCreateListingMutation();
   const handleCoverImageChange = (e) => {
-    const files = e.target.file;
+    const files = e.target.files;
 
-    const [[_, file]] = Object.entries(files);
-
-    if (file) {
+    if (files) {
+      const file = Object.values(files);
       setValue("coverImage", file);
     }
   };
@@ -30,29 +29,38 @@ const AddListing = () => {
     const files = Object.values(e.target.files);
     setValue("images", files);
   };
-  const submitForm = (data) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("address", data.address);
-    formData.append("description", data.description);
-    formData.append("facilities", data.facilities);
-    formData.append("price", data.price);
-    formData.append("type", data.type);
-    formData.append("coverImage", data.coverImage);
-    formData.append("images", data.images);
+  const submitForm = async (data) => {
+    // const formData = new FormData();
+    // formData.append("name", data.name);
+    // formData.append("address", data.address);
+    // formData.append("description", data.description);
+    // formData.append("facilities", data.facilities);
+    // formData.append("price", data.price);
+    // formData.append("type", data.type);
+    // formData.append("coverImage", data.coverImage);
+    // formData.append("images", data.images);
+
+    // console.log(data.coverImage);
+    // console.log(formData);
+    const response = await createLIsting(JSON.stringify(data)).unwrap();
+    console.log(response);
   };
   return (
     <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow-lg rounded-lg my-6">
-      <h2 className="text-2xl font-bold mb-4">Add New Listing</h2>
+      <h2 className="text-2xl font-bold mb-4">Add New Hotel/Restaurant</h2>
 
-      <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
+      <form
+        onSubmit={handleSubmit(submitForm)}
+        className="space-y-4"
+        encType="multipart/form-data"
+      >
         <div className="flex space-x-4 w-full mb-4">
           <div className="w-full">
             <label className="block font-medium">Listing Name</label>
             <input
               type="text"
               name="name"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
               placeholder="Hotel/Restaurant Name"
               {...register("name", {
                 required: true,
@@ -68,7 +76,7 @@ const AddListing = () => {
             <input
               type="text"
               name="address"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
               placeholder="Street, City, State, Country"
               required
               {...register("address", {
@@ -83,7 +91,7 @@ const AddListing = () => {
           <label className="block font-medium">Description</label>
           <textarea
             name="description"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
             required
             rows={4}
             {...register("description", {
@@ -101,7 +109,7 @@ const AddListing = () => {
           <input
             type="text"
             name="facilities"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
             placeholder="Free Wifi, Parking, Pool, etc."
             required
             {...register("facilities", {
@@ -117,7 +125,7 @@ const AddListing = () => {
           <input
             type="number"
             name="price"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
             placeholder="Price in INR"
             required
             {...register("price", { required: true, min: 100, max: 100000 })}
@@ -128,7 +136,7 @@ const AddListing = () => {
           <label className="block font-medium">Type</label>
           <select
             name="type"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
             required
             {...register("type", { required: true })}
           >
@@ -141,7 +149,7 @@ const AddListing = () => {
           <h3 className="mb-1">Upload Hotels Images</h3>
           <div className="w-full flex space-x-4">
             <div
-              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer  hover:ring-2 hover:ring-blue-500 relative"
+              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer  hover:ring-1 hover:ring-blue-500 relative"
               onDrop={(e) => {
                 e.preventDefault();
                 const files = e.dataTransfer.files;
@@ -184,7 +192,7 @@ const AddListing = () => {
             </div>
 
             <div
-              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer hover:ring-2 hover:ring-blue-500 relative"
+              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer hover:ring-1 hover:ring-blue-500 relative"
               onDrop={(e) => {
                 e.preventDefault();
                 const files = e.dataTransfer.files;

@@ -9,24 +9,19 @@ import {
   manageBookings,
   updateListing,
 } from "../controllers/vendorControllers.js";
-import { upload } from "../storage/multer.js";
 
 const router = express.Router();
 
 router.post(
   "/listings",
-  isAuthenticated,
-  authorizeRoles("VENDOR"),
-  upload.fields([
-    { name: "coverImage", maxCount: 1 },
-    { name: "images", maxCount: 5 },
-  ]),
+  // isAuthenticated,
+  // authorizeRoles("VENDOR"),
   addListing
 );
 
 // Update Existing Listing
 router.put(
-  "/listings/:id",
+  "/listing/:id",
   isAuthenticated,
   authorizeRoles("VENDOR"),
   updateListing
@@ -34,7 +29,7 @@ router.put(
 
 // Delete Listing
 router.delete(
-  "/listings/:id",
+  "/listing/:id",
   isAuthenticated,
   authorizeRoles("VENDOR"),
   deleteListing

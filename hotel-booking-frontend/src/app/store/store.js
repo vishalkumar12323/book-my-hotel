@@ -5,6 +5,7 @@ import { authApi } from "../services/authServices.js";
 import { hotelApi } from "../services/hotelServices.js";
 import { userBookingSlice } from "./slices/userBookingSlice.js";
 import { hotelInfoSlice } from "./slices/hotelInfoSlice.js";
+import { vendorServiceApi } from "../services/vendorServices.js";
 
 export const store = configureStore({
   reducer: {
@@ -14,10 +15,12 @@ export const store = configureStore({
     bookings: userBookingSlice.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [hotelApi.reducerPath]: hotelApi.reducer,
+    [vendorServiceApi.reducerPath]: vendorServiceApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(authApi.middleware)
-      .concat(hotelApi.middleware),
+      .concat(hotelApi.middleware)
+      .concat(vendorServiceApi.middleware),
 });

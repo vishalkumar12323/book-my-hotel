@@ -3,13 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-import {
-  ErrorPage,
-  ProtectedRoutes,
-  Navbar,
-  Footer,
-  AddListing,
-} from "./components";
+import { ErrorPage, ProtectedRoutes, AddListing } from "./components";
 import { CustomerDashboard } from "./pages/CustomerDashboard";
 import { VendorDashboard } from "./pages/VendorDashboard";
 import { AboutPage } from "./pages/AboutPage.jsx";
@@ -23,9 +17,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <Provider store={store}>
-        <Navbar />
         <App />
-        <Footer />
       </Provider>
     ),
     errorElement: <ErrorPage />,
