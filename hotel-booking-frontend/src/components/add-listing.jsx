@@ -2,20 +2,15 @@ import { useRef } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { useForm } from "react-hook-form";
 import { useCreateListingMutation } from "../app/services/vendorServices.js";
+import { MdErrorOutline } from "react-icons/md";
 
 const AddListing = () => {
   const coverImageRef = useRef(null);
   const imagesRef = useRef(null);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset, setValue, watch, formState } =
+    useForm();
 
-  const [createLIsting, { isLoading }] = useCreateListingMutation();
+  const [createLIsting] = useCreateListingMutation();
   const handleCoverImageChange = (e) => {
     const files = e.target.files;
 
@@ -59,15 +54,35 @@ const AddListing = () => {
             <input
               type="text"
               name="name"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className={`${
+                formState.errors.name
+                  ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                  : "focus:ring-1 focus:ring-slate-900"
+              } w-full px-1 py-2 rounded border focus:outline-none shadow`}
               placeholder="Hotel/Restaurant Name"
               {...register("name", {
-                required: true,
-                maxLength: 50,
-                minLength: 5,
+                required: "Hotel name is a required feild",
+                maxLength: {
+                  value: 30,
+                  message: "Hotel name should not greater then 30 characters",
+                },
+                minLength: {
+                  value: 5,
+                  message: "Hotel name should contain 5 characters",
+                },
               })}
-              required
+              aria-describedby="hotel-name-err"
             />
+            {formState.errors.name && (
+              <p
+                id="hotel-name-err"
+                className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+                role="alert"
+              >
+                <MdErrorOutline size={13} />
+                {formState.errors.name.message}
+              </p>
+            )}
           </div>
 
           <div className="w-full">
@@ -75,30 +90,63 @@ const AddListing = () => {
             <input
               type="text"
               name="address"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className={`${
+                formState.errors.address
+                  ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                  : "focus:ring-1 focus:ring-slate-900"
+              } w-full px-1 py-2 rounded border focus:outline-none shadow`}
               placeholder="Street, City, State, Country"
-              required
               {...register("address", {
-                required: true,
-                maxLength: 100,
-                minLength: 10,
+                required: "Hotel address is a required feild",
               })}
+              aria-describedby="hotel-add-err"
             />
+
+            {formState.errors.address && (
+              <p
+                id="hotel-add-err"
+                role="alert"
+                className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+              >
+                <MdErrorOutline size={13} />
+                {formState.errors.address.message}
+              </p>
+            )}
           </div>
         </div>
         <div className="mb-4">
           <label className="block font-medium">Description</label>
           <textarea
             name="description"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-            required
+            className={`${
+              formState.errors.description
+                ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                : "focus:ring-1 focus:ring-slate-900"
+            } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             rows={4}
             {...register("description", {
-              required: true,
-              maxLength: 500,
-              minLength: 20,
+              maxLength: {
+                value: 500,
+                message:
+                  "Hotel description should not greater then 500 characters",
+              },
+              minLength: {
+                value: 20,
+                message: "Hotel description should contain 20 characters",
+              },
             })}
+            aria-describedby="hotel-des-err"
           />
+          {formState.errors.description && (
+            <p
+              id="hotel-des-err"
+              role="alert"
+              className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+            >
+              <MdErrorOutline size={13} />
+              {formState.errors.description.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -108,15 +156,36 @@ const AddListing = () => {
           <input
             type="text"
             name="facilities"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={`${
+              formState.errors.facilities
+                ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                : "focus:ring-1 focus:ring-slate-900"
+            } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             placeholder="Free Wifi, Parking, Pool, etc."
-            required
             {...register("facilities", {
-              required: true,
-              maxLength: 100,
-              minLength: 10,
+              required: "Hotel facilities are required",
+              maxLength: {
+                value: 200,
+                message: "Use comma separated value, ex:<one, two, three>",
+              },
+              minLength: {
+                value: 10,
+                message: "facilities should contain 10 characters",
+              },
             })}
+            aria-describedby="hotel-facilitie-err"
           />
+
+          {formState.errors.facilities && (
+            <p
+              id="hotel-facilitie-err"
+              role="alert"
+              className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+            >
+              <MdErrorOutline size={13} />
+              {formState.errors.facilities.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -124,20 +193,48 @@ const AddListing = () => {
           <input
             type="number"
             name="price"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={`${
+              formState.errors.price
+                ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                : "focus:ring-1 focus:ring-slate-900"
+            } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             placeholder="Price in INR"
-            required
-            {...register("price", { required: true, min: 100, max: 100000 })}
+            {...register("price", {
+              required: "Price is a required feild.",
+              min: {
+                value: 799,
+                message: "Price should greater then 799rs",
+              },
+              max: {
+                value: 100000,
+                message: "Price should less then 100000rs",
+              },
+            })}
+            aria-describedby="hotel-price-err"
           />
+
+          {formState.errors.price && (
+            <p
+              id="hotel-price-err"
+              role="alert"
+              className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+            >
+              <MdErrorOutline size={13} />
+              {formState.errors.price.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
           <label className="block font-medium">Type</label>
           <select
             name="type"
-            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-            required
-            {...register("type", { required: true })}
+            className={`${
+              formState.errors.type
+                ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                : "focus:ring-1 focus:ring-slate-900"
+            } w-full px-1 py-2 rounded border focus:outline-none shadow`}
+            {...register("type", { required: "This is a required feild" })}
           >
             <option value="HOTEL">Hotel</option>
             <option value="RESTAURANT">Restaurant</option>
