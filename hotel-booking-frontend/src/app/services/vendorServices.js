@@ -6,11 +6,14 @@ export const vendorServiceApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     createListing: builder.mutation({
-      query: (listing) => ({
-        url: "/listings",
-        method: "POST",
-        body: listing,
-      }),
+      query: (listing) => {
+        console.log(listing);
+        return {
+          url: "/listings",
+          method: "POST",
+          body: listing,
+        };
+      },
     }),
     updateListing: builder.query({
       query: (listingId) => {

@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../app/services/authServices.js";
 import { setUserDetails } from "../app/store/slices/authSlice.js";
+import { MdErrorOutline } from "react-icons/md";
 
 const Login = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, formState } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,20 +30,75 @@ const Login = () => {
           <h2 className="text-3xl font-semibold mb-8 text-center">
             Login and Continue
           </h2>
-          <form className="space-y-6" onSubmit={handleSubmit(submitForm)}>
-            <input
-              type="text"
-              placeholder="Username"
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow"
-              name="email"
-              {...register("email", { required: true })}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow"
-              {...register("password", { required: true })}
-            />
+          <form
+            className="flex flex-col gap-3"
+            onSubmit={handleSubmit(submitForm)}
+          >
+            <div className="flex flex-col justify-center items-start w-full h-16">
+              <input
+                type="email"
+                placeholder="Email or Username"
+                className={`${
+                  formState.errors.email
+                    ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                    : "focus:ring-1 focus:ring-slate-900"
+                } w-full px-1 py-2 border rounded focus:outline-none shadow`}
+                name="email"
+                {...register("email", {
+                  required: "This feild is required.",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Emails should be formatted as: name@example.com",
+                  },
+                })}
+                aria-describedby="email-error"
+              />
+
+              {formState.errors.email && (
+                <p
+                  id="email-error"
+                  role="alert"
+                  className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+                >
+                  <MdErrorOutline size={13} />
+                  {formState.errors.email.message}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col justify-center items-start w-full h-16">
+              <input
+                type="password"
+                placeholder="Password"
+                className={`${
+                  formState.errors.password
+                    ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                    : "focus:ring-1 focus:ring-slate-900"
+                } w-full px-1 py-2 border rounded focus:outline-none shadow`}
+                {...register("password", {
+                  required: "This feild is required.",
+                  maxLength: {
+                    value: 15,
+                    message: "password should not greater then 15 characters",
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "password should not less then 8 characters",
+                  },
+                })}
+                aria-describedby="password-error"
+              />
+
+              {formState.errors.password && (
+                <p
+                  id="password-error"
+                  role="alert"
+                  className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
+                >
+                  <MdErrorOutline size={13} />
+                  {formState.errors.password.message}
+                </p>
+              )}
+            </div>
             <button
               type="submit"
               className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"

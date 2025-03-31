@@ -30,30 +30,29 @@ const AddListing = () => {
     setValue("images", files);
   };
   const submitForm = async (data) => {
-    // const formData = new FormData();
-    // formData.append("name", data.name);
-    // formData.append("address", data.address);
-    // formData.append("description", data.description);
-    // formData.append("facilities", data.facilities);
-    // formData.append("price", data.price);
-    // formData.append("type", data.type);
-    // formData.append("coverImage", data.coverImage);
-    // formData.append("images", data.images);
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("address", data.address);
+    formData.append("description", data.description);
+    formData.append("facilities", data.facilities);
+    formData.append("price", data.price);
+    formData.append("type", data.type);
+    formData.append("coverImage", data.coverImage[0]); // Append cover image
+    Array.from(data.images).forEach((image) => {
+      formData.append("images", image); // Append multiple images
+    });
 
     // console.log(data.coverImage);
-    // console.log(formData);
-    const response = await createLIsting(JSON.stringify(data)).unwrap();
+    console.log(formData);
+    const response = await createLIsting(formData).unwrap();
     console.log(response);
   };
   return (
     <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow-lg rounded-lg my-6">
       <h2 className="text-2xl font-bold mb-4">Add New Hotel/Restaurant</h2>
 
-      <form
-        onSubmit={handleSubmit(submitForm)}
-        className="space-y-4"
-        encType="multipart/form-data"
-      >
+      <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
         <div className="flex space-x-4 w-full mb-4">
           <div className="w-full">
             <label className="block font-medium">Listing Name</label>
@@ -171,8 +170,9 @@ const AddListing = () => {
                 ref={coverImageRef}
                 type="file"
                 name="coverImage"
-                onChange={handleCoverImageChange}
-                className="w-full h-full border rounded hidden absolute"
+                {...register("coverImage")}
+                // onChange={handleCoverImageChange}
+                className="w-full h-full border rounded absolute"
                 accept="image/*"
               />
               <button
@@ -218,8 +218,9 @@ const AddListing = () => {
                 type="file"
                 multiple
                 name="images"
-                onChange={handleImagesChange}
-                className="w-full h-full border rounded hidden absolute"
+                {...register("images")}
+                // onChange={handleImagesChange}
+                className="w-full h-full border rounded absolute"
                 accept="image/*"
               />
               <button

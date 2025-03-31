@@ -1,5 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { cld } from "../app/services/cloudinary";
+import { AdvancedImage } from "@cloudinary/react";
+import { quality, format } from "@cloudinary/url-gen/actions/delivery";
+
 const Card = ({ hotel }) => {
   return (
     <Link to={`/hotels/${hotel.id}/${hotel.name}`}>
@@ -14,12 +18,13 @@ const Card = ({ hotel }) => {
           </div>
 
           <ul className="max-h-[10rem] flex gap-2 overflow-x-auto">
-            {hotel?.images?.map((image, idx) => (
-              <li className="h-12 w-12 img-container" key={idx}>
-                <img
-                  src={image}
-                  alt={hotel.name}
-                  className="w-full h-auto object-cover rounded-md"
+            {hotel?.images?.map((imgId) => (
+              <li className="h-12 w-12 img-container" key={imgId}>
+                <AdvancedImage
+                  cldImg={cld
+                    .image(imgId)
+                    .delivery(quality("auto"))
+                    .delivery(format("auto"))}
                 />
               </li>
             ))}
@@ -29,7 +34,7 @@ const Card = ({ hotel }) => {
         <div className="flex flex-col justify-between gap-6 w-full sm:w-[60%] md:w-[70%] h-full">
           <div className="flex px-[6px] md:px-3 gap-2 justify-between items-center text-[13px] md:text-[15px]">
             <div className="flex gap-1 items-center ">
-              <span>4</span> <span>⭐⭐⭐⭐ | {hotel?.type}</span>
+              <span>4</span> <span>⭐⭐⭐⭐ | {hotel.type}</span>
             </div>
 
             <div className="flex gap-2 items-center">

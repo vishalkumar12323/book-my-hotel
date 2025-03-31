@@ -1,44 +1,58 @@
 import { prisma } from "../config/database.js";
+import multiparty from "multiparty";
+import cloudinary from "../config/cloudinary.js";
 
 export const addListing = async (req, res) => {
-  console.log({ files: req.files?.images, file: req.file?.coverImage });
-  console.log(req.body);
-  try {
-    // const { name, address, description, facilities, price, type, rating } =
-    //   req.body;
-    // const coverImageUrl = req.files["coverImage"]
-    //   ? req.files["coverImage"][0].path
-    //   : "";
-    // const imageUrls = req.files["images"]
-    //   ? req.files["images"].map((image) => image.path)
-    //   : [];
+  const form = new multiparty.Form();
 
-    // const newListing = await prisma.listing.create({
-    //   data: {
-    //     vendorId: req.user.id,
-    //     name,
-    //     address,
-    //     description,
-    //     facilities: facilities
-    //       ? facilities.split(",").map((facilitie) => facilitie.trim())
-    //       : [],
-    //     price: parseInt(price),
-    //     type,
-    //     coverImage: coverImageUrl,
-    //     images: imageUrls,
-    //     rating: parseFloat(rating),
-    //   },
-    //   omit: {
-    //     coverImage: true,
-    //   },
-    // });
+  form.parse(req, async (err, feild, files) => {
+    if (err) {
+      return res.status(500).json({ error: "feiled to parse form data" });
+    }
 
-    // res.status(201).json(newListing);
-    res.status(200).json({ msg: "ok" });
-  } catch (error) {
-    console.error("Error adding listing:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
+    try {
+      const name = feild.name[0].toLowerCase();
+      const address = feild.address[0].toLowerCase();
+      const description = feild.description[0];
+      const facilities = feild.facilities[0]
+        .split(", ")
+        .map((facilitie) => facilitie.trim().toLowerCase());
+      const type = feild.type[0].toUpperCase();
+      const price = parseFloat(feild.price[0]);
+      const rating = feild.rating ? parseFloat(feild.rating[0]) : 4;
+
+      const coverImage = files.coverImage[0].path;
+      const coverImageResult = await cloudinary.uploader.upload(coverImage, {
+        folder: "hotel-image-storage",
+      });
+      const images = files.images.map((img) =>
+        cloudinary.uploader.upload(img.path, { folder: "hotel-image-storage" })
+      );
+      const uploadImagesResult = await Promise.all(images);
+
+      const listing = await prisma.listing.create({
+        data: {
+          vendorId: req.user.id,
+          name,
+          address,
+          description,
+          facilities,
+          type,
+          price,
+          rating,
+          coverImageId: coverImageResult.public_id,
+          images: uploadImagesResult.map((img) => img.public_id),
+        },
+        omit: {
+          coverImageId: true,
+        },
+      });
+      res.status(200).json({ listing });
+    } catch (error) {
+      console.error("Error creating listing:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 };
 
 export const updateListing = async (req, res) => {

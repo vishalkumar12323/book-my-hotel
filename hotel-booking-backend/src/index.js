@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import adminRoutes from "./routes/adminRoutes.js";
 import vendorRoutes from "./routes/vendroRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
@@ -12,8 +13,8 @@ dotenv.config();
 const port = process.env.PORT || 3002;
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 app.use(morgan("dev"));

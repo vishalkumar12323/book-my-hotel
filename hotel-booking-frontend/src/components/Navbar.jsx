@@ -5,7 +5,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { logout, session } from "../app/store/slices/authSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { protectedRoutes } from "../app/services/permissions.js";
-import { config } from "../config/api.js";
+import { config } from "../config/index.js";
 
 const Navbar = () => {
   const { isLoggedIn, user, accessToken } = useSelector(session);

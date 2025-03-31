@@ -1,10 +1,10 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { config } from "../../config/api.js";
+import { config } from "../../config";
 import { logout, setUserDetails } from "../store/slices/authSlice.js";
 import { updateHotelsData } from "../store/slices/hotelSlice.js";
 
 const bashQuery = fetchBaseQuery({
-  baseUrl: config.API_BASE_URL,
+  baseUrl: config.api_base_url,
   prepareHeaders: (headers, { getState }) => {
     const accessToken = getState().auth.accessToken;
     if (accessToken) {

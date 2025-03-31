@@ -12,12 +12,7 @@ import {
 
 const router = express.Router();
 
-router.post(
-  "/listings",
-  // isAuthenticated,
-  // authorizeRoles("VENDOR"),
-  addListing
-);
+router.post("/listings", isAuthenticated, authorizeRoles("VENDOR"), addListing);
 
 // Update Existing Listing
 router.put(
