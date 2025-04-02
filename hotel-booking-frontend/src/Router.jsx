@@ -69,11 +69,11 @@ export const router = createBrowserRouter([
       {
         path: "/add-new-listing",
         element: (
-          <AuthLayout isAuthenticated>
-            <ProtectedRoutes>
-              <AddListing />
-            </ProtectedRoutes>
-          </AuthLayout>
+          // <AuthLayout isAuthenticated>
+          //   <ProtectedRoutes>
+          <AddListing />
+          //   </ProtectedRoutes>
+          // </AuthLayout>
         ),
       },
       {

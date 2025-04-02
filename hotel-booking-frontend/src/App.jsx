@@ -36,7 +36,7 @@ export default function App() {
       <Outlet />
       <div
         className={` absolute bottom-8 right-8 ${
-          showAppInfoToast ? "opacity-100" : "opacity-0"
+          showAppInfoToast ? "opacity-100" : "opacity-0 hidden"
         } transition-opacity duration-500`}
       >
         <AppInfoToast setShowAppInfoToast={setShowAppInfoToast} />

@@ -1,53 +1,27 @@
-import { useRef } from "react";
-import { IoCloudUploadOutline } from "react-icons/io5";
 import { useForm } from "react-hook-form";
 import { useCreateListingMutation } from "../app/services/vendorServices.js";
 import { MdErrorOutline } from "react-icons/md";
+import FileUpload from "./file-uploader.jsx";
 
 const AddListing = () => {
-  const coverImageRef = useRef(null);
-  const imagesRef = useRef(null);
-  const { register, handleSubmit, reset, setValue, watch, formState } =
-    useForm();
-
   const [createLIsting] = useCreateListingMutation();
-  const handleCoverImageChange = (e) => {
-    const files = e.target.files;
 
-    if (files) {
-      const file = Object.values(files);
-      setValue("coverImage", file);
-    }
-  };
+  const { handleSubmit, control, register, formState } = useForm();
 
-  const handleImagesChange = (e) => {
-    const files = Object.values(e.target.files);
-    setValue("images", files);
-  };
-  const submitForm = async (data) => {
+  const onSubmit = (data) => {
     const formData = new FormData();
+    data.hotelCoverImage.forEach((file) =>
+      formData.append("hotelCoverImage", file)
+    );
+    data.hotelImages.forEach((file) => formData.append("hotelImages", file));
 
-    formData.append("name", data.name);
-    formData.append("address", data.address);
-    formData.append("description", data.description);
-    formData.append("facilities", data.facilities);
-    formData.append("price", data.price);
-    formData.append("type", data.type);
-    formData.append("coverImage", data.coverImage[0]); // Append cover image
-    Array.from(data.images).forEach((image) => {
-      formData.append("images", image); // Append multiple images
-    });
-
-    // console.log(data.coverImage);
-    console.log(formData);
-    const response = await createLIsting(formData).unwrap();
-    console.log(response);
+    console.log(data);
   };
   return (
     <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow-lg rounded-lg my-6">
       <h2 className="text-2xl font-bold mb-4">Add New Hotel/Restaurant</h2>
 
-      <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex space-x-4 w-full mb-4">
           <div className="w-full">
             <label className="block font-medium">Listing Name</label>
@@ -57,7 +31,7 @@ const AddListing = () => {
               className={`${
                 formState.errors.name
                   ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
-                  : "focus:ring-1 focus:ring-slate-900"
+                  : "focus:ring-1 focus:ring-blue-500"
               } w-full px-1 py-2 rounded border focus:outline-none shadow`}
               placeholder="Hotel/Restaurant Name"
               {...register("name", {
@@ -93,7 +67,7 @@ const AddListing = () => {
               className={`${
                 formState.errors.address
                   ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
-                  : "focus:ring-1 focus:ring-slate-900"
+                  : "focus:ring-1 focus:ring-blue-500"
               } w-full px-1 py-2 rounded border focus:outline-none shadow`}
               placeholder="Street, City, State, Country"
               {...register("address", {
@@ -114,14 +88,14 @@ const AddListing = () => {
             )}
           </div>
         </div>
-        <div className="mb-4">
+        <div className="mb-4 w-full">
           <label className="block font-medium">Description</label>
           <textarea
             name="description"
             className={`${
               formState.errors.description
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
-                : "focus:ring-1 focus:ring-slate-900"
+                : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             rows={4}
             {...register("description", {
@@ -159,7 +133,7 @@ const AddListing = () => {
             className={`${
               formState.errors.facilities
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
-                : "focus:ring-1 focus:ring-slate-900"
+                : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             placeholder="Free Wifi, Parking, Pool, etc."
             {...register("facilities", {
@@ -196,7 +170,7 @@ const AddListing = () => {
             className={`${
               formState.errors.price
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
-                : "focus:ring-1 focus:ring-slate-900"
+                : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             placeholder="Price in INR"
             {...register("price", {
@@ -232,7 +206,7 @@ const AddListing = () => {
             className={`${
               formState.errors.type
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
-                : "focus:ring-1 focus:ring-slate-900"
+                : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             {...register("type", { required: "This is a required feild" })}
           >
@@ -243,99 +217,24 @@ const AddListing = () => {
 
         <div className="flex flex-col w-full mb-4">
           <h3 className="mb-1">Upload Hotels Images</h3>
-          <div className="w-full flex space-x-4">
-            <div
-              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer  hover:ring-1 hover:ring-blue-500 relative"
-              onDrop={(e) => {
-                e.preventDefault();
-                const files = e.dataTransfer.files;
-                if (coverImageRef.current) {
-                  const dataTransfer = new DataTransfer();
-                  Array.from(files).forEach((file) => {
-                    dataTransfer.items.add(file);
-                  });
-                  coverImageRef.current.file = dataTransfer.files;
-                  const changeEvent = new Event("change", { bubbles: true });
-                  coverImageRef.current.dispatchEvent(changeEvent);
-                }
-              }}
-              onDragOver={(e) => e.preventDefault()}
-            >
-              <IoCloudUploadOutline size={50} className="text-gray-500" />
-              <label className="block font-medium">Cover Image</label>
-              <input
-                ref={coverImageRef}
-                type="file"
-                name="coverImage"
-                {...register("coverImage")}
-                // onChange={handleCoverImageChange}
-                className="w-full h-full border rounded absolute"
-                accept="image/*"
-              />
-              <button
-                type="button"
-                className="shadow-md border border-slate-300 hover:border-blue-500 transition-colors px-4 py-2 rounded-lg z-50"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (coverImageRef.current) {
-                    coverImageRef.current.click();
-                  }
-                }}
-              >
-                upload
-              </button>
-              <span>or drag & drop here</span>
-            </div>
-
-            <div
-              className="w-full h-60 flex flex-col gap-3 border rounded-lg justify-center items-center cursor-pointer hover:ring-1 hover:ring-blue-500 relative"
-              onDrop={(e) => {
-                e.preventDefault();
-                const files = e.dataTransfer.files;
-                if (imagesRef.current) {
-                  const dataTransfer = new DataTransfer();
-                  Array.from(files).forEach((file) => {
-                    dataTransfer.items.add(file);
-                  });
-                  imagesRef.current.files = dataTransfer.files;
-
-                  const changeEvent = new Event("change", { bubbles: true });
-                  imagesRef.current.dispatchEvent(changeEvent);
-                }
-              }}
-              onDragOver={(e) => e.preventDefault()}
-            >
-              <IoCloudUploadOutline size={50} className="text-gray-500" />
-              <label className="block font-medium">
-                Additional Images (Max 5)
-              </label>
-              <input
-                ref={imagesRef}
-                type="file"
-                multiple
-                name="images"
-                {...register("images")}
-                // onChange={handleImagesChange}
-                className="w-full h-full border rounded absolute"
-                accept="image/*"
-              />
-              <button
-                type="button"
-                className="shadow-md border border-slate-300 hover:border-blue-500 transition-colors px-4 py-2 rounded-lg"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                  if (imagesRef.current) {
-                    imagesRef.current.click();
-                  }
-                }}
-              >
-                upload images
-              </button>
-              <span>or drag & drop here</span>
-            </div>
+          <div className="w-full flex flex-col md:flex-row gap-4">
+            <FileUpload
+              control={control}
+              name="hotelCoverImage"
+              rules={{ required: true }}
+              ariaFeild={"hotel-cover-image"}
+              errorMessage="Hotel cover image is required."
+              uploadButton="Cover Image"
+            />
+            <FileUpload
+              control={control}
+              name="hotelImages"
+              rules={{ required: true }}
+              ariaFeild={"hotel-images"}
+              multiple={true}
+              errorMessage="Hotel images are required."
+              uploadButton="Hotel Images"
+            />
           </div>
         </div>
 
@@ -351,3 +250,87 @@ const AddListing = () => {
 };
 
 export default AddListing;
+
+/*
+
+const coverImageRef = useRef(null);
+  const imagesRef = useRef(null);
+  const [previewCoverImage, setPreviewCoverImage] = useState(null);
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const { register, handleSubmit, reset, setValue, trigger, formState } =
+    useForm({ mode: "onChange" });
+
+  const handleCoverImageChange = (e) => {
+    const files = Object.values(e.target.file);
+
+    console.log(e);
+    setValue("coverImage", files);
+    trigger("coverImage");
+  };
+
+  const handleImagesChange = (e) => {
+    const files = Object.values(e.target.files);
+
+    console.log(e);
+
+    setValue("images", files);
+    trigger("images");
+  };
+
+  const handleCoverImageDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+      const files = event.dataTransfer.files;
+      if (files && files.length > 0) {
+        setValue("coverImage", files[0], { shouldValidate: true });
+        trigger("coverImage");
+        setPreviewCoverImage(URL.createObjectURL(files[0]));
+      }
+    },
+    [setValue, trigger]
+  );
+
+  const handleImagesDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+      const files = Object.values(event.dataTransfer.files);
+      if (files && files.length > 0) {
+        setValue("images", files, { shouldValidate: true });
+        trigger("images");
+      }
+    },
+    [setValue, trigger]
+  );
+  const submitForm = async (data) => {
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("address", data.address);
+    formData.append("description", data.description);
+    formData.append("facilities", data.facilities);
+    formData.append("price", data.price);
+    formData.append("type", data.type);
+    formData.append("coverImage", data.coverImage[0]);
+    Array.from(data.images).forEach((image) => {
+      formData.append("images", image);
+    });
+
+    console.log(data);
+
+    // const response = await createLIsting(formData).unwrap();
+    // console.log(response);
+
+    // reset();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (previewCoverImage) {
+        URL.revokeObjectURL(previewCoverImage);
+      }
+    };
+  }, [previewCoverImage]);
+  // console.log(previewCoverImage);
+
+*/
