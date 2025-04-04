@@ -5,6 +5,22 @@ export const vendorServiceApi = createApi({
   reducerPath: "vendorServiceApi",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
+    getListings: builder.query({
+      query: () => {
+        return {
+          url: "/listings",
+          method: "GET",
+        };
+      },
+    }),
+    getListing: builder.query({
+      query: (listingId) => {
+        return {
+          url: `/listing/${listingId}`,
+          method: "GET",
+        };
+      },
+    }),
     createListing: builder.mutation({
       query: (listing) => {
         console.log(listing);
@@ -15,7 +31,7 @@ export const vendorServiceApi = createApi({
         };
       },
     }),
-    updateListing: builder.query({
+    updateListing: builder.mutation({
       query: (listingId) => {
         return {
           url: `/listing/${listingId}`,
@@ -36,6 +52,8 @@ export const vendorServiceApi = createApi({
 
 export const {
   useCreateListingMutation,
-  useUpdateListingQuery,
+  useUpdateListingMutation,
   useDeleteListingQuery,
+  useGetListingQuery,
+  useGetListingsQuery,
 } = vendorServiceApi;

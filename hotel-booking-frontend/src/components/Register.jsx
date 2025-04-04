@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useRegisterMutation } from "../app/services/authServices.js";
 import { setUserDetails } from "../app/store/slices/authSlice.js";
 import { MdErrorOutline } from "react-icons/md";
+import { Button, LoadingSpinner } from "./index";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const Register = () => {
   const { handleSubmit, register, reset, formState } = useForm({
@@ -12,7 +14,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [signup, { isLoading }] = useRegisterMutation();
+  const [signup, { isLoading, isSuccess }] = useRegisterMutation();
   const submitForm = async (data) => {
     const response = await signup(data).unwrap();
     dispatch(
@@ -21,8 +23,9 @@ const Register = () => {
         user: { email: data?.email },
       })
     );
-    reset();
-    navigate("/");
+
+    // reset();
+    // navigate("/");
   };
 
   return (
@@ -46,7 +49,7 @@ const Register = () => {
                 } w-full px-1 py-2 rounded border focus:outline-none shadow`}
                 name="name"
                 {...register("name", {
-                  required: "This feild is required.",
+                  required: "The name feild is required.",
                 })}
                 aria-describedby="name-error"
               />
@@ -72,7 +75,7 @@ const Register = () => {
                 } w-full px-1 py-2 rounded border focus:outline-none focus:ring-1 focus:ring-slate-900 shadow`}
                 name="email"
                 {...register("email", {
-                  required: "This feild is required.",
+                  required: "The email feild is required.",
                   pattern: {
                     value: /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                     message: "Emails should be formatted as: name@example.com",
@@ -103,7 +106,7 @@ const Register = () => {
                     : "focus:ring-1 focus:ring-slate-900"
                 } w-full px-1 py-2 rounded border focus:outline-none focus:ring-1 focus:ring-slate-900 shadow`}
                 {...register("password", {
-                  required: "This feild is required.",
+                  required: "The password feild is required.",
                   maxLength: {
                     value: 15,
                     message: "password should not greater then 15 characters",
@@ -142,13 +145,26 @@ const Register = () => {
                 </option>
               </select>
             </div>
-            <button
+            <Button
               type="submit"
-              className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
-              disabled={isLoading}
+              className={`${
+                isSuccess &&
+                "border-green-600 hover:border-green-600 text-green-600"
+              } w-full`}
+              buttonState={isLoading}
             >
-              Register
-            </button>
+              {isSuccess ? (
+                <>
+                  <span>Registered</span>
+                  <IoIosCheckmarkCircle size={20} color="green" />
+                </>
+              ) : (
+                <>
+                  <span>Register</span>{" "}
+                  {isLoading && <LoadingSpinner className="mt-[2px]" />}
+                </>
+              )}
+            </Button>
           </form>
 
           <div className="text-center mt-6">

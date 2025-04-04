@@ -3,11 +3,11 @@ import Footer from "./Footer";
 import ErrorPage from "./ErrorPage";
 import Register from "./Register";
 import Login from "./Login";
-import ConfirmedBookings from "./ConfirmedBookings";
-import PendingBookings from "./PendingBookings";
-import CancelledBookings from "./CancelledBookings";
+import ConfirmedBookings from "./customer/ConfirmedBookings";
+import PendingBookings from "./customer/PendingBookings";
+import CancelledBookings from "./customer/CancelledBookings";
 import BookingRequests from "./BookingRequests";
-import ManageListings from "./ManageListings";
+import ManageListings from "./vendor/ManageListings";
 import Hotels from "./Hotels";
 import Filters from "./Hotel-filters";
 import Search from "./Search";
@@ -16,9 +16,11 @@ import Loading from "./Loading";
 import HotelsCardSkeleton from "./skeletons/HotelsCardSkeleton";
 import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
 import ProtectedRoutes from "./Protected-Routes";
-import AddListing from "./add-listing";
+import AddListing from "./vendor/add-listing";
 import AppInfoToast from "./app-info";
 import FileUpload from "./file-uploader";
+import LoadingSpinner from "./skeletons/loading-spinner";
+import Button from "./ui/button";
 
 export {
   Navbar,
@@ -42,4 +44,6 @@ export {
   AddListing,
   AppInfoToast,
   FileUpload,
+  LoadingSpinner,
+  Button,
 };

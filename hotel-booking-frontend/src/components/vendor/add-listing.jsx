@@ -1,21 +1,31 @@
 import { useForm } from "react-hook-form";
-import { useCreateListingMutation } from "../app/services/vendorServices.js";
+import { useCreateListingMutation } from "../../app/services/vendorServices.js";
 import { MdErrorOutline } from "react-icons/md";
-import FileUpload from "./file-uploader.jsx";
+import { Button, FileUpload, LoadingSpinner } from "../index.js";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const AddListing = () => {
-  const [createLIsting] = useCreateListingMutation();
+  const [createLIsting, { isLoading, isSuccess }] = useCreateListingMutation();
 
   const { handleSubmit, control, register, formState } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("address", data.address);
+    formData.append("description", data.description);
+    formData.append("facilities", data.facilities);
+    formData.append("price", data.price);
+    formData.append("type", data.type);
+
     data.hotelCoverImage.forEach((file) =>
       formData.append("hotelCoverImage", file)
     );
     data.hotelImages.forEach((file) => formData.append("hotelImages", file));
 
-    console.log(data);
+    const response = await createLIsting(formData).unwrap();
+    console.log(response);
   };
   return (
     <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow-lg rounded-lg my-6">
@@ -238,12 +248,25 @@ const AddListing = () => {
           </div>
         </div>
 
-        <button
+        <Button
           type="submit"
-          className="shadow-md border border-slate-300 hover:border-blue-500 px-4 py-2 rounded-lg w-fit mt-4 transition-colors"
+          buttonState={isLoading}
+          className={`${
+            isSuccess &&
+            "border-green-600 hover:border-green-600 text-green-600"
+          }`}
         >
-          Add Listing
-        </button>
+          {isSuccess ? (
+            <>
+              <span>Created</span>
+              <IoIosCheckmarkCircle size={20} color="green" />
+            </>
+          ) : (
+            <>
+              <span>Create</span> {isLoading && <LoadingSpinner />}
+            </>
+          )}
+        </Button>
       </form>
     </div>
   );

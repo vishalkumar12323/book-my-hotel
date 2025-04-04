@@ -4,13 +4,15 @@ import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../app/services/authServices.js";
 import { setUserDetails } from "../app/store/slices/authSlice.js";
 import { MdErrorOutline } from "react-icons/md";
+import { Button, LoadingSpinner } from "./index.js";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const Login = () => {
   const { register, handleSubmit, reset, formState } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading, isSuccess }] = useLoginMutation();
 
   const submitForm = async (data) => {
     const response = await login(data).unwrap();
@@ -99,13 +101,26 @@ const Login = () => {
                 </p>
               )}
             </div>
-            <button
+            <Button
               type="submit"
-              className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
-              disabled={isLoading}
+              className={`w-full ${
+                isSuccess &&
+                "border-green-600 hover:border-green-600 text-green-600"
+              }`}
+              buttonState={isLoading}
             >
-              Login
-            </button>
+              {isSuccess ? (
+                <>
+                  <span>LoggedIn</span>
+                  <IoIosCheckmarkCircle size={20} color="green" />
+                </>
+              ) : (
+                <>
+                  <span>Login</span>{" "}
+                  {isLoading && <LoadingSpinner className="mt-[2px]" />}
+                </>
+              )}
+            </Button>
           </form>
           <div className="text-center mt-6">
             <p className="mb-4">or sign in with</p>

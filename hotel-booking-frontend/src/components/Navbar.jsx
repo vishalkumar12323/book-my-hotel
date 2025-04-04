@@ -45,18 +45,19 @@ const Navbar = () => {
       navigate("/login");
     }
   };
+
   return (
-    <div className="bg-blue-500 flex justify-between items-center h-16 md:h-20 w-full px-4 text-white">
+    <div className="bg-blue-500 flex justify-between items-center h-16 md:h-20 w-full px-4">
       <h1 className="w-full text-xl md:text-3xl font-bold">
         {" "}
         <NavLink to={"/"}>
-          <span className="text-xl md:text-2xl text-slate-900 font-[900]">
-            BookMyHotel
-          </span>
+          <h1 className="uppercase w-fit text-xl md:text-2xl font-[900] text-[20px] bg-[conic-gradient(var(--tw-gradient-stops))] from-[#f3f8ff] via-[#deecff] to-[#c6cfff]">
+            bookmyhotel
+          </h1>
         </NavLink>{" "}
       </h1>
 
-      <ul className="hidden md:flex justify-end items-center w-full">
+      <ul className="hidden md:flex justify-end items-center w-full text-white">
         {navbarItems?.map((route) => {
           return (
             <li

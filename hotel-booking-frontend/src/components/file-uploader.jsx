@@ -1,5 +1,5 @@
 import { useController } from "react-hook-form";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { MdErrorOutline } from "react-icons/md";
 
@@ -13,6 +13,7 @@ const FileUpload = ({
   uploadButton,
 }) => {
   const [files, setFiles] = useState([]);
+  const [filePreview, setFilePreview] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef(null);
   const { field, fieldState } = useController({
@@ -50,8 +51,25 @@ const FileUpload = ({
 
     setFiles(validFiles);
     field.onChange(validFiles);
+
+    const filesPrev = validFiles.map((file) => {
+      const fileUrl = URL.createObjectURL(file);
+      return {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        url: fileUrl,
+      };
+    });
+    setFilePreview((prev) => [...prev, ...filesPrev]);
   };
 
+  useEffect(() => {
+    console.log(filePreview);
+    return () => {
+      filePreview.forEach((file) => URL.revokeObjectURL(file.url));
+    };
+  }, [filePreview]);
   return (
     <div className="flex flex-col gap-1 w-full">
       <div
@@ -94,25 +112,26 @@ const FileUpload = ({
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          {files.map((file, index) => (
-            <div
-              key={index}
-              className="text-center flex justify-center flex-col"
-            >
-              {file.type.startsWith("image/") && (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  style={{ maxWidth: "100px" }}
-                />
-              )}
-              <p className="text-[10px] font-medium text-center">
-                <span>Name: {file.name}</span>
-                <br />
-                <span>Size: {(file.size / 1024).toFixed(2)}KB</span>
-              </p>
-            </div>
-          ))}
+          {filePreview.map((file) => {
+            return (
+              <div
+                key={file.name}
+                className="text-center flex justify-center flex-col"
+              >
+                {file.type?.startsWith("image/") && (
+                  <img
+                    src={file.url}
+                    alt={`${file.name}-preview`}
+                    style={{ maxWidth: "100px" }}
+                  />
+                )}
+                <p className="text-[10px] font-medium text-center flex flex-col gap-[1px] mt-1">
+                  <span>Name: {file.name}</span>
+                  <span>Size: {(file.size / 1024).toFixed(2)}KB</span>
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
       {fieldState.error && (
