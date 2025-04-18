@@ -1,18 +1,16 @@
 import React, { useEffect } from "react";
-import { useNavigate, useHref, useParams } from "react-router-dom";
+import { useNavigate, useHref } from "react-router-dom";
 import { session } from "../app/store/slices/authSlice.js";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export const AuthLayout = ({ children, isAuthenticated = true }) => {
-  const dispatch = useDispatch();
   const { isLoggedIn } = useSelector(session);
   const navigate = useNavigate();
   const href = useHref();
-  const param = useParams();
   useEffect(() => {
     if (isAuthenticated && isLoggedIn !== isAuthenticated) {
       switch (href) {
-        case "/customer-dashboard":
+        case "/my-bookings":
           navigate(href);
           break;
         case `/vendor-dashboard`:

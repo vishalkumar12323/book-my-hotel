@@ -8,14 +8,18 @@ import { Navbar, Footer, AppInfoToast } from "./components";
 export default function App() {
   const [showAppInfoToast, setShowAppInfoToast] = useState(false);
   const { isLoggedIn } = useSelector(session);
+  const [hasSession, setHasSession] = useState(() =>
+    isLoggedIn ? true : false
+  );
   const dispatch = useDispatch();
-  const { data, isLoading } = useGetUserInfoQuery(undefined, {
-    skip: !isLoggedIn,
+  const { data } = useGetUserInfoQuery(undefined, {
+    skip: hasSession,
   });
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && data) {
       dispatch(updateUserDetails(data));
+      setHasSession(false);
     }
   }, [isLoggedIn, dispatch, data]);
 
