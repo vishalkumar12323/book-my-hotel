@@ -15,7 +15,8 @@ import Card from "./Card";
 import Loading from "./Loading";
 import HotelsCardSkeleton from "./skeletons/HotelsCardSkeleton";
 import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
-import ProtectedRoutes from "./Protected-Routes";
+import ProtectedRoutes from "./auth/Protected-Routes";
+import AuthLayout from "./auth/AuthLayout";
 import AddListing from "./vendor/add-listing";
 import AppInfoToast from "./app-info";
 import FileUpload from "./file-uploader";
@@ -41,6 +42,7 @@ export {
   HotelsCardSkeleton,
   HotelCardSkeleton,
   ProtectedRoutes,
+  AuthLayout,
   AddListing,
   AppInfoToast,
   FileUpload,

@@ -2,7 +2,7 @@ import React from "react";
 
 const HotelsCardSkeleton = () => {
   return (
-    <div className="w-full flex">
+    <div className="w-full h-full flex">
       <div className="bg-white flex w-full h-[317px] rounded-md">
         <div className="flex flex-col h-full w-1/3 space-y-4 p-3">
           <div className="animate-pulse w-full h-52 rounded bg-[#a4d3f3]"></div>

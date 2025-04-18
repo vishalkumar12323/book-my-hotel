@@ -7,7 +7,7 @@ const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 export const createAccessToken = (payload) => {
   const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-    expiresIn: "10m",
+    expiresIn: "10d",
   });
 
   return accessToken;
@@ -15,7 +15,7 @@ export const createAccessToken = (payload) => {
 
 export const createRefreshToken = (payload) => {
   const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: "5d",
+    expiresIn: "20d",
   });
 
   return refreshToken;

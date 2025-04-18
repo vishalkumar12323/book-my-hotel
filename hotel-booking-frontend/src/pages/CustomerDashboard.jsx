@@ -12,13 +12,18 @@ import {
   bookings,
 } from "../app/store/slices/userBookingSlice.js";
 import { useDispatch, useSelector } from "react-redux";
+import { session } from "../app/store/slices/authSlice.js";
 
 export const CustomerDashboard = () => {
   const { pandingBookings, confirmedBookings, cancelledBookings } =
     useSelector(bookings);
+
+  const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
   const [bookingStatus, setBookingStatus] = useState("pending");
-  const { data, isLoading, isError } = useGetUserBookingsQuery(bookingStatus);
+  const { data, isLoading, isError } = useGetUserBookingsQuery(bookingStatus, {
+    skip: !isLoggedIn,
+  });
 
   useEffect(() => {
     if (data && bookingStatus === "pending") {
@@ -26,11 +31,10 @@ export const CustomerDashboard = () => {
     } else if (data && bookingStatus === "confirmed") {
       dispatch(setConfirmedBookings(data));
     } else if (data && bookingStatus === "cancelled") {
-      dispatch(setCancelledBookings());
+      dispatch(setCancelledBookings(data));
     }
-  }, [data, dispatch, bookingStatus]);
+  }, [data, dispatch, bookingStatus, isLoggedIn]);
 
-  console.log("pending ", pandingBookings);
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto">

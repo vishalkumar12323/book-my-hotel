@@ -17,13 +17,13 @@ export const HomePage = () => {
   }, [data, dispatch]);
 
   return (
-    <div className="flex flex-col mx-auto my-2 h-screen px-3 md:px-4 max-w-screen-xl w-full items-start">
+    <div className="flex flex-col mx-auto my-2 min-h-screen h-auto px-3 md:px-4 max-w-screen-xl w-full items-start">
       <Search setQuery={setQuery} />
       <div className="flex flex-col md:flex-row w-full justify-center gap-4">
         <Filters setQuery={setQuery} query={query} error={isError} />
 
         {isLoading ? (
-          <div className="flex flex-col w-full md:w-3/4 py-6 gap-4">
+          <div className="flex flex-col w-full md:w-3/4 py-3 md:py-6 gap-4 mb-4 md:mb-2">
             {[...Array(2)].map((_, idx) => (
               <HotelsCardSkeleton key={idx} />
             ))}

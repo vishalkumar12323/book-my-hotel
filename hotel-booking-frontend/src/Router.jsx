@@ -3,11 +3,16 @@ import { createBrowserRouter } from "react-router-dom";
 import { HomePage } from "./pages/Home";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-import { ErrorPage, ProtectedRoutes, AddListing } from "./components";
+import {
+  ErrorPage,
+  ProtectedRoutes,
+  AddListing,
+  AuthLayout,
+} from "./components";
 import { CustomerDashboard } from "./pages/CustomerDashboard";
 import { VendorDashboard } from "./pages/VendorDashboard";
+import { EditList } from "./pages/EditList.jsx";
 import { AboutPage } from "./pages/AboutPage.jsx";
-import { AuthLayout } from "./components/AuthLayout";
 import { store } from "./app/store/store.js";
 import { Provider } from "react-redux";
 import { Hotel } from "./pages/Hotel.jsx";
@@ -24,14 +29,15 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
+
         element: <HomePage />,
       },
       {
-        path: "/about",
+        path: "about",
         element: <AboutPage />,
       },
       {
-        path: "/login",
+        path: "login",
         element: (
           <AuthLayout isAuthenticated={false}>
             <LoginPage />
@@ -39,7 +45,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/register",
+        path: "register",
         element: (
           <AuthLayout isAuthenticated={false}>
             <RegisterPage />
@@ -47,7 +53,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/my-bookings",
+        path: "my-bookings",
         element: (
           <AuthLayout isAuthenticated>
             <ProtectedRoutes>
@@ -57,7 +63,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/vendor-dashboard",
+        path: "vendor-dashboard",
         element: (
           <AuthLayout isAuthenticated>
             <ProtectedRoutes>
@@ -67,17 +73,27 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/add-new-listing",
+        path: "edit-list/:listingId/:listingName",
         element: (
-          // <AuthLayout isAuthenticated>
-          //   <ProtectedRoutes>
-          <AddListing />
-          //   </ProtectedRoutes>
-          // </AuthLayout>
+          <AuthLayout isAuthenticated>
+            <ProtectedRoutes>
+              <EditList />
+            </ProtectedRoutes>
+          </AuthLayout>
         ),
       },
       {
-        path: "/hotels/:hotelId/:hotelName",
+        path: "add-new-listing",
+        element: (
+          <AuthLayout isAuthenticated>
+            <ProtectedRoutes>
+              <AddListing />
+            </ProtectedRoutes>
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "hotels/:hotelId/:hotelName",
         element: <Hotel />,
       },
     ],

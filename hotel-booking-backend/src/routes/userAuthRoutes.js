@@ -14,7 +14,7 @@ router.post("/register", register);
 
 router.post("/login", login);
 router.get("/user-profile", isAuthenticated, getUserProfile);
-router.post("/refresh-session", reAuthenticate);
+router.get("/refresh-session", reAuthenticate);
 router.delete("/logout", isAuthenticated, logout);
 
 export default router;

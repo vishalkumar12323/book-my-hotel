@@ -20,19 +20,9 @@ const Navbar = () => {
   const navbarItems = [
     ...new Set(user?.roles?.flatMap((role) => protectedRoutes[role]) || []),
   ];
-  const navItems = [
-    { name: "home", active: true, url: "/" },
-    {
-      name: "manage booking",
-      active: isLoggedIn,
-      url: `/bookings/my-bookings`,
-    },
-    { name: "login", active: !isLoggedIn, url: "/login" },
-    { name: "signup", active: !isLoggedIn, url: "/register" },
-  ];
 
   const logoutUser = async () => {
-    const response = await fetch(`${config.API_BASE_URL}_auth/logout`, {
+    const response = await fetch(`${config.api_base_url}_auth/logout`, {
       credentials: "include",
       headers: {
         authorization: `Bearer ${accessToken}`,
@@ -42,7 +32,7 @@ const Navbar = () => {
     if (response.ok) {
       console.log(await response.json());
       dispatch(logout());
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   };
 
@@ -106,13 +96,17 @@ const Navbar = () => {
       </ul>
 
       <div onClick={handleNav} className="block md:hidden">
-        {nav ? <AiOutlineClose size={24} /> : <AiOutlineMenu size={24} />}
+        {nav ? (
+          <AiOutlineClose size={24} className="text-white" />
+        ) : (
+          <AiOutlineMenu size={24} className="text-white" />
+        )}
       </div>
 
       <ul
         className={
           nav
-            ? "fixed md:hidden left-0 top-0 w-[60%] h-full bg-blue-500 ease-in-out duration-500 z-50"
+            ? "fixed md:hidden left-0 top-0 w-[60%] h-full text-white bg-blue-500 ease-in-out duration-500 z-50"
             : "ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]"
         }
       >
@@ -125,7 +119,7 @@ const Navbar = () => {
             <li
               key={route}
               className={
-                "p-4 hover:bg-blue-600 duration-300 cursor-pointer capitalize flex items-center gap-1"
+                "p-4 hover:bg-blue-600 duration-300  cursor-pointer capitalize flex items-center gap-1"
               }
             >
               <Link to={route}>
@@ -158,7 +152,7 @@ const Navbar = () => {
             </li>
             <li
               className={
-                "p-4 hover:bg-blue-600 duration-300 cursor-pointer h-full capitalize flex items-center gap-1"
+                "p-4 hover:bg-blue-600 duration-300 cursor-pointer capitalize flex items-center gap-1"
               }
             >
               <Link to={"/register"}>register</Link>
