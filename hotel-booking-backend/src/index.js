@@ -27,9 +27,9 @@ app.use(
 );
 
 // Api Routes
-app.use("/api", customerRoutes);
-app.use("/api", vendorRoutes);
-app.use("/api", adminRoutes);
+app.use("/api/customer", customerRoutes);
+app.use("/api/vendor", vendorRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/_auth", authRoutes);
 
 // health check
