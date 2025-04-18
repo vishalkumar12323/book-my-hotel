@@ -71,7 +71,7 @@ const Filters = ({ query, setQuery, error }) => {
   };
 
   return (
-    <aside className="py-6 w-full md:w-[25%] h-full flex justify-start items-start flex-col">
+    <aside className="py-3 md:py-6 w-full md:w-[25%] h-full flex justify-start items-start flex-col">
       <div className="w-full p-3 bg-white rounded-lg">
         <div className="mb-4 w-full flex justify-between items-center">
           <h2 className=" text-[16px] md:text-xl font-bold uppercase text-slate-900">

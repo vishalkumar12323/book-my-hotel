@@ -9,12 +9,13 @@ export default function App() {
   const [showAppInfoToast, setShowAppInfoToast] = useState(false);
   const { isLoggedIn } = useSelector(session);
   const dispatch = useDispatch();
-  const { data, isLoading } = useGetUserInfoQuery(undefined, {
-    skip: !isLoggedIn,
+
+  const { data } = useGetUserInfoQuery(undefined, {
+    skip: isLoggedIn,
   });
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && data) {
       dispatch(updateUserDetails(data));
     }
   }, [isLoggedIn, dispatch, data]);
@@ -30,13 +31,14 @@ export default function App() {
 
     return () => localStorage.removeItem("hasvisited");
   }, []);
+
   return (
     <>
       <Navbar />
       <Outlet />
       <div
         className={` absolute bottom-8 right-8 ${
-          showAppInfoToast ? "opacity-100" : "opacity-0 hidden"
+          showAppInfoToast ? "opacity-100 block" : "opacity-0 hidden"
         } transition-opacity duration-500`}
       >
         <AppInfoToast setShowAppInfoToast={setShowAppInfoToast} />

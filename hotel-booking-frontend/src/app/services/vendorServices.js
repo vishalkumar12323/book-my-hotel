@@ -6,17 +6,18 @@ export const vendorServiceApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getListings: builder.query({
-      query: () => {
+      query: (query) => {
         return {
-          url: "/listings",
+          url: "/vendor/listings",
           method: "GET",
+          params: query,
         };
       },
     }),
     getListing: builder.query({
       query: (listingId) => {
         return {
-          url: `/listing/${listingId}`,
+          url: `/vendor/listing/${listingId}`,
           method: "GET",
         };
       },
@@ -25,24 +26,25 @@ export const vendorServiceApi = createApi({
       query: (listing) => {
         console.log(listing);
         return {
-          url: "/listings",
+          url: "/vendor/listings",
           method: "POST",
           body: listing,
         };
       },
     }),
     updateListing: builder.mutation({
-      query: (listingId) => {
+      query: ({ listingId, listing }) => {
         return {
-          url: `/listing/${listingId}`,
+          url: `/vendor/listing/${listingId}`,
           method: "PUT",
+          body: listing,
         };
       },
     }),
     deleteListing: builder.query({
       query: (listingId) => {
         return {
-          url: `/listing/${listingId}`,
+          url: `/vendor/listing/${listingId}`,
           method: "DELETE",
         };
       },

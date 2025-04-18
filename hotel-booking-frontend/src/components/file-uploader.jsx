@@ -85,18 +85,22 @@ const FileUpload = ({
           textAlign: "center",
           background: fieldState.error && "#ffe6e6c8",
         }}
-        className={`bg-gradient-to-r from-sky-400/10 to-blue-500/5 border-dashed w-full min-h-[15rem] flex flex-col justify-center items-center rounded border-2 shadow`}
+        className={`bg-gradient-to-r from-sky-400/10 to-blue-500/5 border-dashed w-full min-h-[15rem] flex flex-col justify-center items-center rounded border-2 shadow hover:bg-blue-200/50 transition-colors`}
         aria-describedby={ariaFeild}
       >
-        <div className="w-full flex flex-col items-center gap-[10px]">
+        <div className="w-full flex flex-col items-center gap-[10px] ">
           <div className="flex justify-center flex-col items-center">
             <IoCloudUploadOutline size={50} className="text-slate-700" />
-            <p> Drag & Drop files</p>
+            <p> Drag & Drop Images</p>
           </div>
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="m-4 border shadow rounded hover:border-blue-600 px-3 py-1"
+            className={`m-4 border shadow rounded ${
+              fieldState.error
+                ? "hover:border-red-600"
+                : "hover:border-blue-600"
+            }  px-3 py-1`}
           >
             {files && files.length > 0
               ? `Change ${uploadButton}`
@@ -119,11 +123,13 @@ const FileUpload = ({
                 className="text-center flex justify-center flex-col"
               >
                 {file.type?.startsWith("image/") && (
-                  <img
-                    src={file.url}
-                    alt={`${file.name}-preview`}
-                    style={{ maxWidth: "100px" }}
-                  />
+                  <div className="img-container">
+                    <img
+                      src={file.url}
+                      alt={`${file.name}-preview`}
+                      style={{ maxWidth: "120px" }}
+                    />
+                  </div>
                 )}
                 <p className="text-[10px] font-medium text-center flex flex-col gap-[1px] mt-1">
                   <span>Name: {file.name}</span>

@@ -11,13 +11,13 @@ export const userBookingSlice = createSlice({
   initialState,
   reducers: {
     setPandingBookings: (state, { payload }) => {
-      console.log("panding ", payload);
+      state.pandingBookings = payload;
     },
     setConfirmedBookings: (state, { payload }) => {
-      console.log("confirmed ", payload);
+      state.confirmedBookings = payload;
     },
     setCancelledBookings: (state, { payload }) => {
-      console.log("calcelled ", payload);
+      state.cancelledBookings = payload;
     },
   },
 });
