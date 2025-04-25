@@ -1,29 +1,49 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useLoginMutation } from "../app/services/authServices.js";
+import {
+  useGetUserInfoQuery,
+  useLoginMutation,
+} from "../app/services/authServices.js";
 import { setUserDetails } from "../app/store/slices/authSlice.js";
 import { MdErrorOutline } from "react-icons/md";
 import { Button, LoadingSpinner } from "./index.js";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const Login = () => {
-  const { register, handleSubmit, reset, formState } = useForm();
+  const { register, handleSubmit, reset, formState, setError } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [login, { isLoading, isSuccess }] = useLoginMutation();
-
+  const { refetch: refetchUserInfo } = useGetUserInfoQuery();
   const submitForm = async (data) => {
-    const response = await login(data).unwrap();
-    dispatch(
-      setUserDetails({
-        accessToken: response.accessToken,
-        user: { email: data.email },
-      })
-    );
-    reset();
-    navigate("/");
+    try {
+      const response = await login(data).unwrap();
+      dispatch(
+        setUserDetails({
+          accessToken: response.accessToken,
+          user: { email: data.email },
+        })
+      );
+      await refetchUserInfo();
+      reset();
+      navigate("/", { replace: true });
+    } catch (error) {
+      if (error && error.status === 404) {
+        setError("email", {
+          type: "manual",
+          message: error.data.message || "Invalid credentials",
+        });
+
+        setError("password", {
+          type: "manual",
+          message: error.data.message || "Invalid credentials",
+        });
+      } else {
+        alert("Something went wrong, please try again later.");
+      }
+    }
   };
   return (
     <div className="flex flex-col md:flex-row h-screen w-full p-4">

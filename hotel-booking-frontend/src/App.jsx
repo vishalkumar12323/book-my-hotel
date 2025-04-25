@@ -6,14 +6,22 @@ import { useEffect, useState } from "react";
 import { Navbar, Footer, AppInfoToast } from "./components";
 
 export default function App() {
+  const { isLoggedIn } = useSelector(session);
   const [showAppInfoToast, setShowAppInfoToast] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data, isSuccess, isError } = useGetUserInfoQuery(undefined);
+  const { data, isSuccess, isError, refetch } = useGetUserInfoQuery(undefined, {
+    skip: !isLoggedIn,
+  });
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      refetch();
+    }
+  }, [isLoggedIn, refetch]);
   useEffect(() => {
     if (!isInitialized && (isSuccess || isError)) {
       if (isSuccess && data) {

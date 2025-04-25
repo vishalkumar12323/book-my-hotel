@@ -8,7 +8,7 @@ import { Button, LoadingSpinner } from "./index";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const Register = () => {
-  const { handleSubmit, register, reset, formState } = useForm({
+  const { handleSubmit, register, reset, formState, setError } = useForm({
     mode: "onChange",
   });
   const dispatch = useDispatch();
@@ -16,16 +16,28 @@ const Register = () => {
 
   const [signup, { isLoading, isSuccess }] = useRegisterMutation();
   const submitForm = async (data) => {
-    const response = await signup(data).unwrap();
-    dispatch(
-      setUserDetails({
-        accessToken: response.accessToken,
-        user: { email: data?.email },
-      })
-    );
+    try {
+      const response = await signup(data).unwrap();
+      dispatch(
+        setUserDetails({
+          accessToken: response.accessToken,
+          user: { email: data?.email },
+        })
+      );
 
-    reset();
-    navigate("/");
+      reset();
+      navigate("/");
+    } catch (error) {
+      if (error && error.status === 403) {
+        setError("email", {
+          type: "manual",
+          message: error.data.message || "User with email already exists",
+        });
+      } else {
+        alert("Something went wrong, please try again later.");
+        return;
+      }
+    }
   };
 
   return (
@@ -72,7 +84,7 @@ const Register = () => {
                   formState.errors.email
                     ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                     : "focus:ring-1 focus:ring-slate-900"
-                } w-full px-1 py-2 rounded border focus:outline-none focus:ring-1 focus:ring-slate-900 shadow`}
+                } w-full px-1 py-2 rounded border focus:outline-none shadow`}
                 name="email"
                 {...register("email", {
                   required: "The email feild is required.",
@@ -104,7 +116,7 @@ const Register = () => {
                   formState.errors.password
                     ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                     : "focus:ring-1 focus:ring-slate-900"
-                } w-full px-1 py-2 rounded border focus:outline-none focus:ring-1 focus:ring-slate-900 shadow`}
+                } w-full px-1 py-2 rounded border focus:outline-none shadow`}
                 {...register("password", {
                   required: "The password feild is required.",
                   maxLength: {

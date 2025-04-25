@@ -10,7 +10,9 @@ export const register = async (req, res) => {
       where: { email },
     });
     if (existingUser) {
-      return res.status(403).json({ message: "User already exists" });
+      return res
+        .status(403)
+        .json({ message: "User with email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -55,7 +57,7 @@ export const login = async (req, res) => {
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(404).json({ message: "Invalid credentials" });
+      return res.status(404).json({ message: "Invalid email or password" });
     }
 
     const accessToken = createAccessToken({ id: user.id, roles: user.roles });
