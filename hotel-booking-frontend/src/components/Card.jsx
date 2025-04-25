@@ -1,25 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { cld } from "../app/services/cloudinary";
 import { AdvancedImage } from "@cloudinary/react";
 import { quality, format } from "@cloudinary/url-gen/actions/delivery";
 
 const Card = ({ hotel }) => {
+  const [mainImage, setMainImage] = useState(hotel?.images?.[0] || null);
   return (
     <Link to={`/hotels/${hotel.id}/${hotel.name}`}>
-      <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-white border-slate-50 border-2 hover:border-blue-500 hover:bg-blue-500 hover:text-white transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
+      <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-white border-slate-50 border-2 hover:border-blue-500  transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
         <div className="w-full sm:w-[35%] md:w-[26%] max-h-[28rem] flex flex-col gap-2 justify-between">
           <div className="w-full max-h-full img-container">
-            <img
-              src="./hotel1.webp"
-              alt="hotel"
-              className="w-full h-full object-cover rounded-md"
-            />
+            {mainImage ? (
+              <AdvancedImage
+                cldImg={cld
+                  .image(mainImage)
+                  .delivery(quality("auto"))
+                  .delivery(format("auto"))}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <img
+                src="./hotel1.webp"
+                alt="hotel"
+                className="w-full h-full object-cover rounded-md"
+              />
+            )}
           </div>
 
           <ul className="max-h-[10rem] flex gap-2 overflow-x-auto">
             {hotel?.images?.map((imgId) => (
-              <li className="h-12 w-12 img-container" key={imgId}>
+              <li
+                className="h-12 w-12 img-container"
+                key={imgId}
+                onMouseEnter={() => setMainImage(imgId)}
+                onMouseLeave={() => setMainImage(hotel.images[0])}
+              >
                 <AdvancedImage
                   cldImg={cld
                     .image(imgId)
@@ -46,13 +62,13 @@ const Card = ({ hotel }) => {
           </div>
 
           <div className="px-[6px] md:px-3 flex flex-col">
-            <a
+            <span
               itemProp="name"
               href="#"
-              className="text-[16px] md:text-[1.2rem] font-bold"
+              className="capitalize text-[16px] md:text-[1.2rem] font-bold"
             >
               {hotel.name}
-            </a>
+            </span>
             <div itemProp="address" className="text-[12px] md:text-[14px]">
               {hotel.address}
             </div>

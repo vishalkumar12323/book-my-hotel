@@ -6,7 +6,7 @@ const AppLogo = ({ className }) => {
     <>
       <div
         className={clsx(
-          `uppercase w-fit text-xl md:text-2xl font-[900] text-[20px] bg-[conic-gradient(var(--tw-gradient-stops))] from-[#f3f8ff] via-[#deecff] to-[#c6cfff]`,
+          `uppercase w-fit text-xl text-black px-2 md:text-2xl font-[900] text-[20px] bg-[conic-gradient(var(--tw-gradient-stops))] from-[#f3f8ff] via-[#deecff] to-[#c6cfff]`,
           className
         )}
       >

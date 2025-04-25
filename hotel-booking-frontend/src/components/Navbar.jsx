@@ -31,7 +31,6 @@ const Navbar = () => {
       method: "DELETE",
     });
     if (response.ok) {
-      console.log(await response.json());
       dispatch(logout());
       navigate("/login", { replace: true });
     }
@@ -109,7 +108,9 @@ const Navbar = () => {
         }
       >
         <h1 className="w-full text-xl font-bold m-4">
-          <NavLink to={"/"}>LOGO</NavLink>
+          <NavLink to={"/"}>
+            <AppLogo />
+          </NavLink>
         </h1>
 
         {navbarItems?.map((route) => {

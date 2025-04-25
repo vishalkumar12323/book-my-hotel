@@ -1,22 +1,30 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useGetUserInfoQuery,
   useLoginMutation,
 } from "../app/services/authServices.js";
-import { setUserDetails } from "../app/store/slices/authSlice.js";
+import {
+  session,
+  setUserDetails,
+  updateUserDetails,
+} from "../app/store/slices/authSlice.js";
 import { MdErrorOutline } from "react-icons/md";
 import { Button, LoadingSpinner } from "./index.js";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const Login = () => {
+  const { isLoggedIn } = useSelector(session);
   const { register, handleSubmit, reset, formState, setError } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [login, { isLoading, isSuccess }] = useLoginMutation();
-  const { refetch: refetchUserInfo } = useGetUserInfoQuery();
+  const { refetch: refetchUserInfo } = useGetUserInfoQuery(undefined, {
+    skip: !isLoggedIn,
+    poolingInterval: 0,
+  });
   const submitForm = async (data) => {
     try {
       const response = await login(data).unwrap();
@@ -24,12 +32,24 @@ const Login = () => {
         setUserDetails({
           accessToken: response.accessToken,
           user: { email: data.email },
+          isLoggedIn: true,
         })
       );
-      await refetchUserInfo();
+      try {
+        const user = await refetchUserInfo().unwrap();
+        console.log(user.data);
+        if (user.data) {
+          dispatch(updateUserDetails(user.data));
+          reset();
+          navigate("/", { replace: true });
+        }
+      } catch (refetchError) {
+        console.error("Error fetching user details:", refetchError);
+      }
       reset();
       navigate("/", { replace: true });
     } catch (error) {
+      console.log(error);
       if (error && error.status === 404) {
         setError("email", {
           type: "manual",

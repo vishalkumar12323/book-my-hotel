@@ -17,7 +17,7 @@ export const authSlice = createSlice({
     },
 
     setUserDetails: (state, { payload }) => {
-      state.isLoggedIn = true;
+      state.isLoggedIn = payload.isLoggedIn || true;
       state.accessToken = payload.accessToken;
       state.user = {
         ...state.user,

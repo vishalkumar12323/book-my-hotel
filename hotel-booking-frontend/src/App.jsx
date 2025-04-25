@@ -1,7 +1,7 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useGetUserInfoQuery } from "./app/services/authServices.js";
 import { useDispatch, useSelector } from "react-redux";
-import { session, updateUserDetails } from "./app/store/slices/authSlice.js";
+import { updateUserDetails, session } from "./app/store/slices/authSlice.js";
 import { useEffect, useState } from "react";
 import { Navbar, Footer, AppInfoToast } from "./components";
 
@@ -13,17 +13,12 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { data, isSuccess, isError, refetch } = useGetUserInfoQuery(undefined, {
+  const { data, isSuccess, isError } = useGetUserInfoQuery(undefined, {
     skip: !isLoggedIn,
   });
 
   useEffect(() => {
-    if (isLoggedIn) {
-      refetch();
-    }
-  }, [isLoggedIn, refetch]);
-  useEffect(() => {
-    if (!isInitialized && (isSuccess || isError)) {
+    if (!isInitialized && isLoggedIn && (isSuccess || isError)) {
       if (isSuccess && data) {
         dispatch(updateUserDetails(data));
 
@@ -39,7 +34,16 @@ export default function App() {
       }
       setIsInitialized(true);
     }
-  }, [isSuccess, isError, isInitialized, dispatch, data, navigate, location]);
+  }, [
+    isSuccess,
+    isError,
+    isInitialized,
+    dispatch,
+    data,
+    navigate,
+    location,
+    isLoggedIn,
+  ]);
 
   useEffect(() => {
     const hasVisited = localStorage.getItem("hasVisited");

@@ -1,13 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { useRegisterMutation } from "../app/services/authServices.js";
-import { setUserDetails } from "../app/store/slices/authSlice.js";
+import {
+  useGetUserInfoQuery,
+  useRegisterMutation,
+} from "../app/services/authServices.js";
+import { setUserDetails, session } from "../app/store/slices/authSlice.js";
 import { MdErrorOutline } from "react-icons/md";
 import { Button, LoadingSpinner } from "./index";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const Register = () => {
+  const { isLoggedIn } = useSelector(session);
   const { handleSubmit, register, reset, formState, setError } = useForm({
     mode: "onChange",
   });
@@ -15,6 +19,11 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [signup, { isLoading, isSuccess }] = useRegisterMutation();
+
+  const { refetch: refetchUserInfo } = useGetUserInfoQuery(undefined, {
+    skip: !isLoggedIn,
+    pollingInterval: 0,
+  });
   const submitForm = async (data) => {
     try {
       const response = await signup(data).unwrap();
@@ -22,11 +31,20 @@ const Register = () => {
         setUserDetails({
           accessToken: response.accessToken,
           user: { email: data?.email },
+          isLoggedIn: true,
         })
       );
 
-      reset();
-      navigate("/");
+      try {
+        const user = await refetchUserInfo().unwrap();
+        if (user.data) {
+          dispatch(setUserDetails(user.data));
+        }
+        reset();
+        navigate("/");
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
     } catch (error) {
       if (error && error.status === 403) {
         setError("email", {
