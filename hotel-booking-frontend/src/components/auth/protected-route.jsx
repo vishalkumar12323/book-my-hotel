@@ -4,6 +4,7 @@ import { protectedRoutes } from "../../app/services/permissions.js";
 import { Navigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useGetUserInfoQuery } from "../../app/services/authServices.js";
+import Loading from "../Loading.jsx";
 
 export const ProtectedRouteLayout = ({ children }) => {
   const [showAlert, setShowAlert] = useState(false);
@@ -49,7 +50,7 @@ export const ProtectedRouteLayout = ({ children }) => {
   }, [showAlert]);
 
   if (isLoading || hasAccess === null) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   if (!isLoggedIn) {
     return <Navigate to="/login" state={{ from: location }} replace />;

@@ -20,8 +20,11 @@ import AppInfoToast from "./app-info";
 import FileUpload from "./file-uploader";
 import LoadingSpinner from "./skeletons/loading-spinner";
 import Button from "./ui/button";
+import AppLogo from "./ui/app-logo";
+import PendingBookingSkeleton from "./skeletons/pending-booking-skeleton";
 
 export {
+  AppLogo,
   Navbar,
   Footer,
   ErrorPage,
@@ -44,4 +47,5 @@ export {
   FileUpload,
   LoadingSpinner,
   Button,
+  PendingBookingSkeleton,
 };
