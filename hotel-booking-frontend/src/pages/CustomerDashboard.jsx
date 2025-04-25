@@ -53,14 +53,14 @@ export const CustomerDashboard = () => {
             bookingStatus={bookingStatus}
             tab="confirmed"
           >
-            confirmed
+            Confirmed
           </StatusButton>
           <StatusButton
             setTab={setBookingStatus}
             bookingStatus={bookingStatus}
             tab="cancelled"
           >
-            cancelled
+            Cancelled
           </StatusButton>
         </div>
 

@@ -15,15 +15,16 @@ import Card from "./Card";
 import Loading from "./Loading";
 import HotelsCardSkeleton from "./skeletons/HotelsCardSkeleton";
 import HotelCardSkeleton from "./skeletons/HotelCardSkeleton";
-import ProtectedRoutes from "./auth/Protected-Routes";
-import AuthLayout from "./auth/AuthLayout";
 import AddListing from "./vendor/add-listing";
 import AppInfoToast from "./app-info";
 import FileUpload from "./file-uploader";
 import LoadingSpinner from "./skeletons/loading-spinner";
 import Button from "./ui/button";
+import AppLogo from "./ui/app-logo";
+import PendingBookingSkeleton from "./skeletons/pending-booking-skeleton";
 
 export {
+  AppLogo,
   Navbar,
   Footer,
   ErrorPage,
@@ -41,11 +42,10 @@ export {
   Loading,
   HotelsCardSkeleton,
   HotelCardSkeleton,
-  ProtectedRoutes,
-  AuthLayout,
   AddListing,
   AppInfoToast,
   FileUpload,
   LoadingSpinner,
   Button,
+  PendingBookingSkeleton,
 };

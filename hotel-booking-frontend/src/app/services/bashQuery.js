@@ -30,6 +30,7 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
     );
 
     if (sessions?.data) {
+      console.log(sessions.data);
       const { accessToken, user } = sessions?.data;
       api.dispatch(setUserDetails({ accessToken, user: user.user }));
     }

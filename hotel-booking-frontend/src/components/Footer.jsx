@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import AppLogo from "./ui/app-logo";
 
 const Footer = () => {
   return (
@@ -7,9 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="lg:flex lg:items-center">
             <Link to="javascript:void()">
-              <h2 className="uppercase text-[20px] font-extrabold bg-[conic-gradient(var(--tw-gradient-stops))] from-[#f3f8ff] via-[#deecff] to-[#c6cfff]">
-                bookmyhotel
-              </h2>
+              <AppLogo />
             </Link>
           </div>
 
