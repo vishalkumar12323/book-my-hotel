@@ -1,4 +1,4 @@
-# book-my-hotel
+# BOOKMYHOTEL
 
 ## About
 
