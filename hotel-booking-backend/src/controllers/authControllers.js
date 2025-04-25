@@ -5,6 +5,14 @@ import { createAccessToken, createRefreshToken } from "../lib/tokenServices.js";
 export const register = async (req, res) => {
   try {
     const { name, email, password, roles } = req.body;
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingUser) {
+      return res.status(403).json({ message: "User already exists" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({

@@ -24,8 +24,8 @@ const Register = () => {
       })
     );
 
-    // reset();
-    // navigate("/");
+    reset();
+    navigate("/");
   };
 
   return (
