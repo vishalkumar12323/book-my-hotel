@@ -1,0 +1,28 @@
+import VendorDatabase from "../lib/database/vendor-database.js";
+
+class VendorService {
+  constructor() {
+    this.db = new VendorDatabase();
+  }
+
+  async getListings(vendorId, filters) {
+    return await this.db.findAll(vendorId, filters);
+  }
+  async getListingDetails(id) {
+    return await this.db.findById(id);
+  }
+  async createListing(listingData) {
+    return await this.db.create(listingData);
+  }
+  async updateListing(id, listingData) {
+    return await this.db.update(id, listingData);
+  }
+  async deleteListing(id) {
+    return await this.db.delete(id);
+  }
+  async getBookingHistory(vendorId, status) {
+    return await this.db.getBookingHistory(vendorId, status);
+  }
+}
+
+export default VendorService;

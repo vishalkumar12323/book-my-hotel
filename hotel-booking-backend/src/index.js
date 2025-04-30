@@ -4,10 +4,13 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import adminRoutes from "./routes/adminRoutes.js";
-import vendorRoutes from "./routes/vendroRoutes.js";
-import customerRoutes from "./routes/customerRoutes.js";
-import authRoutes from "./routes/userAuthRoutes.js";
+import {
+  adminApiRoutes,
+  authApiRoutes,
+  customerApiRoutes,
+  sharedApiRoutes,
+  vendorApiRoutes,
+} from "./api/index.js";
 
 dotenv.config();
 const port = process.env.PORT || 3002;
@@ -26,11 +29,11 @@ app.use(
   })
 );
 
-// Api Routes
-app.use("/api/customer", customerRoutes);
-app.use("/api/vendor", vendorRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/_auth", authRoutes);
+app.use("/api/_auth", authApiRoutes);
+app.use("/api/admin", adminApiRoutes);
+app.use("/api/shared", sharedApiRoutes);
+app.use("/api/vendor", vendorApiRoutes);
+app.use("/api/customer", customerApiRoutes);
 
 // health check
 app.get("/api/health", (req, res) => {
