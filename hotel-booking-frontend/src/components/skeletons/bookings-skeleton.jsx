@@ -1,4 +1,4 @@
-const PendingBookingSkeleton = () => {
+const BookingSkeleton = () => {
   return (
     <>
       <tr className="min-w-full shadow ">
@@ -42,4 +42,4 @@ const PendingBookingSkeleton = () => {
   );
 };
 
-export default PendingBookingSkeleton;
+export default BookingSkeleton;

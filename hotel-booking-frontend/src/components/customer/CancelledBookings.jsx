@@ -1,3 +1,5 @@
+import CancelledBookingsSkeleton from "../skeletons/bookings-skeleton";
+
 const CancelledBookings = ({ bookings, isLoading, error }) => {
   console.log("cancel ", isLoading);
   return (
@@ -25,8 +27,8 @@ const CancelledBookings = ({ bookings, isLoading, error }) => {
           <tbody className="border">
             {isLoading ? (
               <>
-                <PendingBookingSkeleton />
-                <PendingBookingSkeleton />
+                <CancelledBookingsSkeleton />
+                <CancelledBookingsSkeleton />
               </>
             ) : bookings && bookings?.length > 0 ? (
               bookings.map((booking) => (

@@ -75,27 +75,26 @@ class VendorDatabase {
       coverImagePublicId,
       imagesPublicId,
     } = listingData;
-    // return await this.prisma.listing.update({
-    //   where: { id },
-    //   data: {
-    //     name,
-    //     address,
-    //     description,
-    //     facilities,
-    //     type,
-    //     price,
-    //     rating,
-    //     coverImageId: coverImagePublicId,
-    //     images: imagesPublicId.map((id) => id),
-    //   },
-    // });
+    return await this.prisma.listing.update({
+      where: { id },
+      data: {
+        name,
+        address,
+        description,
+        facilities,
+        type,
+        price,
+        rating,
+        coverImageId: coverImagePublicId,
+        images: imagesPublicId.map((id) => id),
+      },
+    });
   }
   async delete(id) {
     return await this.prisma.listing.delete({
       where: { id },
     });
   }
-  async getBookingHistory(vendorId, status) {}
 }
 
 export default VendorDatabase;

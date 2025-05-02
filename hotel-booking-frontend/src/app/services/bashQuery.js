@@ -23,7 +23,7 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
     const sessions = await bashQuery(
       {
         url: "_auth/refresh-session",
-        method: "GET",
+        method: "POST",
       },
       api,
       extraOptions
@@ -31,7 +31,7 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
 
     if (sessions?.data) {
       const { accessToken, user } = sessions?.data;
-      api.dispatch(setUserDetails({ accessToken, user: user.user }));
+      api.dispatch(setUserDetails({ accessToken, user, isLoggedIn: true }));
     }
     if (sessions?.error) {
       api.dispatch(logout());

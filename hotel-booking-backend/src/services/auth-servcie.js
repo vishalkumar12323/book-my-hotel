@@ -10,9 +10,9 @@ class AuthService {
     this.db = new Authdatabase();
   }
 
-  async signup({ name, email, password }) {
+  async signup({ name, email, password, roles }) {
     try {
-      const user = await this.db.createUser({ name, email, password });
+      const user = await this.db.createUser({ name, email, password, roles });
       const accessToken = createAccessToken({
         id: user.id,
         roles: user.roles,
@@ -22,9 +22,12 @@ class AuthService {
         roles: user.roles,
       });
       await this.db.createUserSession(user.id, refreshToken);
-      return { accessToken, refreshToken };
+      return { accessToken, refreshToken, user };
     } catch (error) {
       console.error("Error during signup:", error);
+      if (error.message === "USER_EXISTS") {
+        throw error;
+      }
       throw new Error("Error during signup");
     }
   }
@@ -32,10 +35,20 @@ class AuthService {
   async login(credentials) {
     const { email, password } = credentials;
     try {
-      const user = await this.db.findUserByEmail(email);
-      if (!user || !(await comparePassword(password, user.password))) {
-        throw new Error("Invalid email or password");
+      let user;
+      try {
+        user = await this.db.findUserByEmail(email);
+      } catch (error) {
+        if (error.message === "USER_NOT_FOUND") {
+          throw new Error("INVALID_CREDENTIALS");
+        }
+        throw error;
       }
+
+      if (!(await comparePassword(password, user.password))) {
+        throw new Error("INVALID_CREDENTIALS");
+      }
+
       const accessToken = createAccessToken({
         id: user.id,
         roles: user.roles,
@@ -45,10 +58,10 @@ class AuthService {
         roles: user.roles,
       });
       await this.db.updateUserSession(user.id, refreshToken);
-      return { accessToken, refreshToken };
+      return { accessToken, refreshToken, user };
     } catch (error) {
       console.error("Error during login:", error);
-      throw new Error("Error during login");
+      throw error;
     }
   }
 

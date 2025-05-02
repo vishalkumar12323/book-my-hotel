@@ -36,7 +36,7 @@ router
     try {
       const bookings = await sharedService.getBookingHistory(
         req.user?.id,
-        status
+        status.toUpperCase()
       );
       res.status(200).json(bookings);
     } catch (error) {

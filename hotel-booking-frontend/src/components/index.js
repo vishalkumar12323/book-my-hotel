@@ -21,7 +21,7 @@ import FileUpload from "./file-uploader";
 import LoadingSpinner from "./skeletons/loading-spinner";
 import Button from "./ui/button";
 import AppLogo from "./ui/app-logo";
-import PendingBookingSkeleton from "./skeletons/pending-booking-skeleton";
+import PendingBookingSkeleton from "./skeletons/bookings-skeleton";
 
 export {
   AppLogo,

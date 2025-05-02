@@ -2,14 +2,14 @@ import express from "express";
 import multiparty from "multiparty";
 import CloudinaryImageStorage from "../lib/storage.js";
 import VendorService from "../services/vendor-service.js";
-import { isAuthenticated } from "./middlewares/index.js";
+import { isAuthenticated, authorizeRoles } from "./middlewares/index.js";
 
 const router = express.Router();
 const vendorService = new VendorService();
 const imageStorage = new CloudinaryImageStorage();
 router
   .route("/listings")
-  .get(async (req, res) => {
+  .get(isAuthenticated, authorizeRoles("VENDOR"), async (req, res) => {
     const { type, price, name, location } = req.query;
     try {
       const listings = await vendorService.getListings(req.user.id, {
@@ -24,11 +24,12 @@ router
       res.status(500).json({ message: "Internal Server Error" });
     }
   })
-  .post(async (req, res) => {
+  .post(isAuthenticated, async (req, res) => {
     const form = new multiparty.Form();
     form.parse(req, async (err, fields, files) => {
       if (err)
         return res.status(500).json({ error: err || "Internal server error" });
+
       try {
         const name = fields.name[0].toLowerCase();
         const address = fields.address[0].toLowerCase();
@@ -40,9 +41,14 @@ router
         const price = parseFloat(fields.price[0]);
         const rating = fields.rating ? parseFloat(fields.rating[0]) : 4;
         const coverImage = files.coverImage[0].path;
-        const coverImagePublicId = await imageStorage.uploadImage(coverImage);
+        const folderName = name.replace(" ", "-");
+
+        const coverImagePublicId = await imageStorage.uploadImage(
+          coverImage,
+          folderName
+        );
         const images = files.images.map((img) =>
-          imageStorage.uploadImage(img.path)
+          imageStorage.uploadImage(img.path, folderName)
         );
         const imagesPublicId = await Promise.all(images);
         const listingData = {
@@ -79,7 +85,7 @@ router
       res.status(500).json({ message: "Internal Server Error" });
     }
   })
-  .put(async (req, res) => {
+  .put(isAuthenticated, async (req, res) => {
     try {
       const { id } = req.params;
       const list = await vendorService.getListingDetails(id);
@@ -93,7 +99,7 @@ router
         const description =
           (fields.description && fields.description[0]) || list.description;
         const facilities =
-          (fields.facilitie &&
+          (fields.facilities &&
             fields.facilities[0]
               .split(", ")
               .map((facilitie) => facilitie.trim().toLowerCase())) ||
@@ -108,12 +114,14 @@ router
 
         let coverImagePublicId = list.coverImageId;
         let imagesPublicId = list.images;
+        const folderName = list.name.replace(" ", "-");
 
         // Update cover image if provided
         if (files.coverImage) {
           coverImagePublicId = await imageStorage.updateImage(
             [list.coverImageId],
-            files.coverImage[0].path
+            files.coverImage[0].path,
+            folderName
           );
         }
 
@@ -121,29 +129,28 @@ router
         if (files.images) {
           const updatedImages = await Promise.all(
             files.images.map((img) =>
-              imageStorage.updateImage(imagesPublicId, img.path)
+              imageStorage.updateImage(imagesPublicId, img.path, folderName)
             )
           );
           imagesPublicId = updatedImages;
         }
 
-        // const listingData = {
-        //   name,
-        //   address,
-        //   description,
-        //   facilities,
-        //   type,
-        //   price,
-        //   rating,
-        //   coverImagePublicId,
-        //   imagesPublicId,
-        // };
-        // const updatedListing = await vendorService.updateListing(
-        //   id,
-        //   listingData
-        // );
-        res.json({ msg: "ok" });
-        // res.status(200).json(updatedListing);
+        const listingData = {
+          name,
+          address,
+          description,
+          facilities,
+          type,
+          price,
+          rating,
+          coverImagePublicId,
+          imagesPublicId,
+        };
+        const updatedListing = await vendorService.updateListing(
+          id,
+          listingData
+        );
+        res.status(200).json(updatedListing);
       });
     } catch (error) {
       console.error("Error updating listing:", error);

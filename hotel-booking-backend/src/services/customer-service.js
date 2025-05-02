@@ -6,8 +6,7 @@ class CustomerService {
   }
   async getAllListings(filters) {
     try {
-      const listings = await this.db.findAll(filters);
-      return listings;
+      return await this.db.findAll(filters);
     } catch (error) {
       throw new Error("Error fetching listings: " + error.message);
     }

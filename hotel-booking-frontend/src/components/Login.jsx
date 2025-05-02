@@ -35,17 +35,19 @@ const Login = () => {
           isLoggedIn: true,
         })
       );
-      try {
-        const user = await refetchUserInfo().unwrap();
-        console.log(user.data);
-        if (user.data) {
-          dispatch(updateUserDetails(user.data));
-          reset();
-          navigate("/", { replace: true });
+
+      setTimeout(async () => {
+        try {
+          const user = await refetchUserInfo().unwrap();
+          console.log(user.data);
+          if (user.data) {
+            dispatch(updateUserDetails(user.data));
+          }
+        } catch (refetchError) {
+          console.error("Error fetching user details:", refetchError);
         }
-      } catch (refetchError) {
-        console.error("Error fetching user details:", refetchError);
-      }
+      }, 0);
+
       reset();
       navigate("/", { replace: true });
     } catch (error) {

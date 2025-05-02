@@ -46,7 +46,7 @@ const Register = () => {
         console.error("Error fetching user info:", error);
       }
     } catch (error) {
-      if (error && error.status === 403) {
+      if (error && error.status === 409) {
         setError("email", {
           type: "manual",
           message: error.data.message || "User with email already exists",

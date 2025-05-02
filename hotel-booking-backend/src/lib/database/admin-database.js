@@ -24,8 +24,7 @@ class AdminDatabase {
           id: true,
           name: true,
           email: true,
-          role: true,
-          createdAt: true,
+          roles: true,
         },
       });
       return users;
@@ -42,10 +41,11 @@ class AdminDatabase {
             select: {
               id: true,
               name: true,
-              price: true,
+              createdAt: true,
+              type: true,
             },
           },
-          user: {
+          customer: {
             select: {
               id: true,
               name: true,

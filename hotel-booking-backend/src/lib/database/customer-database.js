@@ -14,6 +14,7 @@ class CustomerDatabase {
         price: priceFilter,
         facilities: facilitiesFilters,
         rating: ratingFilters,
+        isApproved: true,
       },
       include: { units: true, Booking: true, _count: true },
     });

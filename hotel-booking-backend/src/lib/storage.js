@@ -11,10 +11,10 @@ class CloudinaryImageStorage {
     });
   }
 
-  async uploadImage(imagePath) {
+  async uploadImage(imagePath, folder = "book-my-hotel") {
     try {
       const result = await cloudinary.uploader.upload(imagePath, {
-        folder: "hotel-image-storage",
+        folder,
       });
       return result.public_id;
     } catch (error) {
@@ -25,7 +25,9 @@ class CloudinaryImageStorage {
 
   async deleteImage(publicId) {
     try {
-      const result = await cloudinary.uploader.destroy(publicId);
+      await cloudinary.uploader.destroy(`${publicId}`, {
+        invalidate: true,
+      });
     } catch (error) {
       console.error("Error deleting image from Cloudinary:", error);
       throw new Error("Image deletion failed");
@@ -45,7 +47,7 @@ class CloudinaryImageStorage {
     }
   }
 
-  async updateImage(publicIds, newImagePath) {
+  async updateImage(publicIds, newImagePath, folder = "book-my-hotel") {
     try {
       // Delete existing images if they exist
       if (publicIds && publicIds.length > 0) {
@@ -55,7 +57,7 @@ class CloudinaryImageStorage {
       // Upload new image
       if (newImagePath) {
         const result = await cloudinary.uploader.upload(newImagePath, {
-          folder: "hotel-image-storage",
+          folder,
         });
         return result.public_id;
       }

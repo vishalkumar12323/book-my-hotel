@@ -10,8 +10,8 @@ export const isAuthenticated = (req, res, next) => {
     next();
   } catch (error) {
     console.log("authentication error ", error);
-
     res.status(403).json({ message: "Forbidden" });
+    return;
   }
 };
 export const authorizeRoles = (...allowedRoles) => {

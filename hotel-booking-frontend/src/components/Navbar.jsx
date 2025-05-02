@@ -50,7 +50,7 @@ const Navbar = () => {
             <li
               key={route}
               className={
-                "p-4 hover:bg-blue-600 duration-300 cursor-pointer h-full capitalize flex items-center gap-1"
+                "p-4 text-center text-[14px] md:text-[15px] hover:bg-blue-600 duration-300 cursor-pointer h-full capitalize flex items-center gap-1"
               }
             >
               <Link to={route}>

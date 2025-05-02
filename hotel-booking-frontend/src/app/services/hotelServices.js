@@ -17,7 +17,7 @@ export const hotelApi = createApi({
     getUserBookings: builder.query({
       query: (status) => {
         return {
-          url: `/customer/bookings/history/${status}`,
+          url: `/shared/bookings/history/${status}`,
           method: "GET",
         };
       },

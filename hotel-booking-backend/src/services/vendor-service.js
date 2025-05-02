@@ -20,9 +20,6 @@ class VendorService {
   async deleteListing(id) {
     return await this.db.delete(id);
   }
-  async getBookingHistory(vendorId, status) {
-    return await this.db.getBookingHistory(vendorId, status);
-  }
 }
 
 export default VendorService;

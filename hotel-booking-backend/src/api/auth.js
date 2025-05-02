@@ -19,13 +19,17 @@ router.route("/user-profile").get(isAuthenticated, async (req, res) => {
 
 // Route for signing up a new user
 router.route("/signup").post(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, roles } = req.body;
   try {
-    const { accessToken, refreshToken } = await authService.signup({
+    const { accessToken, refreshToken, user } = await authService.signup({
       name,
       email,
       password,
+      roles,
     });
+
+    await authService.createSession(user.id, refreshToken);
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -34,6 +38,11 @@ router.route("/signup").post(async (req, res) => {
     res.status(201).json({ accessToken });
   } catch (error) {
     console.error("Error during signup:", error);
+    if (error.message === "USER_EXISTS") {
+      return res.status(409).json({
+        message: "User already exists with this email",
+      });
+    }
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
@@ -42,18 +51,24 @@ router.route("/signup").post(async (req, res) => {
 router.route("/login").post(async (req, res) => {
   const { email, password } = req.body;
   try {
-    const { accessToken, refreshToken } = await authService.login({
+    const { accessToken, refreshToken, user } = await authService.login({
       email,
       password,
     });
+
+    await authService.updateSession(user.id, refreshToken);
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24 * 5, // 5 days
     });
-    res.status(201).json({ accessToken });
+    res.status(200).json({ accessToken });
   } catch (error) {
     console.error("Error during login:", error);
+    if (error.message === "INVALID_CREDENTIALS") {
+      return res.status(404).json({ message: "Invalid email or password" });
+    }
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

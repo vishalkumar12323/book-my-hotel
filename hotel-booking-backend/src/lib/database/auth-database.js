@@ -5,22 +5,30 @@ class AuthDatabase {
     this.prisma = prisma;
   }
 
-  async createUser({ name, email, password }) {
+  async createUser({ name, email, password, roles }) {
     try {
       const existingUser = await this.prisma.user.findUnique({
         where: { email },
       });
       if (existingUser) {
-        throw new Error("User with email already exists");
+        throw new Error("USER_EXISTS");
       }
       const hashedPassword = await hashPassword(password);
       const user = await this.prisma.user.create({
-        data: { name, email, password: hashedPassword },
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          roles: roles?.split(" "),
+        },
         select: { id: true, roles: true },
       });
       return user;
     } catch (error) {
       console.error("Error creating user:", error);
+      if (error.message === "USER_EXISTS") {
+        throw error;
+      }
       throw new Error("Error creating user");
     }
   }
@@ -34,9 +42,15 @@ class AuthDatabase {
           roles: true,
         },
       });
+      if (!user) {
+        throw new Error("USER_NOT_FOUND");
+      }
       return user;
     } catch (error) {
       console.error("Error finding user by email:", error);
+      if (error.message === "USER_NOT_FOUND") {
+        throw error;
+      }
       throw new Error("Error finding user by email");
     }
   }
@@ -76,8 +90,37 @@ class AuthDatabase {
       throw new Error("Error finding user by refresh token");
     }
   }
-  async createUserSession(userId, refreshToken) {}
-  async updateUserSession(userId, refreshToken) {}
+  async createUserSession(userId, refreshToken) {
+    await this.prisma.session.create({
+      data: {
+        userId: userId,
+        refreshToken: refreshToken,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
+      },
+    });
+  }
+  async updateUserSession(userId, refreshToken) {
+    try {
+      const existingSession = await this.prisma.session.findUnique({
+        where: { userId },
+      });
+
+      if (!existingSession) {
+        return await this.createUserSession(userId, refreshToken);
+      }
+
+      await this.prisma.session.update({
+        where: { userId },
+        data: {
+          refreshToken,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
+        },
+      });
+    } catch (error) {
+      console.error("Error updating user session:", error);
+      throw new Error("Error updating user session");
+    }
+  }
   async logout(userId) {
     try {
       await this.prisma.session.delete({
