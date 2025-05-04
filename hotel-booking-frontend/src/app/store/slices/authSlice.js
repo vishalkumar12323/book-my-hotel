@@ -1,6 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const loadAuthState = () => {
+  try {
+    const serializedState = sessionStorage.getItem("authState");
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+const initialState = loadAuthState() || {
   isLoggedIn: false,
   accessToken: null,
   user: null,
@@ -14,6 +25,7 @@ export const authSlice = createSlice({
       (state.isLoggedIn = false),
         (state.user = null),
         (state.accessToken = null);
+      sessionStorage.removeItem("authState");
     },
 
     setUserDetails: (state, { payload }) => {
@@ -23,9 +35,11 @@ export const authSlice = createSlice({
         ...state.user,
         ...payload.user,
       };
+      sessionStorage.setItem("authState", JSON.stringify(state));
     },
     updateUserDetails: (state, { payload }) => {
       state.user = { ...state.user, ...payload };
+      sessionStorage.setItem("authState", JSON.stringify(state));
     },
   },
 });

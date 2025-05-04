@@ -12,6 +12,7 @@ const bashQuery = fetchBaseQuery({
     return headers;
   },
   credentials: "include",
+  mode: "no-cors",
 });
 export const baseQueryWithReauth = async (args, api, extraOptions) => {
   const apiResponse = await bashQuery(args, api, extraOptions);

@@ -39,7 +39,6 @@ const Login = () => {
       setTimeout(async () => {
         try {
           const user = await refetchUserInfo().unwrap();
-          console.log(user.data);
           if (user.data) {
             dispatch(updateUserDetails(user.data));
           }

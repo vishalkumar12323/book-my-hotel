@@ -1,8 +1,6 @@
 import ConfirmedBookingsSkeleton from "../skeletons/bookings-skeleton";
 
 const ConfirmedBookings = ({ bookings, isLoading, error }) => {
-  console.log("confirm ", isLoading);
-
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <div className="flex gap-2">

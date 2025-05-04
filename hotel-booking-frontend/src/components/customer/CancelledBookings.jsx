@@ -1,7 +1,6 @@
 import CancelledBookingsSkeleton from "../skeletons/bookings-skeleton";
 
 const CancelledBookings = ({ bookings, isLoading, error }) => {
-  console.log("cancel ", isLoading);
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <div className="flex gap-2">

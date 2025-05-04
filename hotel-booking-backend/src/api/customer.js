@@ -57,8 +57,6 @@ router.route("/listings").get(async (req, res) => {
       facilitiesFilters,
     });
 
-    if (!listings || listings.length === 0)
-      return res.status(404).json({ data: "listings data not availabel." });
     res.status(200).json(listings);
   } catch (error) {
     console.error("Error fetching listings:", error);
