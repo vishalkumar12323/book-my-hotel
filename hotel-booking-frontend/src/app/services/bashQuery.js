@@ -2,7 +2,6 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { config } from "../../config";
 import { logout, setUserDetails } from "../store/slices/authSlice.js";
 
-console.log(config.api_base_url);
 const bashQuery = fetchBaseQuery({
   baseUrl: config.api_base_url,
   prepareHeaders: (headers, { getState }) => {

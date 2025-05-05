@@ -35,16 +35,18 @@ const Register = () => {
         })
       );
 
-      try {
-        const user = await refetchUserInfo().unwrap();
-        if (user.data) {
-          dispatch(setUserDetails(user.data));
+      setTimeout(async () => {
+        try {
+          const user = await refetchUserInfo().unwrap();
+          if (user.data) {
+            dispatch(setUserDetails(user.data));
+          }
+        } catch (error) {
+          console.error("Error fetching user info:", error);
         }
-        reset();
-        navigate("/");
-      } catch (error) {
-        console.error("Error fetching user info:", error);
-      }
+      }, 0);
+      reset();
+      navigate("/");
     } catch (error) {
       if (error && error.status === 409) {
         setError("email", {
