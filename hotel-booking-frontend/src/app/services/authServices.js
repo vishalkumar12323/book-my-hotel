@@ -10,6 +10,9 @@ export const authApi = createApi({
         url: "_auth/login",
         method: "POST",
         body: credential,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }),
     }),
 
@@ -18,6 +21,9 @@ export const authApi = createApi({
         url: "_auth/signup",
         method: "POST",
         body: credential,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }),
     }),
 
