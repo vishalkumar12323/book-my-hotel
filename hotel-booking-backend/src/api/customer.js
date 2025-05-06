@@ -6,7 +6,6 @@ const customerService = new CustomerService();
 router.route("/listings").get(async (req, res) => {
   try {
     const { location, price, rating, popularFilter } = req.query;
-
     // filters for popular or facilities-filter queries.
     let facilitiesFilters = undefined;
     if (popularFilter) {
@@ -14,12 +13,11 @@ router.route("/listings").get(async (req, res) => {
         .split(",")
         .map((f) => f.trim().toLowerCase());
 
-      const wordInUserQuery = new Set(
+      const worldInFilterOpt = new Set(
         filterOpt.flatMap((opt) => opt.split(" "))
       );
-
       facilitiesFilters = {
-        hasSome: Array.from(wordInUserQuery),
+        hasSome: Array.from(worldInFilterOpt),
       };
     }
 

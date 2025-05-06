@@ -34,7 +34,6 @@ const Card = ({ hotel }) => {
                 className="h-12 w-12 img-container"
                 key={imgId}
                 onMouseEnter={() => setMainImage(imgId)}
-                onMouseLeave={() => setMainImage(hotel.images[0])}
               >
                 <AdvancedImage
                   cldImg={cld

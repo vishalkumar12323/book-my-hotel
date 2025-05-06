@@ -22,15 +22,17 @@ export const HomePage = () => {
       <div className="flex flex-col md:flex-row w-full justify-center gap-4">
         <Filters setQuery={setQuery} query={query} error={isError} />
 
-        {isLoading ? (
-          <div className="flex flex-col w-full md:w-3/4 py-3 md:py-6 gap-4 mb-4 md:mb-2">
-            {[...Array(2)].map((_, idx) => (
-              <HotelsCardSkeleton key={idx} />
-            ))}
-          </div>
-        ) : (
-          <Hotels error={error} />
-        )}
+        <div className="max-h-[90vh] overflow-y-auto w-full">
+          {isLoading ? (
+            <div className="flex flex-col w-full py-3 md:py-6 gap-4 mb-4 md:mb-2">
+              {[...Array(2)].map((_, idx) => (
+                <HotelsCardSkeleton key={idx} />
+              ))}
+            </div>
+          ) : (
+            <Hotels error={error} />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -91,13 +91,34 @@ class AuthDatabase {
     }
   }
   async createUserSession(userId, refreshToken) {
-    await this.prisma.session.create({
-      data: {
-        userId: userId,
-        refreshToken: refreshToken,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
-      },
-    });
+    try {
+      const existingSession = await this.prisma.session.findFirst({
+        where: {
+          OR: [{ refreshToken }, { userId }],
+        },
+      });
+
+      if (existingSession) {
+        return await this.prisma.session.update({
+          where: { id: existingSession.id },
+          data: {
+            userId,
+            refreshToken,
+            expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
+          },
+        });
+      }
+      return await this.prisma.session.create({
+        data: {
+          userId,
+          refreshToken,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5),
+        },
+      });
+    } catch (error) {
+      console.error("Error creating user session:", error);
+      throw new Error("Error creating user session");
+    }
   }
   async updateUserSession(userId, refreshToken) {
     try {

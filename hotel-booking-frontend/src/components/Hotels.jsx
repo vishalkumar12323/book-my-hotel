@@ -26,7 +26,7 @@ const Hotels = ({ error }) => {
     );
   }
   return (
-    <div className="py-3 md:py-6 w-full md:w-3/4">
+    <div className="py-3 md:py-6 w-full">
       {hotels && hotels?.length > 0 ? (
         hotels.map((hotel) => <Card hotel={hotel} key={hotel.id} />)
       ) : (

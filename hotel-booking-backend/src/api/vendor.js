@@ -9,7 +9,7 @@ const vendorService = new VendorService();
 const imageStorage = new CloudinaryImageStorage();
 router
   .route("/listings")
-  .get(isAuthenticated, authorizeRoles("VENDOR"), async (req, res) => {
+  .get(isAuthenticated, authorizeRoles("VENDOR", "ADMIN"), async (req, res) => {
     const { type, price, name, location } = req.query;
     try {
       const listings = await vendorService.getListings(req.user.id, {
@@ -75,7 +75,7 @@ router
 
 router
   .route("/listing/:id")
-  .get(async (req, res) => {
+  .get(isAuthenticated, async (req, res) => {
     const { id } = req.params;
     try {
       const listing = await vendorService.getListingDetails(id);
@@ -158,7 +158,7 @@ router
     }
   });
 
-router.route("/listing/:id").delete(async (req, res) => {
+router.route("/listing/:id").delete(isAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
     await vendorService.deleteListing(id);

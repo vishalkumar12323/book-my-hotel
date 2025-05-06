@@ -12,7 +12,7 @@ const filterOptions = [
       "free cancellation",
       "couple friendly",
       "free breakfast",
-      "swimming-pool",
+      "swimming pool",
     ],
   },
   {
@@ -70,6 +70,23 @@ const Filters = ({ query, setQuery, error }) => {
     setQuery({});
   };
 
+  const calculateTotalFilters = (queries) => {
+    if (!queries) return 0;
+    const {
+      popularFilter = [],
+      location = [],
+      price = [],
+      rating = [],
+    } = queries;
+    const totalFilters = [
+      ...(popularFilter || []),
+      ...(location || []),
+      ...(price || []),
+      ...(rating || []),
+    ].length;
+
+    return totalFilters;
+  };
   return (
     <aside className="py-3 md:py-6 w-full md:w-[25%] h-full flex justify-start items-start flex-col">
       <div className="w-full p-3 bg-white rounded-lg">
@@ -77,9 +94,16 @@ const Filters = ({ query, setQuery, error }) => {
           <h2 className=" text-[16px] md:text-xl font-bold uppercase text-slate-900">
             Filters
           </h2>
-          <button onClick={clearFilters}>
-            <span className="text-[10px] md:text-[14px] text-gray-600 uppercase">
-              Clear
+          <button
+            onClick={clearFilters}
+            className={`${
+              calculateTotalFilters(query) > 0
+                ? "bg-blue-200 hover:bg-blue-300"
+                : "bg-transparent"
+            } p-1 rounded-md duration-500 transition-colors shadow `}
+          >
+            <span className="text-[10px] md:text-[11px] text-gray-700 uppercase">
+              Clear {calculateTotalFilters(query)}
             </span>
           </button>
         </div>
