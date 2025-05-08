@@ -1,4 +1,9 @@
-import { Hotels, Filters, Search, HotelsCardSkeleton } from "../components";
+import {
+  Hotels,
+  Filters,
+  Search,
+  HotelsCardSkeleton,
+} from "../components/index.js";
 import { useGetAvailableListingsQuery } from "../app/services/hotelServices.js";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

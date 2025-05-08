@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { cld } from "../app/services/cloudinary";
 import { AdvancedImage } from "@cloudinary/react";
@@ -7,7 +7,9 @@ import { quality, format } from "@cloudinary/url-gen/actions/delivery";
 const Card = ({ hotel }) => {
   const [mainImage, setMainImage] = useState(hotel?.images?.[0] || null);
   return (
-    <Link to={`/hotels/${hotel.id}/${hotel.name}`}>
+    <Link
+      to={`/hotels/${hotel.id}/${hotel.name.toLowerCase().replace(/ /g, "-")}`}
+    >
       <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-white border-slate-50 border-2 hover:border-blue-500  transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
         <div className="w-full sm:w-[35%] md:w-[26%] max-h-[28rem] flex flex-col gap-2 justify-between">
           <div className="w-full max-h-full img-container">
@@ -24,6 +26,7 @@ const Card = ({ hotel }) => {
                 src="./hotel1.webp"
                 alt="hotel"
                 className="w-full h-full object-cover rounded-md"
+                loading="lazy"
               />
             )}
           </div>
@@ -94,4 +97,4 @@ const Card = ({ hotel }) => {
   );
 };
 
-export default Card;
+export default memo(Card);

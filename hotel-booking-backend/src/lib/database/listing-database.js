@@ -1,13 +1,22 @@
 import { prisma } from "../db-client.js";
 
-class CustomerDatabase {
+class ListingDatabase {
   constructor() {
     this.prisma = prisma;
   }
 
-  async findAll({ locations, priceFilter, ratingFilters, facilitiesFilters }) {
+  async findAll({
+    locations,
+    priceFilter,
+    ratingFilters,
+    facilitiesFilters,
+    hotelName,
+  }) {
     return await this.prisma.listing.findMany({
       where: {
+        name: hotelName
+          ? { contains: hotelName.toLowerCase(), mode: "insensitive" }
+          : undefined,
         OR: locations?.map((loc) => ({
           address: { contains: loc?.trim(), mode: "insensitive" },
         })),
@@ -26,4 +35,4 @@ class CustomerDatabase {
   }
 }
 
-export default CustomerDatabase;
+export default ListingDatabase;

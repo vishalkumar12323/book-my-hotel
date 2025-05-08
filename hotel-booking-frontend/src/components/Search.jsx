@@ -1,14 +1,18 @@
+import { memo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 
 const Search = ({ setQuery }) => {
   const { register, reset, handleSubmit } = useForm();
 
-  const submitForm = (data) => {
-    if (data) {
-      setQuery({ primaryQuery: data.query });
-    }
-    reset();
-  };
+  const submitForm = useCallback(
+    (data) => {
+      if (data) {
+        setQuery({ hotelName: data.query });
+      }
+      reset();
+    },
+    [setQuery, reset]
+  );
   return (
     <div className="flex justify-between items-center space-y-2 w-full mx-auto">
       <form onSubmit={handleSubmit(submitForm)} className="w-full flex gap-2">
@@ -17,13 +21,12 @@ const Search = ({ setQuery }) => {
           name="query"
           id="query"
           className="w-full py-2 px-1 text-[12px] md:text-[16px] focus:ring-1 outline-none focus:ring-blue-600 transition rounded shadow border capitalize"
-          placeholder="search hotels or restaurants by name, location or property..."
+          placeholder="search hotels or restaurants by name..."
           {...register("query", {
             required: true,
             minLength: 4,
-            maxLength: 12,
+            maxLength: 50,
           })}
-          disabled
         />
         <button
           type="submit"
@@ -36,4 +39,4 @@ const Search = ({ setQuery }) => {
   );
 };
 
-export default Search;
+export default memo(Search);

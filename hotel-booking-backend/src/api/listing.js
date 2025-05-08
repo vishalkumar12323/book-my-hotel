@@ -1,11 +1,11 @@
 import express from "express";
-import CustomerService from "../services/customer-service.js";
+import ListingService from "../services/listing-service.js";
 
 const router = express.Router();
-const customerService = new CustomerService();
-router.route("/listings").get(async (req, res) => {
+const listingService = new ListingService();
+router.route("/get-all-listings").get(async (req, res) => {
   try {
-    const { location, price, rating, popularFilter } = req.query;
+    const { location, price, rating, popularFilter, hotelName } = req.query;
     // filters for popular or facilities-filter queries.
     let facilitiesFilters = undefined;
     if (popularFilter) {
@@ -48,11 +48,12 @@ router.route("/listings").get(async (req, res) => {
       }
     }
 
-    const listings = await customerService.getAllListings({
+    const listings = await listingService.getAllListings({
       locations,
       priceFilter,
       ratingFilters,
       facilitiesFilters,
+      hotelName,
     });
 
     res.status(200).json(listings);
@@ -65,7 +66,7 @@ router.route("/listings").get(async (req, res) => {
 router.route("/listing/:id").get(async (req, res) => {
   try {
     const { id } = req.params;
-    const listingDetails = await customerService.getListingDetails(id);
+    const listingDetails = await listingService.getListingDetails(id);
     res.status(200).json(listingDetails);
   } catch (error) {
     console.error("Error fetching listing details:", error);

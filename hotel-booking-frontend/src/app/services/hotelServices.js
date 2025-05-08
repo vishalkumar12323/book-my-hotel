@@ -8,7 +8,7 @@ export const hotelApi = createApi({
     getAvailableListings: builder.query({
       query: (query) => {
         return {
-          url: "/customer/listings",
+          url: "/listings/get-all-listings",
           method: "GET",
           params: { ...query },
         };
@@ -25,7 +25,7 @@ export const hotelApi = createApi({
     getHotelById: builder.query({
       query: (hotelId) => {
         return {
-          url: `/customer/listing/${hotelId}`,
+          url: `/listings/listing/${hotelId}`,
           method: "GET",
         };
       },

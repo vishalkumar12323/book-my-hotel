@@ -1,8 +1,8 @@
-import CustomerDatabase from "../lib/database/customer-database.js";
+import ListingDatabase from "../lib/database/listing-database.js";
 
-class CustomerService {
+class ListingService {
   constructor() {
-    this.db = new CustomerDatabase();
+    this.db = new ListingDatabase();
   }
   async getAllListings(filters) {
     try {
@@ -21,4 +21,4 @@ class CustomerService {
   }
 }
 
-export default CustomerService;
+export default ListingService;

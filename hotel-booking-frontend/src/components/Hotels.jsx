@@ -1,9 +1,12 @@
+import { memo, useCallback } from "react";
 import Card from "./Card.jsx";
 import { useSelector } from "react-redux";
 import { hotelsData } from "../app/store/slices/hotelSlice.js";
 
 const Hotels = ({ error }) => {
   const { hotels } = useSelector(hotelsData);
+
+  const handleRefetch = useCallback(() => {}, []);
   if (error && !hotels) {
     return (
       <>
@@ -12,9 +15,7 @@ const Hotels = ({ error }) => {
             <span>Failed to fetch hotels</span>
             <button
               className="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded shadow-md"
-              onClick={() => {
-                console.log("refetching...");
-              }}
+              onClick={handleRefetch}
             >
               <span className="text-[15px] capitalize text-white dark:text-text">
                 Try, again
@@ -45,4 +46,4 @@ const Hotels = ({ error }) => {
   );
 };
 
-export default Hotels;
+export default memo(Hotels);

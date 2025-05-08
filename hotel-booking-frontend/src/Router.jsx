@@ -1,18 +1,44 @@
-import App from "./App";
-import { createBrowserRouter } from "react-router-dom";
-import { HomePage } from "./pages/Home";
-import { LoginPage } from "./pages/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
-import { ErrorPage, AddListing } from "./components";
-import { CustomerDashboard } from "./pages/CustomerDashboard";
-import { VendorDashboard } from "./pages/VendorDashboard";
-import { EditList } from "./pages/EditList.jsx";
-import { AboutPage } from "./pages/AboutPage.jsx";
+import { lazy, Suspense } from "react";
 import { store } from "./app/store/store.js";
 import { Provider } from "react-redux";
-import { Hotel } from "./pages/Hotel.jsx";
-import { AuthLayout } from "./components/auth/auth-layout.jsx";
+import App from "./App";
+import { createBrowserRouter } from "react-router-dom";
 import { ProtectedRouteLayout } from "./components/auth/protected-route.jsx";
+import { Loading, ErrorPage } from "./components";
+import { AuthLayout } from "./components/auth/auth-layout.jsx";
+
+const HomePage = lazy(() =>
+  import("./pages/HomePage.jsx").then((m) => ({ default: m.HomePage }))
+);
+const LoginPage = lazy(() =>
+  import("./pages/LoginPage").then((m) => ({ default: m.LoginPage }))
+);
+const RegisterPage = lazy(() =>
+  import("./pages/RegisterPage").then((m) => ({ default: m.RegisterPage }))
+);
+const CustomerDashboard = lazy(() =>
+  import("./pages/CustomerDashboard").then((m) => ({
+    default: m.CustomerDashboard,
+  }))
+);
+const VendorDashboard = lazy(() =>
+  import("./pages/VendorDashboard").then((m) => ({
+    default: m.VendorDashboard,
+  }))
+);
+const EditList = lazy(() =>
+  import("./pages/EditList").then((m) => ({ default: m.EditList }))
+);
+const AboutPage = lazy(() =>
+  import("./pages/AboutPage").then((m) => ({ default: m.AboutPage }))
+);
+const Hotel = lazy(() =>
+  import("./pages/Hotel").then((m) => ({ default: m.Hotel }))
+);
+
+const withSuspense = (Component) => (
+  <Suspense fallback={<Loading />}>{Component}</Suspense>
+);
 
 export const router = createBrowserRouter([
   {
@@ -26,80 +52,89 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-
-        element: (
-          // <AuthLayout>
-          <HomePage />
-          // </AuthLayout>
-        ),
-      },
-      {
-        path: "/about",
-        element: (
-          // <AuthLayout>
-          <AboutPage />
-          // </AuthLayout>
+        element: withSuspense(
+          <AuthLayout>
+            <HomePage />
+          </AuthLayout>
         ),
       },
       {
         path: "/login",
-        element: (
-          // <AuthLayout isAuthenticated={false}>
-          <LoginPage />
-          // </AuthLayout>
+        element: withSuspense(
+          <AuthLayout isAuthenticated={false}>
+            <LoginPage />
+          </AuthLayout>
         ),
       },
       {
         path: "/register",
-        element: (
-          // <AuthLayout isAuthenticated={false}>
-          <RegisterPage />
-          // </AuthLayout>
+        element: withSuspense(
+          <AuthLayout isAuthenticated={false}>
+            <RegisterPage />
+          </AuthLayout>
         ),
       },
       {
-        path: "/my-bookings",
-        element: (
-          // <AuthLayout isAuthenticated>
-          <ProtectedRouteLayout>
-            <CustomerDashboard />
-          </ProtectedRouteLayout>
-          // </AuthLayout>
-        ),
-      },
-      {
-        path: "/vendor-dashboard",
-        element: (
-          // <AuthLayout isAuthenticated>
-          <ProtectedRouteLayout>
-            <VendorDashboard />
-          </ProtectedRouteLayout>
-          // </AuthLayout>
-        ),
-      },
-      {
-        path: "/edit-list/:listId/:listName",
-        element: (
-          // <AuthLayout isAuthenticated>
-          <ProtectedRouteLayout>
-            <EditList />
-          </ProtectedRouteLayout>
-          // </AuthLayout>
-        ),
-      },
-      {
-        path: "/add-new-listing",
-        element: (
-          // <AuthLayout isAuthenticated>
-          <ProtectedRouteLayout>
-            <AddListing />
-          </ProtectedRouteLayout>
-          // </AuthLayout>
+        path: "/about",
+        element: withSuspense(
+          <AuthLayout>
+            <AboutPage />
+          </AuthLayout>
         ),
       },
       {
         path: "/hotels/:hotelId/:hotelName",
-        element: <Hotel />,
+        element: withSuspense(<Hotel />),
+      },
+      {
+        path: "/my-bookings",
+        element: withSuspense(
+          <AuthLayout isAuthenticated>
+            <ProtectedRouteLayout>
+              <CustomerDashboard />
+            </ProtectedRouteLayout>
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/vendor-dashboard",
+        element: withSuspense(
+          <AuthLayout isAuthenticated>
+            <ProtectedRouteLayout>
+              <VendorDashboard />
+            </ProtectedRouteLayout>
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/edit-list/:listId/:listName",
+        element: withSuspense(
+          <AuthLayout isAuthenticated>
+            <ProtectedRouteLayout>
+              <EditList />
+            </ProtectedRouteLayout>
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/add-new-listing",
+        element: withSuspense(
+          <AuthLayout isAuthenticated>
+            <ProtectedRouteLayout>
+              <EditList />
+            </ProtectedRouteLayout>
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/admin-dashboard",
+        element: withSuspense(
+          <AuthLayout isAuthenticated>
+            <ProtectedRouteLayout>
+              <div>Admin Dashboard</div>
+            </ProtectedRouteLayout>
+          </AuthLayout>
+        ),
       },
     ],
   },

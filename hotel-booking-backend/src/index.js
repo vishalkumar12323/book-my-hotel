@@ -7,7 +7,7 @@ import bodyParser from "body-parser";
 import {
   adminApiRoutes,
   authApiRoutes,
-  customerApiRoutes,
+  listingApiRoutes,
   sharedApiRoutes,
   vendorApiRoutes,
 } from "./api/index.js";
@@ -34,7 +34,7 @@ app.use("/api/_auth", authApiRoutes);
 app.use("/api/admin", adminApiRoutes);
 app.use("/api/shared", sharedApiRoutes);
 app.use("/api/vendor", vendorApiRoutes);
-app.use("/api/customer", customerApiRoutes);
+app.use("/api/listings", listingApiRoutes);
 
 // health check
 app.get("/api/health", (req, res) => {
