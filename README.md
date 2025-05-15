@@ -32,3 +32,9 @@ Back-End (Monolithic architecture)
 - Secure user Authentication and Authorization
 - Search and Filter Hotels and Restaurants by name, price, location, rating etc.
 - Fully Responsive and Reusable components designing
+
+## Use (only for testing)
+
+Email or Password
+user - user@gmail.com or user123@@
+vendor - vendor@gmail.com or vendor123

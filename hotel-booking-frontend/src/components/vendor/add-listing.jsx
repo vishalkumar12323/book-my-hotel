@@ -21,6 +21,7 @@ const AddListing = ({ isListEditable = false, list = null }) => {
     handleSubmit,
     control,
     register,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -75,10 +76,12 @@ const AddListing = ({ isListEditable = false, list = null }) => {
         listing: formData,
       }).unwrap();
 
-      isUpdatingSuccess && navigate("/vendor-dashboard", { replace: true });
+      reset();
+      navigate("/vendor-dashboard");
     } else {
       await createListing(formData).unwrap();
-      isCreatedSuccess && navigate("/vendor-dashboard", { replace: true });
+      reset();
+      navigate("/vendor-dashboard");
     }
   };
   return (
