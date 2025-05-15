@@ -1,8 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./bashQuery.js";
 
-export const hotelApi = createApi({
-  reducerPath: "hotelApi",
+export const listingApi = createApi({
+  reducerPath: "listingApi",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getAvailableListings: builder.query({
@@ -13,6 +13,16 @@ export const hotelApi = createApi({
           params: { ...query },
         };
       },
+      transformResponse: (response) => {
+        const newResponse = {
+          listings: response,
+          totalHotels: response.filter((item) => item.type === "HOTEL").length,
+          totalRestaurants: response.filter(
+            (item) => item.type === "RESTAURANT"
+          ).length,
+        };
+        return newResponse;
+      },
     }),
     getUserBookings: builder.query({
       query: (status) => {
@@ -22,7 +32,7 @@ export const hotelApi = createApi({
         };
       },
     }),
-    getHotelById: builder.query({
+    getListingById: builder.query({
       query: (hotelId) => {
         return {
           url: `/listings/listing/${hotelId}`,
@@ -36,5 +46,5 @@ export const hotelApi = createApi({
 export const {
   useGetAvailableListingsQuery,
   useGetUserBookingsQuery,
-  useGetHotelByIdQuery,
-} = hotelApi;
+  useGetListingByIdQuery,
+} = listingApi;

@@ -7,13 +7,13 @@ import {
   setListing,
   selectListings,
 } from "../app/store/slices/vendorServiceSlice";
-import { useGetListingQuery } from "../app/services/vendorServices";
+import { useGetListingByIdQuery } from "../app/services/vendorServices";
 
 export const EditList = () => {
   const { listingId } = useParams();
   const { listing } = useSelector(selectListings);
   const dispatch = useDispatch();
-  const { data, isSuccess } = useGetListingQuery(listingId);
+  const { data, isSuccess } = useGetListingByIdQuery(listingId);
 
   useEffect(() => {
     if (isSuccess) {
@@ -21,7 +21,9 @@ export const EditList = () => {
     }
   }, [data, isSuccess, dispatch]);
 
-  console.log(listing);
-  console.log(listingId);
-  return <UpdateListingForm isListEditable={true} list={listing} />;
+  return (
+    <>
+      <UpdateListingForm />
+    </>
+  );
 };

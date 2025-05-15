@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MdPlayArrow } from "react-icons/md";
 import { FaCheckSquare, FaRegSquare } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { hotelsData } from "../app/store/slices/hotelSlice.js";
+import { listingsData } from "../app/store/slices/listingsSlice.js";
 
 const filterOptions = [
   {
@@ -39,7 +39,7 @@ const filterOptions = [
 ];
 
 const Filters = ({ query, setQuery, error }) => {
-  const { hotels } = useSelector(hotelsData);
+  const { listings } = useSelector(listingsData);
   const [openFilters, setOpenFilters] = useState({ popular: true });
   const [checkedFilters, setCheckedFilters] = useState({});
 
@@ -47,7 +47,7 @@ const Filters = ({ query, setQuery, error }) => {
     setOpenFilters((prev) => ({ ...prev, [listId]: !prev[listId] }));
 
   const handleFilterUpdate = (option, type) => {
-    if (error && hotels.length <= 0) return;
+    if (error && listings.length <= 0) return;
 
     const key = type === "popular-filters" ? "popularFilter" : type;
     const isActive = query[key]?.includes(option);

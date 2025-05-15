@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import {
   useCreateListingMutation,
   useUpdateListingMutation,
@@ -8,16 +9,20 @@ import { Button, FileUpload, LoadingSpinner } from "../index.js";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 
 const AddListing = ({ isListEditable = false, list = null }) => {
-  const [
-    createListing,
-    { isLoading: isCreating, isSuccess: isCreatingSuccess },
-  ] = useCreateListingMutation();
+  const navigate = useNavigate();
+  const [createListing, { isLoading: isCreated, isSuccess: isCreatedSuccess }] =
+    useCreateListingMutation();
   const [
     updateListing,
     { isLoading: isUpdating, isSuccess: isUpdatingSuccess },
   ] = useUpdateListingMutation();
 
-  const { handleSubmit, control, register, formState } = useForm({
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: list?.name || "",
       address: list?.address || "",
@@ -27,6 +32,21 @@ const AddListing = ({ isListEditable = false, list = null }) => {
       type: list?.type || "HOTEL",
       hotelCoverImage: null,
       hotelImages: null,
+      roomType: "",
+      capacity: 1,
+      originalPrice: 0,
+      discountPrice: 0,
+      available: true,
+      roomFacility: {
+        wifi: false,
+        ac: false,
+        tv: false,
+        waterPurifier: false,
+        twineBed: false,
+        cityView: false,
+        bathroom: false,
+        kitchen: false,
+      },
     },
   });
 
@@ -43,26 +63,32 @@ const AddListing = ({ isListEditable = false, list = null }) => {
       formData.append("hotelCoverImage", file)
     );
     data.hotelImages.forEach((file) => formData.append("hotelImages", file));
-
+    formData.append("availabel", data.available);
+    formData.append("capacity", data.capacity);
+    formData.append("discountPrice", data.discountPrice);
+    formData.append("originalPrice", data.originalPrice);
+    formData.append("roomFacilities", JSON.stringify(data.roomFacility));
+    formData.append("roomType", data.roomType);
     if (isListEditable && list) {
-      const response = await updateListing({
-        listingId: "222",
+      await updateListing({
+        listingId: list?.id,
         listing: formData,
       }).unwrap();
-      console.log(response);
+
+      isUpdatingSuccess && navigate("/vendor-dashboard", { replace: true });
     } else {
-      const response = await createListing(formData).unwrap();
-      console.log(response);
+      await createListing(formData).unwrap();
+      isCreatedSuccess && navigate("/vendor-dashboard", { replace: true });
     }
   };
   return (
-    <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow-lg rounded-lg my-6">
+    <div className="max-w-[80rem] w-full h-full mx-auto bg-white p-5 shadow rounded-lg my-6">
       <h2 className="text-[1.1rem] md:text-[1.6rem] font-semibold mb-4">
-        {isListEditable ? (
+        {isListEditable && list !== null ? (
           <>
             Update{" "}
             <span className="text-blue-500 capitalize">
-              {list.name} {list.type}
+              {list?.name} {list?.type}
             </span>{" "}
             Info.
           </>
@@ -71,15 +97,15 @@ const AddListing = ({ isListEditable = false, list = null }) => {
         )}
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="">
         <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full mb-4">
           <div className="w-full">
-            <label className="block font-medium">Listing Name</label>
+            <label className="block font-medium">Listing Name *</label>
             <input
               type="text"
               name="name"
               className={`${
-                formState.errors.name
+                errors.name
                   ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                   : "focus:ring-1 focus:ring-blue-500"
               } w-full px-1 py-2 rounded border focus:outline-none shadow`}
@@ -97,25 +123,25 @@ const AddListing = ({ isListEditable = false, list = null }) => {
               })}
               aria-describedby="hotel-name-err"
             />
-            {formState.errors.name && (
+            {errors.name && (
               <p
                 id="hotel-name-err"
                 className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
                 role="alert"
               >
                 <MdErrorOutline size={13} />
-                {formState.errors.name.message}
+                {errors.name.message}
               </p>
             )}
           </div>
 
           <div className="w-full">
-            <label className="block font-medium">Address</label>
+            <label className="block font-medium">Address *</label>
             <input
               type="text"
               name="address"
               className={`${
-                formState.errors.address
+                errors.address
                   ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                   : "focus:ring-1 focus:ring-blue-500"
               } w-full px-1 py-2 rounded border focus:outline-none shadow`}
@@ -126,14 +152,14 @@ const AddListing = ({ isListEditable = false, list = null }) => {
               aria-describedby="hotel-add-err"
             />
 
-            {formState.errors.address && (
+            {errors.address && (
               <p
                 id="hotel-add-err"
                 role="alert"
                 className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
               >
                 <MdErrorOutline size={13} />
-                {formState.errors.address.message}
+                {errors.address.message}
               </p>
             )}
           </div>
@@ -143,7 +169,7 @@ const AddListing = ({ isListEditable = false, list = null }) => {
           <textarea
             name="description"
             className={`${
-              formState.errors.description
+              errors.description
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                 : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
@@ -161,27 +187,28 @@ const AddListing = ({ isListEditable = false, list = null }) => {
             })}
             aria-describedby="hotel-des-err"
           />
-          {formState.errors.description && (
+          {errors.description && (
             <p
               id="hotel-des-err"
               role="alert"
               className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
             >
               <MdErrorOutline size={13} />
-              {formState.errors.description.message}
+              {errors.description.message}
             </p>
           )}
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium">
-            Facilities (comma separated)
+          <label htmlFor="facilities" className="block font-medium">
+            Facilities (comma separated) *
           </label>
           <input
+            id="facilities"
             type="text"
             name="facilities"
             className={`${
-              formState.errors.facilities
+              errors.facilities
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                 : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
@@ -200,25 +227,25 @@ const AddListing = ({ isListEditable = false, list = null }) => {
             aria-describedby="hotel-facilitie-err"
           />
 
-          {formState.errors.facilities && (
+          {errors.facilities && (
             <p
               id="hotel-facilitie-err"
               role="alert"
               className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
             >
               <MdErrorOutline size={13} />
-              {formState.errors.facilities.message}
+              {errors.facilities.message}
             </p>
           )}
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium">Price (per night/table)</label>
+          <label className="block font-medium">Price (per night/table) *</label>
           <input
             type="number"
             name="price"
             className={`${
-              formState.errors.price
+              errors.price
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                 : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
@@ -237,40 +264,42 @@ const AddListing = ({ isListEditable = false, list = null }) => {
             aria-describedby="hotel-price-err"
           />
 
-          {formState.errors.price && (
+          {errors.price && (
             <p
               id="hotel-price-err"
               role="alert"
               className="text-[13px] text-red-600 font-semibold flex items-center gap-1"
             >
               <MdErrorOutline size={13} />
-              {formState.errors.price.message}
+              {errors.price.message}
             </p>
           )}
         </div>
 
         <div className="mb-4">
-          <label className="block font-medium">Type</label>
+          <label className="block font-medium">Type *</label>
           <select
             name="type"
             className={`${
-              formState.errors.type
+              errors.type
                 ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
                 : "focus:ring-1 focus:ring-blue-500"
             } w-full px-1 py-2 rounded border focus:outline-none shadow`}
             {...register("type", { required: "This is a required feild" })}
           >
             <option value="HOTEL">Hotel</option>
-            <option value="RESTAURANT">Restaurant</option>
+            <option value="RESTAURANT" disabled>
+              Restaurant
+            </option>
           </select>
         </div>
 
         <div className="flex flex-col w-full mb-4">
           <h3 className="mb-1">
             {isListEditable ? (
-              <> Update Hotels Images </>
+              <> Update Hotels Images *</>
             ) : (
-              <>Upload Hotels Images</>
+              <>Upload Hotels Images *</>
             )}
           </h3>
           <div className="w-full relative">
@@ -326,16 +355,289 @@ const AddListing = ({ isListEditable = false, list = null }) => {
           </div>
         )}
 
+        <div className="w-full h-[1px] bg-gray-300 my-2 md:my-4"></div>
+        <div>
+          <div className="w-full">
+            <h2 className="text-[1rem] md:text-[1.5rem] font-semibold">
+              Add New Units
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                htmlFor="room-type"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Room Type *
+              </label>
+              <input
+                id="room-type"
+                type="text"
+                {...register("roomType", {
+                  required: "Room type is required",
+                })}
+                className={`${
+                  errors.roomType
+                    ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                    : "focus:ring-1 focus:ring-blue-500"
+                } w-full px-1 py-2 rounded border focus:outline-none shadow`}
+                placeholder="Ex. Single Bad Room"
+                aria-describedby="roomType"
+              />
+              {errors.roomType && (
+                <p id="roomType" className="mt-1 text-sm text-red-600">
+                  {errors.roomType.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="capcity"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Capacity *
+              </label>
+              <input
+                id="capcity"
+                type="number"
+                min="1"
+                {...register("capacity", {
+                  required: "Capacity is required",
+                  min: {
+                    value: 1,
+                    message: "Capacity must be at least 1",
+                  },
+                  valueAsNumber: true,
+                })}
+                className={`${
+                  errors.capacity
+                    ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                    : "focus:ring-1 focus:ring-blue-500"
+                } w-full px-1 py-2 rounded border focus:outline-none shadow`}
+              />
+              {errors.capacity && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.capacity.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="original-price"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Original Price *
+              </label>
+              <input
+                id="original-price"
+                type="number"
+                step="100"
+                min="0"
+                {...register("originalPrice", {
+                  required: "Original price is required",
+                  min: {
+                    value: 0,
+                    message: "Price cannot be negative",
+                  },
+                  valueAsNumber: true,
+                })}
+                className={`${
+                  errors.originalPrice
+                    ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                    : "focus:ring-1 focus:ring-blue-500"
+                } w-full px-1 py-2 rounded border focus:outline-none shadow`}
+              />
+              {errors.originalPrice && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.originalPrice.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="discount-price"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Discount Price *
+              </label>
+              <input
+                id="discount-price"
+                type="number"
+                step="50"
+                min="0"
+                {...register("discountPrice", {
+                  required: "Discount price is required",
+                  min: {
+                    value: 0,
+                    message: "Price cannot be negative",
+                  },
+                  validate: (value, formValues) =>
+                    value <= formValues.originalPrice ||
+                    "Discount price cannot be higher than original price",
+                  valueAsNumber: true,
+                })}
+                className={`${
+                  errors.discountPrice
+                    ? "ring-1 ring-red-600 focus:ring-1 focus:ring-red-600"
+                    : "focus:ring-1 focus:ring-blue-500"
+                } w-full px-1 py-2 rounded border focus:outline-none shadow`}
+              />
+              {errors.discountPrice && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.discountPrice.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="availabel"
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <input
+                  id="availabel"
+                  type="checkbox"
+                  {...register("available")}
+                  className="h-4 w-4 text-blue-600 rounded"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  Available for booking
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div className="pt-4">
+            <h3 className="text-lg font-medium text-gray-800 mb-4">
+              Room Facilities
+            </h3>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.wifi")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    WiFi
+                  </span>
+                </label>
+              </div>
+
+              {/* AC */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.ac")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Air Conditioning
+                  </span>
+                </label>
+              </div>
+
+              {/* TV */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.tv")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">TV</span>
+                </label>
+              </div>
+
+              {/* Water Purifier */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.waterPurifier")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Water Purifier
+                  </span>
+                </label>
+              </div>
+
+              {/* Twin Bed */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.twineBed")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Twin Bed
+                  </span>
+                </label>
+              </div>
+
+              {/* City View */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.cityView")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    City View
+                  </span>
+                </label>
+              </div>
+
+              {/* Bathroom */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.bathroom")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Bathroom
+                  </span>
+                </label>
+              </div>
+
+              {/* Kitchen */}
+              <div>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("roomFacility.kitchen")}
+                    className="h-4 w-4 text-blue-600 rounded"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Kitchen
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <Button
           type="submit"
-          buttonState={isCreating || isUpdating}
+          buttonState={isCreated || isUpdating}
           className={`${
-            isCreatingSuccess ||
+            isCreatedSuccess ||
             (isUpdatingSuccess &&
               "border-green-600 hover:border-green-600 text-green-600")
-          }`}
+          } mt-6`}
         >
-          {isListEditable && !isUpdating && !isUpdatingSuccess ? (
+          {isListEditable && list && !isUpdating && !isUpdatingSuccess ? (
             <>
               <span>Update</span>
             </>
@@ -349,14 +651,14 @@ const AddListing = ({ isListEditable = false, list = null }) => {
               <span>Updated</span>
               <IoIosCheckmarkCircle size={20} color="green" />
             </>
-          ) : !isListEditable && isCreatingSuccess ? (
+          ) : !isListEditable && isCreatedSuccess ? (
             <>
               <span>Created</span>
               <IoIosCheckmarkCircle size={20} color="green" />
             </>
           ) : (
             <>
-              <span>Create</span> {isCreating && <LoadingSpinner />}
+              <span>Create</span> {isCreated && <LoadingSpinner />}
             </>
           )}
         </Button>

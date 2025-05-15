@@ -1,5 +1,3 @@
-import React from "react";
-
 const HotelCardSkeleton = () => {
   return (
     <section className="my-6 md:my-10 flex flex-col p-2 md:p-4 border shadow max-w-screen-xl mx-auto h-auto w-screen rounded">

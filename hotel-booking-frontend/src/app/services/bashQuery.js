@@ -29,11 +29,11 @@ export const baseQueryWithReauth = async (args, api, extraOptions) => {
       extraOptions
     );
 
-    if (sessions?.data) {
+    if (sessions && sessions?.data) {
       const { accessToken, user } = sessions?.data;
       api.dispatch(setUserDetails({ accessToken, user, isLoggedIn: true }));
     }
-    if (sessions?.error) {
+    if (sessions && sessions?.error) {
       api.dispatch(logout());
     }
   }

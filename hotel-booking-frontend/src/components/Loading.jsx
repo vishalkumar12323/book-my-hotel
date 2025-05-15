@@ -1,4 +1,3 @@
-import { AppLogo, LoadingSpinner } from "./index";
 const Loading = () => {
   return (
     <div

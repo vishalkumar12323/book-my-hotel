@@ -26,8 +26,12 @@ const VendorDashboard = lazy(() =>
     default: m.VendorDashboard,
   }))
 );
-const EditList = lazy(() =>
-  import("./pages/EditList").then((m) => ({ default: m.EditList }))
+const EditListing = lazy(() =>
+  import("./pages/EditListing.jsx").then((m) => ({ default: m.EditList }))
+);
+
+const AddListing = lazy(() =>
+  import("./pages/AddListing.jsx").then((m) => ({ default: m.AddListing }))
 );
 const AboutPage = lazy(() =>
   import("./pages/AboutPage").then((m) => ({ default: m.AboutPage }))
@@ -111,7 +115,7 @@ export const router = createBrowserRouter([
         element: withSuspense(
           <AuthLayout isAuthenticated>
             <ProtectedRouteLayout>
-              <EditList />
+              <EditListing />
             </ProtectedRouteLayout>
           </AuthLayout>
         ),
@@ -121,7 +125,7 @@ export const router = createBrowserRouter([
         element: withSuspense(
           <AuthLayout isAuthenticated>
             <ProtectedRouteLayout>
-              <EditList />
+              <AddListing />
             </ProtectedRouteLayout>
           </AuthLayout>
         ),

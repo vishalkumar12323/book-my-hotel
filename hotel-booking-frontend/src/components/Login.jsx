@@ -183,8 +183,8 @@ const Login = () => {
         <div className="text-white text-center max-w-md">
           <h2 className="text-3xl font-bold mb-4">Welcome back!</h2>
           <p className="mb-8">
-            We're happy to see you again. We hope you had a safe and enjoyable
-            time away.
+            We&apos;re happy to see you again. We hope you had a safe and
+            enjoyable time away.
           </p>
           <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-6 rounded-full transition">
             No account yet?{" "}

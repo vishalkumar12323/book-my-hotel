@@ -14,7 +14,7 @@ export const vendorServiceApi = createApi({
         };
       },
     }),
-    getListing: builder.query({
+    getListingById: builder.query({
       query: (listingId) => {
         return {
           url: `/vendor/listing/${listingId}`,
@@ -24,11 +24,19 @@ export const vendorServiceApi = createApi({
     }),
     createListing: builder.mutation({
       query: (listing) => {
-        console.log(listing);
         return {
           url: "/vendor/listings",
           method: "POST",
           body: listing,
+        };
+      },
+    }),
+    createUnit: builder.mutation({
+      query: (unit) => {
+        return {
+          url: "",
+          method: "POST",
+          body: unit,
         };
       },
     }),
@@ -56,6 +64,7 @@ export const {
   useCreateListingMutation,
   useUpdateListingMutation,
   useDeleteListingQuery,
-  useGetListingQuery,
   useGetListingsQuery,
+  useGetListingByIdQuery,
+  useCreateUnitMutation,
 } = vendorServiceApi;

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGetListingsQuery } from "../../app/services/vendorServices";
 import { useForm } from "react-hook-form";
 import { CiSearch } from "react-icons/ci";
@@ -19,7 +19,7 @@ const ManageListings = () => {
     mode: "onSubmit",
   });
 
-  const { data, isLoading } = useGetListingsQuery(query);
+  const { data } = useGetListingsQuery(query);
 
   const onSubmit = (data) => {
     const { value, queryType } = data;
@@ -72,7 +72,7 @@ const ManageListings = () => {
               {listings &&
                 listings?.length > 0 &&
                 listings.map((hotel) => (
-                  <tr className="text-center border" key={1}>
+                  <tr className="text-center border" key={hotel.id}>
                     <td className="py-3 px-2 border">{hotel.name}</td>
                     <td className="py-3 px-2 border">{hotel.address}</td>
                     <td className="py-3 px-2 border">{hotel.price}</td>

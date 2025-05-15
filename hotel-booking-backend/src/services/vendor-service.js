@@ -12,7 +12,10 @@ class VendorService {
     return await this.db.findById(id);
   }
   async createListing(listingData) {
-    return await this.db.create(listingData);
+    return await this.db.createList(listingData);
+  }
+  async createUnit(unitData) {
+    return await this.db.createUnit(unitData);
   }
   async updateListing(id, listingData) {
     return await this.db.update(id, listingData);

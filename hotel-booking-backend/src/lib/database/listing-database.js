@@ -24,13 +24,24 @@ class ListingDatabase {
         facilities: facilitiesFilters,
         rating: ratingFilters,
       },
-      include: { units: true, Booking: true, _count: true },
     });
   }
   async findById(id) {
     return await this.prisma.listing.findUnique({
       where: { id },
-      include: { units: true, Booking: true, _count: true },
+      include: {
+        units: {
+          include: {
+            roomFacility: {
+              omit: {
+                unitId: true,
+              },
+            },
+          },
+        },
+        Booking: true,
+        _count: true,
+      },
     });
   }
 }

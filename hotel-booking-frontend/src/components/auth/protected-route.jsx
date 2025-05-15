@@ -72,7 +72,7 @@ export const ProtectedRouteLayout = ({ children }) => {
               zIndex: 1000,
             }}
           >
-            You don't have permission to access this page
+            You don&apos;t have permission to access this page
           </div>
         )}
         <Navigate to="/" state={{ from: location }} replace />

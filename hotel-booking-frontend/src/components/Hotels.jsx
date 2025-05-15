@@ -1,13 +1,13 @@
 import { memo, useCallback } from "react";
 import Card from "./Card.jsx";
 import { useSelector } from "react-redux";
-import { hotelsData } from "../app/store/slices/hotelSlice.js";
+import { listingsData } from "../app/store/slices/listingsSlice.js";
 
 const Hotels = ({ error }) => {
-  const { hotels } = useSelector(hotelsData);
+  const { listings } = useSelector(listingsData);
 
   const handleRefetch = useCallback(() => {}, []);
-  if (error && !hotels) {
+  if (error && !listings) {
     return (
       <>
         <div className="w-full h-[50vh] flex justify-center items-center text-2xl">
@@ -27,9 +27,9 @@ const Hotels = ({ error }) => {
     );
   }
   return (
-    <div className="py-3 md:py-6 w-full">
-      {hotels && hotels?.length > 0 ? (
-        hotels.map((hotel) => <Card hotel={hotel} key={hotel.id} />)
+    <div className="w-full">
+      {listings && listings?.length > 0 ? (
+        listings.map((listing) => <Card listing={listing} key={listing.id} />)
       ) : (
         <div className="w-full h-[50vh] flex justify-center items-center text-2xl">
           <div className="text-[16px] text-center leading-tight">

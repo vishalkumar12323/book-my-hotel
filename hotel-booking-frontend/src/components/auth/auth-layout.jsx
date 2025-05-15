@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { session } from "../../app/store/slices/authSlice";
 import { useHref, useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -36,6 +36,15 @@ export const AuthLayout = ({ children, isAuthenticated = true }) => {
         navigate("/login");
       }
     }
-  }, [navigate, href, isAuthenticated]);
+  }, [
+    navigate,
+    href,
+    isAuthenticated,
+    isLoggedIn,
+    param?.hotelId,
+    param?.listId,
+    param?.hotelName,
+    param?.listName,
+  ]);
   return <>{children}</>;
 };

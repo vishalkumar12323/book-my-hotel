@@ -1,5 +1,3 @@
-import React from "react";
-
 const HotelsCardSkeleton = () => {
   return (
     <div className="w-full h-full flex">

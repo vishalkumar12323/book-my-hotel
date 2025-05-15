@@ -35,7 +35,7 @@ class VendorDatabase {
       // },
     });
   }
-  async create(listingData) {
+  async createList(listingData) {
     const {
       name,
       address,
@@ -60,6 +60,52 @@ class VendorDatabase {
         coverImageId: coverImagePublicId,
         images: imagesPublicId.map((id) => id),
         vendorId,
+      },
+    });
+  }
+  async createUnit(unitData) {
+    const {
+      listingId,
+      roomType,
+      capacity,
+      isAvailabel,
+      originalPrice,
+      discountPrice,
+      roomFacilities: {
+        wifi,
+        ac,
+        tv,
+        waterPurifier,
+        twineBed,
+        cityView,
+        bathroom,
+        kitchen,
+      },
+    } = unitData;
+
+    return await this.prisma.unit.create({
+      data: {
+        listingId,
+        capacity,
+        discountPrice,
+        originalPrice,
+        available: isAvailabel,
+        roomFacility: {
+          create: {
+            wifi: wifi ? Boolean(wifi) : false,
+            ac: ac ? Boolean(ac) : false,
+            tv: tv ? Boolean(tv) : false,
+            waterPurifier: waterPurifier ? Boolean(waterPurifier) : false,
+            twineBed: twineBed ? Boolean(twineBed) : false,
+            cityView: cityView ? Boolean(cityView) : false,
+            bathroom: bathroom ? Boolean(bathroom) : false,
+            kitchen: kitchen ? Boolean(kitchen) : false,
+          },
+        },
+        type: roomType,
+      },
+      include: {
+        roomFacility: true,
       },
     });
   }

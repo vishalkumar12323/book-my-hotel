@@ -24,54 +24,82 @@ router
       res.status(500).json({ message: "Internal Server Error" });
     }
   })
-  .post(isAuthenticated, async (req, res) => {
-    const form = new multiparty.Form();
-    form.parse(req, async (err, fields, files) => {
-      if (err)
-        return res.status(500).json({ error: err || "Internal server error" });
+  .post(
+    isAuthenticated,
+    authorizeRoles("VENDOR", "ADMIN"),
+    async (req, res) => {
+      const form = new multiparty.Form();
+      form.parse(req, async (err, fields, files) => {
+        if (err)
+          return res
+            .status(500)
+            .json({ error: err || "Internal server error" });
 
-      try {
-        const name = fields.name[0].toLowerCase();
-        const address = fields.address[0].toLowerCase();
-        const description = fields.description[0];
-        const facilities = fields.facilities[0]
-          .split(", ")
-          .map((facilitie) => facilitie.trim().toLowerCase());
-        const type = fields.type[0].toUpperCase();
-        const price = parseFloat(fields.price[0]);
-        const rating = fields.rating ? parseFloat(fields.rating[0]) : 4;
-        const coverImage = files.coverImage[0].path;
-        const folderName = name.replace(" ", "-");
+        try {
+          const name = fields.name[0].toLowerCase();
+          const address = fields.address[0].toLowerCase();
+          const description = fields.description[0];
+          const facilities = fields.facilities[0]
+            .split(", ")
+            .map((facilitie) => facilitie.trim().toLowerCase());
+          const type = fields.type[0].toUpperCase();
+          const price = parseFloat(fields.price[0]);
+          const rating = fields.rating ? parseFloat(fields.rating[0]) : 4;
 
-        const coverImagePublicId = await imageStorage.uploadImage(
-          coverImage,
-          folderName
-        );
-        const images = files.images.map((img) =>
-          imageStorage.uploadImage(img.path, folderName)
-        );
-        const imagesPublicId = await Promise.all(images);
-        const listingData = {
-          name,
-          address,
-          description,
-          facilities,
-          type,
-          price,
-          rating,
-          coverImagePublicId,
-          imagesPublicId,
-          vendorId: req.user.id,
-        };
+          const coverImage = files?.hotelCoverImage[0].path;
+          const folderName = name.replaceAll(" ", "-");
 
-        const newListing = await vendorService.createListing(listingData);
-        res.status(201).json(newListing);
-      } catch (error) {
-        console.error("Error creating listing:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-      }
-    });
-  });
+          const coverImagePublicId = await imageStorage.uploadImage(
+            coverImage,
+            folderName
+          );
+          const images = files.hotelImages.map((img) =>
+            imageStorage.uploadImage(img.path, folderName)
+          );
+          const imagesPublicId = await Promise.all(images);
+
+          // Destructure UnitData
+          const roomType = fields.roomType[0].toLowerCase();
+          const capacity = parseInt(fields.capacity[0]);
+          const isAvailabel = Boolean(fields.availabel[0]);
+          const originalPrice = parseFloat(fields.originalPrice[0]);
+          const discountPrice = parseFloat(fields.discountPrice[0]);
+          const roomFacilities = JSON.parse(fields.roomFacilities[0]);
+
+          const listingData = {
+            name,
+            address,
+            description,
+            facilities,
+            type,
+            price,
+            rating,
+            coverImagePublicId,
+            imagesPublicId,
+            vendorId: req?.user?.id,
+          };
+
+          const newListing = await vendorService.createListing(listingData);
+
+          const unitData = {
+            listingId: newListing.id,
+            roomType,
+            capacity,
+            isAvailabel,
+            originalPrice,
+            discountPrice,
+            roomFacilities,
+          };
+
+          const newUnit = await vendorService.createUnit(unitData);
+          res.status(201).json({ listing: newListing, unit: newUnit });
+        } catch (error) {
+          console.error("Error creating listing:", error);
+          res.status(500).json({ message: "Internal Server Error" });
+        }
+      });
+    }
+  );
 
 router
   .route("/listing/:id")

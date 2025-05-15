@@ -1,26 +1,30 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { FaStar, FaMapMarkerAlt, FaBed } from "react-icons/fa";
 import { PiArrowFatLinesDown } from "react-icons/pi";
-import { useGetHotelByIdQuery } from "../app/services/hotelServices";
+import { useGetListingByIdQuery } from "../app/services/listingServices.js";
 import { useDispatch, useSelector } from "react-redux";
-import { setHotelInfo, hotelData } from "../app/store/slices/hotelInfoSlice.js";
+import {
+  listingData,
+  setListingInfo,
+} from "../app/store/slices/listingInfoSlice.js";
 import { HotelCardSkeleton } from "../components";
 import { cld } from "../app/services/cloudinary.js";
 import { AdvancedImage } from "@cloudinary/react";
 import { quality, format } from "@cloudinary/url-gen/actions/delivery";
 
 export const Hotel = () => {
-  const { hotel } = useSelector(hotelData);
+  const { listing } = useSelector(listingData);
   const params = useParams();
   const dispatch = useDispatch();
   const roomsRef = useRef(null);
 
-  const { data, isLoading } = useGetHotelByIdQuery(params.hotelId);
+  const { units } = listing;
+  const { data, isLoading } = useGetListingByIdQuery(params.hotelId);
 
   useEffect(() => {
     if (data) {
-      dispatch(setHotelInfo(data));
+      dispatch(setListingInfo(data));
     }
   }, [data, dispatch]);
   return (
@@ -33,18 +37,18 @@ export const Hotel = () => {
             <div className="flex justify-between items-start w-full">
               <div className="flex flex-col w-full">
                 <h2 className="capitalize text-3xl md:text-4xl font-bold mb-2 text-slate-900">
-                  {hotel?.name}
+                  {listing?.name}
                 </h2>
                 <div className="w-full md:w-fit flex flex-col md:flex-row items-start md:items-center gap-[10px] md:gap-3 text-sm">
                   <div className="flex items-center gap-1">
                     <FaStar className="text-yellow-500" />
                     <span>
-                      {hotel?.rating} Star {hotel?.type}
+                      {listing?.rating} Star {listing?.type}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <FaMapMarkerAlt className="text-blue-500" />{" "}
-                    <span>{hotel?.address}</span>
+                    <span>{listing?.address}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <FaBed size={16} /> <span>Duplex Bed</span>
@@ -70,16 +74,19 @@ export const Hotel = () => {
               <div className="w-full h-full object-cover img-container">
                 <AdvancedImage
                   cldImg={cld
-                    .image(hotel?.coverImageId)
+                    .image(listing?.coverImageId)
                     .delivery(quality("auto"))
                     .delivery(format("auto"))}
                 />
               </div>
               <div className="flex gap-2 w-full h-full">
                 <ul className="flex gap-2">
-                  {hotel &&
-                    hotel?.images?.map((imgId) => (
-                      <li className="w-full md:h-[180px] md:w-[180px] object-cover img-container">
+                  {listing &&
+                    listing?.images?.map((imgId) => (
+                      <li
+                        className="w-full md:h-[180px] md:w-[180px] object-cover img-container"
+                        key={imgId}
+                      >
                         <AdvancedImage
                           cldImg={cld
                             .image(imgId)
@@ -98,8 +105,10 @@ export const Hotel = () => {
                   Facilities
                 </h3>
                 <ul className="text-slate-700 text-[15px] flex flex-col">
-                  {hotel &&
-                    hotel?.facilities?.map((faciliti) => <li>✅{faciliti}</li>)}
+                  {listing &&
+                    listing?.facilities?.map((faciliti) => (
+                      <li key={faciliti}>✅{faciliti}</li>
+                    ))}
                 </ul>
               </div>
             </div>
@@ -120,97 +129,92 @@ export const Hotel = () => {
               </div>
             </div>
 
-            <div className="mb-3 flex gap-4 justify-center items-start h-full w-full border shadow md:p-4">
-              <div className="w-full flex justify-between items-center">
-                <div className="img-container w-full">
-                  <img
-                    src="/hotel7.webp"
-                    alt="hotel"
-                    className="w-full h-[200px] object-cover"
-                  />
-                </div>
-              </div>
-              <div className="w-full h-full flex justify-between items-start">
-                <div className="w-full h-full flex flex-col justify-center items-start">
-                  <h3 className="text-[15px] md:text-[18px] capitalize font-medium text-slate-900">
-                    single bed room
-                  </h3>
-                  <span className="text-[13px] md:text-[14px] text-green-700 font-medium">
-                    2 Guest
-                  </span>
+            {units && units.length > 0 ? (
+              units.map((unit, idx) => {
+                const {
+                  ac,
+                  tv,
+                  waterPurifier,
+                  bathroom,
+                  kitchen,
+                  wifi,
+                  twineBed,
+                  cityView,
+                } = unit.roomFacility;
+                return (
+                  <div
+                    className="mb-3 flex gap-4 justify-center items-start h-full w-full border shadow md:p-4"
+                    key={unit.id}
+                  >
+                    <div className="w-full">
+                      <div className="img-container w-full">
+                        <li
+                          className="w-full md:h-[225px] md:w-[300px] object-cover"
+                          key={listing.images[idx]}
+                        >
+                          <AdvancedImage
+                            cldImg={cld
+                              .image(listing.images[idx])
+                              .delivery(quality("auto"))
+                              .delivery(format("auto"))}
+                          />
+                        </li>
+                      </div>
+                    </div>
+                    <div className="w-full h-full flex justify-between items-start">
+                      <div className="w-full h-full flex flex-col justify-center items-start">
+                        <h3 className="text-[15px] md:text-[18px] capitalize font-medium text-slate-900">
+                          {unit.type}
+                        </h3>
+                        <span className="text-[13px] md:text-[14px] text-green-700 font-medium">
+                          {unit.capacity} People
+                        </span>
 
-                  <div className="text-[13px] md:text-[14px] text-slate-700 mt-4 font-normal">
-                    <ul>
-                      <li>✅free cancellation before 1 april, 2025</li>
-                      <li>✅free breakfast</li>
-                      <li>✅free wifi</li>
-                    </ul>
+                        <div className="w-full justify-start text-[13px] md:text-[14px] text-slate-700 mt-4 font-normal flex md:gap-4 flex-col  md:flex-row">
+                          <div className="w-full flex gap-1 flex-col">
+                            {kitchen && <div>Kitchen ✅</div>}
+                            {wifi && <div>Wifi ✅</div>}
+                            {waterPurifier && <div>Water purifier ✅</div>}
+                            {ac && <div>Ac ✅</div>}
+                          </div>
+                          <div className="w-full flex gap-1 flex-col">
+                            {bathroom && <div>Bathroom ✅</div>}
+                            {cityView && <div>City view ✅</div>}
+                            {twineBed && <div>twine Bed ✅</div>}
+                            {tv && <div>Tv ✅</div>}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full flex justify-between items-center">
+                      <div className="w-full flex flex-col justify-center items-start gap-2">
+                        <div className="text-[13px] md:text-[15px] font-medium">
+                          <p>
+                            <span className="line-through">
+                              ₹{unit.originalPrice}
+                            </span>
+                            ,{" "}
+                            <strong>
+                              {" "}
+                              ₹{unit.originalPrice - unit.discountPrice}
+                            </strong>{" "}
+                            <br />{" "}
+                            <span className="text-[13px] pl-1">
+                              240 taxes fees per night
+                            </span>
+                          </p>
+                        </div>
+                        <button className="flex gap-1 items-center text-center justify-center border border-blue-500 text-blue-500 w-fit capitalize font-semibold hover:bg-blue-600 transition-colors hover:text-white py-2 px-4 rounded-md">
+                          <span>book now</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="w-full flex justify-between items-center">
-                <div className="w-full flex flex-col justify-center items-start gap-2">
-                  <div className="text-[13px] md:text-[15px] font-medium">
-                    <p>
-                      <span className="line-through">₹6,000</span>,{" "}
-                      <strong> ₹3,250</strong> <br />{" "}
-                      <span className="text-[13px] pl-1">
-                        240 taxes fees per night
-                      </span>
-                    </p>
-                  </div>
-                  <button className="flex gap-1 items-center text-center justify-center border border-blue-500 text-blue-500 w-fit capitalize font-semibold hover:bg-blue-600 transition-colors hover:text-white py-2 px-4 rounded-md">
-                    <span>book now</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-3 flex gap-4 justify-center items-start h-full w-full border shadow md:p-4">
-              <div className="w-full flex justify-between items-center">
-                <div className="img-container w-full">
-                  <img
-                    src="/hotel7.webp"
-                    alt="hotel"
-                    className="w-full h-[200px] object-cover"
-                  />
-                </div>
-              </div>
-              <div className="w-full h-full flex justify-between items-start">
-                <div className="w-full h-full flex flex-col justify-center items-start">
-                  <h3 className="text-[15px] md:text-[18px] capitalize font-medium text-slate-900">
-                    single bed room
-                  </h3>
-                  <span className="text-[13px] md:text-[14px] text-green-700 font-medium">
-                    2 Guest
-                  </span>
-
-                  <div className="text-[13px] md:text-[14px] text-slate-700 mt-4 font-normal">
-                    <ul>
-                      <li>✅free cancellation before 1 april, 2025</li>
-                      <li>✅free breakfast</li>
-                      <li>✅free wifi</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full flex justify-between items-center">
-                <div className="w-full flex flex-col justify-center items-start gap-2">
-                  <div className="text-[13px] md:text-[15px] font-medium">
-                    <p>
-                      <span className="line-through">₹6,000</span>,{" "}
-                      <strong> ₹3,250</strong> <br />{" "}
-                      <span className="text-[13px] pl-1">
-                        240 taxes fees per night
-                      </span>
-                    </p>
-                  </div>
-                  <button className="flex gap-1 items-center text-center justify-center border border-blue-500 text-blue-500 w-fit capitalize font-semibold hover:bg-blue-600 transition-colors hover:text-white py-2 px-4 rounded-md">
-                    <span>book now</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+                );
+              })
+            ) : (
+              <h1>No any units</h1>
+            )}
           </div>
         </section>
       )}

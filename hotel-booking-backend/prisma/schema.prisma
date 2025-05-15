@@ -54,17 +54,17 @@ enum ListingType {
 }
 
 model RoomFacilities {
-  id            String  @id @default(uuid())
-  unitId        String  @unique @map("unit_id")
-  wifi          Boolean
-  ac            Boolean
-  tv            Boolean
-  waterPurifier Boolean
-  twineBed      Boolean
-  cityView      Boolean
-  bathroom      Boolean
-  kitchen       Boolean
-  unit          Unit    @relation(fields: [unitId], references: [id])
+  id            String   @id @default(uuid())
+  unitId        String   @unique @map("unit_id")
+  wifi          Boolean? @default(false)
+  ac            Boolean? @default(false)
+  tv            Boolean? @default(false)
+  waterPurifier Boolean? @default(false)
+  twineBed      Boolean? @default(false)
+  cityView      Boolean? @default(false)
+  bathroom      Boolean? @default(false)
+  kitchen       Boolean? @default(false)
+  unit          Unit     @relation(fields: [unitId], references: [id])
 
   @@map("room_facilities")
 }
@@ -76,7 +76,7 @@ model Unit {
   capacity      Int
   originalPrice Float
   discountPrice Float
-  available     Boolean
+  available     Boolean         @default(false)
   listing       Listing         @relation(fields: [listingId], references: [id])
   roomFacility  RoomFacilities?
   Booking       Booking[]

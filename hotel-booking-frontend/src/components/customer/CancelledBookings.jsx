@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import CancelledBookingsSkeleton from "../skeletons/bookings-skeleton";
 
 const CancelledBookings = ({ bookings, isLoading, error }) => {

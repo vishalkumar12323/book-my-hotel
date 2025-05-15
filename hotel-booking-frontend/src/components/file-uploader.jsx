@@ -35,37 +35,42 @@ const FileUpload = ({
     else setDragActive(false);
   }, []);
 
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    processFiles(e.dataTransfer.files);
-  }, []);
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      processFiles(e.dataTransfer.files);
+    },
+    [processFiles]
+  );
 
-  const processFiles = (newFiles) => {
-    const validFiles = Array.from(newFiles).filter(
-      (file) =>
-        file.size <= 5 * 1024 * 1024 &&
-        ["image/jpeg", "image/png", "image/webp"].includes(file.type)
-    );
+  const processFiles = useCallback(
+    (newFiles) => {
+      const validFiles = Array.from(newFiles).filter(
+        (file) =>
+          file.size <= 5 * 1024 * 1024 &&
+          ["image/jpeg", "image/png", "image/webp"].includes(file.type)
+      );
 
-    setFiles(validFiles);
-    field.onChange(validFiles);
+      setFiles(validFiles);
+      field.onChange(validFiles);
 
-    const filesPrev = validFiles.map((file) => {
-      const fileUrl = URL.createObjectURL(file);
-      return {
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: fileUrl,
-      };
-    });
-    setFilePreview((prev) => [...prev, ...filesPrev]);
-  };
+      const filesPrev = validFiles.map((file) => {
+        const fileUrl = URL.createObjectURL(file);
+        return {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          url: fileUrl,
+        };
+      });
+      setFilePreview((prev) => [...prev, ...filesPrev]);
+    },
+    [field]
+  );
 
   useEffect(() => {
-    console.log(filePreview);
     return () => {
       filePreview.forEach((file) => URL.revokeObjectURL(file.url));
     };

@@ -4,11 +4,13 @@ import { cld } from "../app/services/cloudinary";
 import { AdvancedImage } from "@cloudinary/react";
 import { quality, format } from "@cloudinary/url-gen/actions/delivery";
 
-const Card = ({ hotel }) => {
-  const [mainImage, setMainImage] = useState(hotel?.images?.[0] || null);
+const Card = ({ listing }) => {
+  const [mainImage, setMainImage] = useState(listing?.images?.[0] || null);
   return (
     <Link
-      to={`/hotels/${hotel.id}/${hotel.name.toLowerCase().replace(/ /g, "-")}`}
+      to={`/hotels/${listing.id}/${listing.name
+        .toLowerCase()
+        .replace(/ /g, "-")}`}
     >
       <div className="flex flex-col sm:flex-row gap-2 mb-2 bg-white border-slate-50 border-2 hover:border-blue-500  transition-colors shadow-sm rounded-lg p-3 hover:cursor-pointer">
         <div className="w-full sm:w-[35%] md:w-[26%] max-h-[28rem] flex flex-col gap-2 justify-between">
@@ -32,7 +34,7 @@ const Card = ({ hotel }) => {
           </div>
 
           <ul className="max-h-[10rem] flex gap-2 overflow-x-auto">
-            {hotel?.images?.map((imgId) => (
+            {listing?.images?.map((imgId) => (
               <li
                 className="h-12 w-12 img-container"
                 key={imgId}
@@ -52,13 +54,13 @@ const Card = ({ hotel }) => {
         <div className="flex flex-col justify-between gap-6 w-full sm:w-[60%] md:w-[70%] h-full">
           <div className="flex px-[6px] md:px-3 gap-2 justify-between items-center text-[13px] md:text-[15px]">
             <div className="flex gap-1 items-center ">
-              <span>4</span> <span>⭐⭐⭐⭐ | {hotel.type}</span>
+              <span>4</span> <span>⭐⭐⭐⭐ | {listing.type}</span>
             </div>
 
             <div className="flex gap-2 items-center">
               <span>22 Rating</span>
               <span className="bg-green-500 rounded p-1 text-[12px] tracking-widest text-white font-bold">
-                {hotel.rating}/5
+                {listing.rating}/5
               </span>
             </div>
           </div>
@@ -69,16 +71,16 @@ const Card = ({ hotel }) => {
               href="#"
               className="capitalize text-[16px] md:text-[1.2rem] font-bold"
             >
-              {hotel.name}
+              {listing.name}
             </span>
             <div itemProp="address" className="text-[12px] md:text-[14px]">
-              {hotel.address}
+              {listing.address}
             </div>
           </div>
 
           <div className="px-[6px] md:px-3">
             <ul className="flex flex-col text-[12px]">
-              {hotel.facilities.map((faciliti) => (
+              {listing.facilities.map((faciliti) => (
                 <li key={faciliti}>✅ {faciliti}</li>
               ))}
             </ul>
@@ -87,7 +89,7 @@ const Card = ({ hotel }) => {
           <div className="px-[6px] md:px-3">
             <div className="flex gap-1 text-[12px] md:text-[13px] items-center">
               <span className="line-through">₹12,000</span>
-              <strong className="text-[16px]">₹{hotel.price}</strong>+
+              <strong className="text-[16px]">₹{listing.price}</strong>+
               <span>₹850 taxes & fees per night</span>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ConfirmedBookingsSkeleton from "../skeletons/bookings-skeleton";
 
 const ConfirmedBookings = ({ bookings, isLoading, error }) => {

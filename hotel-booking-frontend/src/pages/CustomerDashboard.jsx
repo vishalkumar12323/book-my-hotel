@@ -4,7 +4,7 @@ import {
   ConfirmedBookings,
   CancelledBookings,
 } from "../components";
-import { useGetUserBookingsQuery } from "../app/services/hotelServices.js";
+import { useGetUserBookingsQuery } from "../app/services/listingServices.js";
 import {
   setCancelledBookings,
   setConfirmedBookings,
