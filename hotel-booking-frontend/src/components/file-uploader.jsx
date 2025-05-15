@@ -35,16 +35,6 @@ const FileUpload = ({
     else setDragActive(false);
   }, []);
 
-  const handleDrop = useCallback(
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setDragActive(false);
-      processFiles(e.dataTransfer.files);
-    },
-    [processFiles]
-  );
-
   const processFiles = useCallback(
     (newFiles) => {
       const validFiles = Array.from(newFiles).filter(
@@ -68,6 +58,15 @@ const FileUpload = ({
       setFilePreview((prev) => [...prev, ...filesPrev]);
     },
     [field]
+  );
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      processFiles(e.dataTransfer.files);
+    },
+    [processFiles]
   );
 
   useEffect(() => {

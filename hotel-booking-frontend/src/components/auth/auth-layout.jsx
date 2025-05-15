@@ -36,15 +36,6 @@ export const AuthLayout = ({ children, isAuthenticated = true }) => {
         navigate("/login");
       }
     }
-  }, [
-    navigate,
-    href,
-    isAuthenticated,
-    isLoggedIn,
-    param?.hotelId,
-    param?.listId,
-    param?.hotelName,
-    param?.listName,
-  ]);
+  }, [navigate, href, isAuthenticated]);
   return <>{children}</>;
 };

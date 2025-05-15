@@ -22,8 +22,7 @@ const Login = () => {
 
   const [login, { isLoading, isSuccess }] = useLoginMutation();
   const { refetch: refetchUserInfo } = useGetUserInfoQuery(undefined, {
-    skip: !isLoggedIn,
-    poolingInterval: 0,
+    skip: false,
   });
   const submitForm = async (data) => {
     try {
@@ -36,17 +35,14 @@ const Login = () => {
         })
       );
 
-      setTimeout(async () => {
-        try {
-          const user = await refetchUserInfo().unwrap();
-          if (user.data) {
-            dispatch(updateUserDetails(user.data));
-          }
-        } catch (refetchError) {
-          console.error("Error fetching user details:", refetchError);
+      try {
+        const user = await refetchUserInfo().unwrap();
+        if (user.data) {
+          dispatch(updateUserDetails(user.data));
         }
-      }, 0);
-
+      } catch (refetchError) {
+        console.error("Error fetching user details:", refetchError);
+      }
       reset();
       navigate("/", { replace: true });
     } catch (error) {
